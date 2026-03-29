@@ -550,6 +550,7 @@ const visionScreen = document.getElementById('vision-screen');
 const visionDetailScreen = document.getElementById('vision-detail-screen');
 const btnVision = document.getElementById('btn-vision');
 const btnAlphabet = document.getElementById('btn-alphabet');
+const btnHanzi = document.getElementById('btn-hanzi');
 const gridBackBtn = document.getElementById('grid-back-btn');
 const visionBackBtn = document.getElementById('vision-back-btn');
 const visionDetailBackBtn = document.getElementById('vision-detail-back-btn');
@@ -1052,29 +1053,12 @@ function drawCompletedStrokes() {
 
   completedStrokes.forEach(index => {
     if (index < letterData.strokes.length) {
-      const userPath = completedStrokePaths[index];
-      if (userPath && userPath.length > 1) {
-        // 绘制用户实际笔迹（从百分比坐标转回像素）
-        ctx.save();
-        ctx.strokeStyle = '#ff6b9d';
-        ctx.lineWidth = 12;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.beginPath();
-        ctx.moveTo(toCanvasX(userPath[0].x), toCanvasY(userPath[0].y));
-        for (let i = 1; i < userPath.length; i++) {
-          ctx.lineTo(toCanvasX(userPath[i].x), toCanvasY(userPath[i].y));
-        }
-        ctx.stroke();
-        ctx.restore();
-      } else {
-        // fallback 到标准线
-        drawGuideStroke(ctx, letterData.strokes[index], {
-          color: '#ff6b9d',
-          lineWidth: 14,
-          dash: []
-        });
-      }
+      // 始终绘制干净的引导线作为完成笔画，确保字母形状正确
+      drawGuideStroke(ctx, letterData.strokes[index], {
+        color: '#ff6b9d',
+        lineWidth: 14,
+        dash: []
+      });
     }
   });
 }
@@ -1139,44 +1123,67 @@ function pointToLineDistance(point, lineStart, lineEnd) {
 }
 
 function checkStrokeCompletion(path, stroke) {
-  if (path.length < 3) return false;
+  if (path.length < 5) return false;
+
+  const canvasSize = guideCanvas.width;
+  const nearTolerance = canvasSize * 0.1;   // 10% of canvas for path proximity
+  const endTolerance = canvasSize * 0.15;   // 15% for start/end points
 
   const start = { x: toCanvasX(stroke[0].x), y: toCanvasY(stroke[0].y) };
   const end = { x: toCanvasX(stroke[stroke.length-1].x), y: toCanvasY(stroke[stroke.length-1].y) };
   const pathStart = path[0];
   const pathEnd = path[path.length-1];
 
-  const distToEnd = Math.hypot(pathEnd.x - end.x, pathEnd.y - end.y);
+  // 1. Start point must be near guide start
+  const distToStart = Math.hypot(pathStart.x - start.x, pathStart.y - start.y);
+  if (distToStart > endTolerance) return false;
 
-  // Check path proximity to guide line (wide tolerance)
+  // 2. End point must be near guide end
+  const distToEnd = Math.hypot(pathEnd.x - end.x, pathEnd.y - end.y);
+  if (distToEnd > endTolerance) return false;
+
+  // 3. Most path points must be near the guide stroke
   let nearStrokeCount = 0;
   path.forEach(p => {
-    if (isPointNearStroke(p, stroke, 100)) nearStrokeCount++;
+    if (isPointNearStroke(p, stroke, nearTolerance)) nearStrokeCount++;
   });
+  if (nearStrokeCount < path.length * 0.5) return false;
 
-  // Check how many points are within the letter mask
-  const w = guideCanvas.width;
-  const h = guideCanvas.height;
-  let inMaskCount = 0;
-  path.forEach(p => {
-    if (isPointInLetterMask(p.x, p.y, currentLetter, w, h)) inMaskCount++;
+  // 4. Path must cover most of the guide stroke (prevent short scribbles)
+  const guidePoints = [];
+  for (let i = 0; i < stroke.length - 1; i++) {
+    const p1 = { x: toCanvasX(stroke[i].x), y: toCanvasY(stroke[i].y) };
+    const p2 = { x: toCanvasX(stroke[i+1].x), y: toCanvasY(stroke[i+1].y) };
+    const segLen = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+    const steps = Math.max(3, Math.ceil(segLen / 15));
+    for (let s = 0; s <= steps; s++) {
+      const t = s / steps;
+      guidePoints.push({ x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y) });
+    }
+  }
+  let coveredCount = 0;
+  const coverTolerance = nearTolerance * 1.3;
+  guidePoints.forEach(gp => {
+    for (const pp of path) {
+      if (Math.hypot(pp.x - gp.x, pp.y - gp.y) < coverTolerance) {
+        coveredCount++;
+        break;
+      }
+    }
   });
+  if (coveredCount < guidePoints.length * 0.55) return false;
 
-  // Check general direction matches
+  // 5. Direction must be roughly correct
   const strokeDx = end.x - start.x;
   const strokeDy = end.y - start.y;
   const pathDx = pathEnd.x - pathStart.x;
   const pathDy = pathEnd.y - pathStart.y;
   const dot = strokeDx * pathDx + strokeDy * pathDy;
-  const directionCorrect = dot > 0;
+  const strokeLen = Math.hypot(strokeDx, strokeDy);
+  // Only check direction for strokes with meaningful length
+  if (strokeLen > canvasSize * 0.1 && dot < 0) return false;
 
-  // Method 1: end point close + some path near guide
-  const nearGuide = distToEnd < 150 && nearStrokeCount > path.length * 0.15;
-
-  // Method 2: mostly in letter shape + correct direction + enough length
-  const inLetterShape = inMaskCount > path.length * 0.5 && directionCorrect && path.length > 8;
-
-  return nearGuide || inLetterShape;
+  return true;
 }
 
 function getPosition(e, canvas) {
@@ -1198,12 +1205,10 @@ function startDrawing(e) {
   const start = { x: toCanvasX(stroke[0].x), y: toCanvasY(stroke[0].y) };
   const distToStart = Math.hypot(pos.x - start.x, pos.y - start.y);
 
-  // Accept if near start point OR within the letter area
-  const w = guideCanvas.width;
-  const h = guideCanvas.height;
-  const inMask = isPointInLetterMask(pos.x, pos.y, currentLetter, w, h);
+  // Must start near the guide start point
+  const startTolerance = guideCanvas.width * 0.18;
 
-  if (distToStart > 180 && !inMask) {
+  if (distToStart > startTolerance) {
     // 提示用户从起笔点开始
     const now = Date.now();
     if (now - lastStartHintTime > 2000) {
@@ -1240,12 +1245,18 @@ function draw(e) {
 
   const pos = getPosition(e, drawCanvas);
   const ctx = getDrawCtx();
+  const letterData = getLetterData(currentLetter);
+  const stroke = letterData.strokes[currentStrokeIndex];
+
+  // Real-time feedback: check if point is near the guide stroke
+  const nearTolerance = guideCanvas.width * 0.1;
+  const onPath = isPointNearStroke(pos, stroke, nearTolerance);
 
   ctx.beginPath();
   ctx.moveTo(lastX, lastY);
   ctx.lineTo(pos.x, pos.y);
-  ctx.strokeStyle = '#ff6b9d';
-  ctx.lineWidth = 12;
+  ctx.strokeStyle = onPath ? '#ff6b9d' : 'rgba(255, 150, 150, 0.3)';
+  ctx.lineWidth = onPath ? 12 : 6;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   ctx.stroke();
@@ -1633,7 +1644,11 @@ function isPointNearBookStroke(point, stroke, tolerance = 55) {
 }
 
 function checkBookStrokeCompletion(path, stroke) {
-  if (path.length < 3) return false;
+  if (path.length < 5) return false;
+
+  const canvasSize = bookGuideCanvas.width;
+  const nearTolerance = canvasSize * 0.12;
+  const endTolerance = canvasSize * 0.16;
 
   const start = { x: toBookCanvasX(stroke[0].x), y: toBookCanvasY(stroke[0].y) };
   const end = { x: toBookCanvasX(stroke[stroke.length-1].x), y: toBookCanvasY(stroke[stroke.length-1].y) };
@@ -1643,12 +1658,39 @@ function checkBookStrokeCompletion(path, stroke) {
   const distToStart = Math.hypot(pathStart.x - start.x, pathStart.y - start.y);
   const distToEnd = Math.hypot(pathEnd.x - end.x, pathEnd.y - end.y);
 
+  if (distToStart > endTolerance || distToEnd > endTolerance) return false;
+
   let nearStrokeCount = 0;
   path.forEach(p => {
-    if (isPointNearBookStroke(p, stroke, 65)) nearStrokeCount++;
+    if (isPointNearBookStroke(p, stroke, nearTolerance)) nearStrokeCount++;
   });
+  if (nearStrokeCount < path.length * 0.45) return false;
 
-  return distToStart < 95 && distToEnd < 95 && nearStrokeCount > path.length * 0.2;
+  // Check coverage of guide stroke
+  const guidePoints = [];
+  for (let i = 0; i < stroke.length - 1; i++) {
+    const p1 = { x: toBookCanvasX(stroke[i].x), y: toBookCanvasY(stroke[i].y) };
+    const p2 = { x: toBookCanvasX(stroke[i+1].x), y: toBookCanvasY(stroke[i+1].y) };
+    const segLen = Math.hypot(p2.x - p1.x, p2.y - p1.y);
+    const steps = Math.max(3, Math.ceil(segLen / 15));
+    for (let s = 0; s <= steps; s++) {
+      const t = s / steps;
+      guidePoints.push({ x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y) });
+    }
+  }
+  let coveredCount = 0;
+  const coverTolerance = nearTolerance * 1.3;
+  guidePoints.forEach(gp => {
+    for (const pp of path) {
+      if (Math.hypot(pp.x - gp.x, pp.y - gp.y) < coverTolerance) {
+        coveredCount++;
+        break;
+      }
+    }
+  });
+  if (coveredCount < guidePoints.length * 0.5) return false;
+
+  return true;
 }
 
 function getBookPosition(e, canvas) {
@@ -1670,7 +1712,7 @@ function startBookDrawing(e) {
   const start = { x: toBookCanvasX(stroke[0].x), y: toBookCanvasY(stroke[0].y) };
   const distToStart = Math.hypot(pos.x - start.x, pos.y - start.y);
 
-  if (distToStart > 110) return;
+  if (distToStart > bookGuideCanvas.width * 0.16) return;
 
   bookIsDrawing = true;
   bookLastX = pos.x;
@@ -1685,12 +1727,17 @@ function drawBook(e) {
   const pos = getBookPosition(e, bookDrawCanvas);
   const ctx = getBookDrawCtx();
   const bookData = getBookData(currentLetter);
+  const stroke = bookData.strokes[bookCurrentStrokeIndex];
+
+  // Real-time feedback
+  const nearTolerance = bookGuideCanvas.width * 0.12;
+  const onPath = isPointNearBookStroke(pos, stroke, nearTolerance);
 
   ctx.beginPath();
   ctx.moveTo(bookLastX, bookLastY);
   ctx.lineTo(pos.x, pos.y);
-  ctx.strokeStyle = bookData.color;
-  ctx.lineWidth = 10;
+  ctx.strokeStyle = onPath ? bookData.color : 'rgba(200, 200, 200, 0.3)';
+  ctx.lineWidth = onPath ? 10 : 5;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   ctx.stroke();
@@ -2076,6 +2123,7 @@ function clearVisionTraceDraw() {
 function setupEventListeners() {
   btnVision.addEventListener('click', openVisionScreen);
   btnAlphabet.addEventListener('click', openAlphabetScreen);
+  btnHanzi.addEventListener('click', openHanziGridScreen);
   gridBackBtn.addEventListener('click', goBackFromGrid);
 
   backBtn.addEventListener('click', goBack);
@@ -2151,6 +2199,13 @@ function setupEventListeners() {
       initVisionTrace();
     }
   });
+}
+
+// === 萌学汉字 ===
+
+function openHanziGridScreen() {
+  hideAllScreens();
+  // hanziGridScreen will be defined in later tasks
 }
 
 init();

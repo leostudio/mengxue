@@ -849,6 +849,10 @@ body {
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
 
+.hanzi-card {
+    background: linear-gradient(135deg, #ff6b9d 0%, #ff8a80 100%);
+}
+
 .home-icon {
     font-size: 5rem;
     margin-bottom: 15px;
