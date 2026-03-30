@@ -184,6 +184,72 @@
         </div>
     </div>
 
+    <!-- 萌学汉字 - 汉字列表页 -->
+    <div id="hanzi-grid-screen" class="screen">
+        <header class="hanzi-grid-header">
+            <button id="hanzi-grid-back-btn" class="back-btn">← 返回</button>
+            <h1 class="page-title">🀄 萌学汉字 🀄</h1>
+        </header>
+        <div class="hanzi-search-bar">
+            <input type="text" id="hanzi-search-input" class="hanzi-search-input" placeholder="🔍 搜索汉字或拼音...">
+        </div>
+        <div class="hanzi-level-tabs">
+            <button class="hanzi-tab active" data-level="all">全部</button>
+            <button class="hanzi-tab" data-level="1">⭐ 初级</button>
+            <button class="hanzi-tab" data-level="2">⭐⭐ 中级</button>
+            <button class="hanzi-tab" data-level="3">⭐⭐⭐ 高级</button>
+        </div>
+        <div id="hanzi-grid" class="hanzi-grid"></div>
+    </div>
+
+    <!-- 萌学汉字 - 汉字详情页 -->
+    <div id="hanzi-detail-screen" class="screen">
+        <header class="detail-header">
+            <button id="hanzi-detail-back-btn" class="back-btn">← 返回</button>
+        </header>
+        <div class="hanzi-display">
+            <div id="hanzi-pinyin" class="hanzi-pinyin">pīn yīn</div>
+            <div id="hanzi-big-char" class="hanzi-big-char">字</div>
+        </div>
+        <div class="hanzi-detail-controls">
+            <button id="hanzi-audio-btn" class="hanzi-audio-btn">
+                <span class="audio-icon">🔊</span>
+                <span class="audio-text">听发音</span>
+            </button>
+            <button id="hanzi-trace-btn" class="hanzi-trace-btn">
+                <span class="trace-icon">✏️</span>
+                <span class="trace-text">开始描红</span>
+            </button>
+        </div>
+        <div class="hanzi-words-section">
+            <div class="hanzi-words-title">📝 相关词语</div>
+            <div id="hanzi-words-list" class="hanzi-words-list"></div>
+            <div class="hanzi-words-hint">← 左右滑动查看更多 →</div>
+        </div>
+    </div>
+
+    <!-- 萌学汉字 - 描红页 -->
+    <div id="hanzi-trace-screen" class="screen">
+        <div class="hanzi-trace-header">
+            <button id="hanzi-trace-back-btn" class="trace-back-btn">← 退出</button>
+            <div class="hanzi-trace-progress">
+                <span id="hanzi-stroke-indicator" class="stroke-indicator">第 1 笔</span>
+            </div>
+            <div class="hanzi-trace-spacer"></div>
+        </div>
+        <div class="hanzi-writer-container">
+            <div id="hanzi-writer-target" class="hanzi-writer-target"></div>
+        </div>
+        <div class="hanzi-trace-controls">
+            <button id="hanzi-animate-btn" class="trace-control-btn">
+                <span>🎬</span> 看笔顺
+            </button>
+            <button id="hanzi-rewrite-btn" class="trace-control-btn">
+                <span>🔄</span> 重写
+            </button>
+        </div>
+    </div>
+
     <!-- 完成动画 -->
     <div id="celebration" class="celebration hidden">
         <div class="celebration-content">
