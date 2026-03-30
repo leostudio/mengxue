@@ -2244,7 +2244,9 @@ function getPosition(e, canvas) {
   const rect = canvas.getBoundingClientRect();
   const clientX = e.touches ? e.touches[0].clientX : e.clientX;
   const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-  return { x: clientX - rect.left, y: clientY - rect.top };
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
 }
 
 function startDrawing(e) {
@@ -2751,7 +2753,9 @@ function getBookPosition(e, canvas) {
   const rect = canvas.getBoundingClientRect();
   const clientX = e.touches ? e.touches[0].clientX : e.clientX;
   const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-  return { x: clientX - rect.left, y: clientY - rect.top };
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
 }
 
 function startBookDrawing(e) {
@@ -3076,8 +3080,10 @@ function startVisionTrace(e) {
 
   const rect = visionTraceDraw.getBoundingClientRect();
   const touch = e.touches ? e.touches[0] : e;
-  const x = touch.clientX - rect.left;
-  const y = touch.clientY - rect.top;
+  const scaleX = visionTraceDraw.width / rect.width;
+  const scaleY = visionTraceDraw.height / rect.height;
+  const x = (touch.clientX - rect.left) * scaleX;
+  const y = (touch.clientY - rect.top) * scaleY;
 
   const guide = VISION_DIRECTION_GUIDES[currentVisionDirection.name];
   const sx = vToX(guide[0].x), sy = vToY(guide[0].y);
@@ -3100,8 +3106,10 @@ function drawVisionTrace(e) {
 
   const rect = visionTraceDraw.getBoundingClientRect();
   const touch = e.touches ? e.touches[0] : e;
-  const x = touch.clientX - rect.left;
-  const y = touch.clientY - rect.top;
+  const scaleX = visionTraceDraw.width / rect.width;
+  const scaleY = visionTraceDraw.height / rect.height;
+  const x = (touch.clientX - rect.left) * scaleX;
+  const y = (touch.clientY - rect.top) * scaleY;
 
   const ctx = visionTraceDraw.getContext('2d');
   const last = visionTraceCurrentPath[visionTraceCurrentPath.length - 1];
@@ -3451,7 +3459,7 @@ function openHanziTraceScreen() {
     strokeAnimationSpeed: 1,
     delayBetweenStrokes: 300,
     highlightColor: '#a18cd1',
-    showHintAfterMisses: 3,
+    showHintAfterMisses: 1,
     highlightOnComplete: true
   });
 
@@ -3469,8 +3477,8 @@ function startHanziQuiz() {
   hanziStrokeIndicator.textContent = '第 1 笔';
 
   hanziWriter.quiz({
-    leniency: 1.5,
-    showHintAfterMisses: 3,
+    leniency: 2.5,
+    showHintAfterMisses: 1,
     highlightOnComplete: true,
 
     onCorrectStroke: function(data) {
