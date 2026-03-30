@@ -1797,8 +1797,12 @@ function resizeTraceCanvas() {
 
   guideCanvas.width = size;
   guideCanvas.height = size;
+  guideCanvas.style.width = size + 'px';
+  guideCanvas.style.height = size + 'px';
   drawCanvas.width = size;
   drawCanvas.height = size;
+  drawCanvas.style.width = size + 'px';
+  drawCanvas.style.height = size + 'px';
 
   // Clear mask cache on resize since dimensions changed
   Object.keys(letterMaskCache).forEach(k => delete letterMaskCache[k]);
@@ -2508,8 +2512,12 @@ function resizeBookCanvas() {
 
   bookGuideCanvas.width = size;
   bookGuideCanvas.height = size;
+  bookGuideCanvas.style.width = size + 'px';
+  bookGuideCanvas.style.height = size + 'px';
   bookDrawCanvas.width = size;
   bookDrawCanvas.height = size;
+  bookDrawCanvas.style.width = size + 'px';
+  bookDrawCanvas.style.height = size + 'px';
 
   if (bookScreen.classList.contains('active')) {
     drawBookGuide();
@@ -3007,8 +3015,12 @@ function resizeVisionTraceCanvas() {
   const size = container.clientWidth;
   visionTraceGuide.width = size;
   visionTraceGuide.height = size;
+  visionTraceGuide.style.width = size + 'px';
+  visionTraceGuide.style.height = size + 'px';
   visionTraceDraw.width = size;
   visionTraceDraw.height = size;
+  visionTraceDraw.style.width = size + 'px';
+  visionTraceDraw.style.height = size + 'px';
 }
 
 function initVisionTrace() {
