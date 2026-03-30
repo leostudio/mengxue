@@ -1589,6 +1589,10 @@ body {
     justify-content: center;
 }
 
+.flower-celebration.hidden {
+    display: none;
+}
+
 .flower-celebration .celebration-content {
     background: rgba(255,255,255,0.95);
     padding: 40px 60px;
