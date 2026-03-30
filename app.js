@@ -1583,6 +1583,28 @@ const visionDetailScreen = document.getElementById('vision-detail-screen');
 const btnVision = document.getElementById('btn-vision');
 const btnAlphabet = document.getElementById('btn-alphabet');
 const btnHanzi = document.getElementById('btn-hanzi');
+// 萌学汉字 DOM refs
+const hanziGridScreen = document.getElementById('hanzi-grid-screen');
+const hanziDetailScreen = document.getElementById('hanzi-detail-screen');
+const hanziTraceScreen = document.getElementById('hanzi-trace-screen');
+const hanziGridBackBtn = document.getElementById('hanzi-grid-back-btn');
+const hanziSearchInput = document.getElementById('hanzi-search-input');
+const hanziGrid = document.getElementById('hanzi-grid');
+const hanziDetailBackBtn = document.getElementById('hanzi-detail-back-btn');
+const hanziBigChar = document.getElementById('hanzi-big-char');
+const hanziPinyin = document.getElementById('hanzi-pinyin');
+const hanziAudioBtn = document.getElementById('hanzi-audio-btn');
+const hanziTraceBtn = document.getElementById('hanzi-trace-btn');
+const hanziWordsList = document.getElementById('hanzi-words-list');
+const hanziTraceBackBtn = document.getElementById('hanzi-trace-back-btn');
+const hanziAnimateBtn = document.getElementById('hanzi-animate-btn');
+const hanziRewriteBtn = document.getElementById('hanzi-rewrite-btn');
+const hanziStrokeIndicator = document.getElementById('hanzi-stroke-indicator');
+const flowerCelebration = document.getElementById('flower-celebration');
+
+let currentHanzi = null;
+let hanziWriter = null;
+let hanziCurrentLevel = 'all';
 const gridBackBtn = document.getElementById('grid-back-btn');
 const visionBackBtn = document.getElementById('vision-back-btn');
 const visionDetailBackBtn = document.getElementById('vision-detail-back-btn');
@@ -2882,6 +2904,9 @@ function hideAllScreens() {
   bookScreen.classList.remove('active');
   visionScreen.classList.remove('active');
   visionDetailScreen.classList.remove('active');
+  hanziGridScreen.classList.remove('active');
+  hanziDetailScreen.classList.remove('active');
+  hanziTraceScreen.classList.remove('active');
 }
 
 // === 视力表学习 ===
@@ -3215,6 +3240,52 @@ function setupEventListeners() {
   visionTraceDraw.addEventListener('touchend', stopVisionTrace);
   visionTraceDraw.addEventListener('touchcancel', stopVisionTrace);
 
+  // 萌学汉字事件
+  hanziGridBackBtn.addEventListener('click', () => goToHome());
+  hanziSearchInput.addEventListener('input', filterHanziList);
+
+  document.querySelectorAll('.hanzi-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.hanzi-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      hanziCurrentLevel = tab.dataset.level;
+      filterHanziList();
+    });
+  });
+
+  hanziDetailBackBtn.addEventListener('click', () => {
+    hideAllScreens();
+    hanziGridScreen.classList.add('active');
+  });
+  hanziAudioBtn.addEventListener('click', () => {
+    if (currentHanzi) speakHanzi(currentHanzi.char);
+  });
+  hanziTraceBtn.addEventListener('click', openHanziTraceScreen);
+
+  hanziTraceBackBtn.addEventListener('click', exitHanziTraceScreen);
+  hanziAnimateBtn.addEventListener('click', () => {
+    if (hanziWriter) {
+      hanziWriter.cancelQuiz();
+      hanziStrokeIndicator.textContent = '看笔顺...';
+      hanziWriter.animateCharacter({
+        onComplete: function() {
+          startHanziQuiz();
+        }
+      });
+    }
+  });
+  hanziRewriteBtn.addEventListener('click', () => {
+    if (hanziWriter) {
+      hanziWriter.cancelQuiz();
+      const target = document.getElementById('hanzi-writer-target');
+      target.innerHTML = '';
+      openHanziTraceScreen();
+    }
+  });
+
+  // Prevent scroll on hanzi trace screen
+  hanziTraceScreen.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+
   window.addEventListener('resize', () => {
     resizeTraceCanvas();
     resizeBookCanvas();
@@ -3230,6 +3301,9 @@ function setupEventListeners() {
     if (visionDetailScreen.classList.contains('active')) {
       initVisionTrace();
     }
+    if (hanziTraceScreen.classList.contains('active') && currentHanzi) {
+      openHanziTraceScreen();
+    }
   });
 }
 
@@ -3237,7 +3311,217 @@ function setupEventListeners() {
 
 function openHanziGridScreen() {
   hideAllScreens();
-  // hanziGridScreen will be defined in later tasks
+  hanziGridScreen.classList.add('active');
+  hanziSearchInput.value = '';
+  hanziCurrentLevel = 'all';
+  document.querySelectorAll('.hanzi-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.hanzi-tab[data-level="all"]').classList.add('active');
+  createHanziGrid(HANZI_LIST);
+}
+
+function createHanziGrid(list) {
+  hanziGrid.innerHTML = '';
+  list.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'hanzi-card';
+    card.innerHTML = `
+      <div class="hanzi-card-char">${item.char}</div>
+      <div class="hanzi-card-pinyin">${item.pinyin}</div>
+    `;
+    card.addEventListener('click', () => openHanziDetail(item));
+    hanziGrid.appendChild(card);
+  });
+}
+
+function filterHanziList() {
+  const query = hanziSearchInput.value.trim().toLowerCase();
+  let filtered = HANZI_LIST;
+
+  if (hanziCurrentLevel !== 'all') {
+    filtered = filtered.filter(h => h.level === parseInt(hanziCurrentLevel));
+  }
+
+  if (query) {
+    filtered = filtered.filter(h =>
+      h.char === query ||
+      h.pinyin.toLowerCase().startsWith(query) ||
+      h.pinyin.toLowerCase().replace(/[āáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ]/g, c => {
+        return 'aaaaeeeeiiiioooouuuuvvvv'['āáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ'.indexOf(c)] || c;
+      }).startsWith(query)
+    );
+  }
+
+  createHanziGrid(filtered);
+}
+
+function openHanziDetail(hanziItem) {
+  currentHanzi = hanziItem;
+
+  hideAllScreens();
+  hanziDetailScreen.classList.add('active');
+
+  hanziPinyin.textContent = hanziItem.pinyin;
+  hanziBigChar.textContent = hanziItem.char;
+
+  // Render word cards
+  hanziWordsList.innerHTML = '';
+  const gradients = [
+    'linear-gradient(135deg, #74b9ff, #0984e3)',
+    'linear-gradient(135deg, #a29bfe, #6c5ce7)',
+    'linear-gradient(135deg, #55efc4, #00b894)',
+    'linear-gradient(135deg, #fd79a8, #e84393)',
+    'linear-gradient(135deg, #fdcb6e, #f39c12)'
+  ];
+
+  hanziItem.words.forEach((w, i) => {
+    const card = document.createElement('div');
+    card.className = 'hanzi-word-card';
+
+    const imgDiv = document.createElement('div');
+    imgDiv.className = 'hanzi-word-img';
+    imgDiv.style.background = gradients[i % gradients.length];
+
+    const img = document.createElement('img');
+    img.src = `https://source.unsplash.com/200x200/?${encodeURIComponent(w.imgQuery)}`;
+    img.alt = w.word;
+    img.onerror = function() {
+      this.style.display = 'none';
+      const fallback = document.createElement('div');
+      fallback.className = 'emoji-fallback';
+      fallback.textContent = w.emoji;
+      imgDiv.appendChild(fallback);
+    };
+    imgDiv.appendChild(img);
+
+    const info = document.createElement('div');
+    info.className = 'hanzi-word-info';
+    info.innerHTML = `
+      <div class="hanzi-word-text">${w.word}</div>
+      <div class="hanzi-word-pinyin">${w.pinyin}</div>
+    `;
+
+    card.appendChild(imgDiv);
+    card.appendChild(info);
+    hanziWordsList.appendChild(card);
+  });
+
+  // Auto-play pronunciation
+  setTimeout(() => speakHanzi(hanziItem.char), 300);
+}
+
+function speakHanzi(text) {
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'zh-CN';
+  utterance.rate = 0.7;
+  utterance.pitch = 1.1;
+  const voices = speechSynthesis.getVoices();
+  const zhVoice = voices.find(v => v.lang.startsWith('zh'));
+  if (zhVoice) utterance.voice = zhVoice;
+  speechSynthesis.speak(utterance);
+}
+
+function openHanziTraceScreen() {
+  if (!currentHanzi) return;
+
+  hideAllScreens();
+  hanziTraceScreen.classList.add('active');
+
+  // Clear previous writer
+  const target = document.getElementById('hanzi-writer-target');
+  target.innerHTML = '';
+
+  // Determine size based on container
+  const containerWidth = target.clientWidth || 300;
+  const size = Math.min(containerWidth, 300);
+
+  hanziWriter = HanziWriter.create('hanzi-writer-target', currentHanzi.char, {
+    width: size,
+    height: size,
+    padding: 20,
+    showCharacter: false,
+    showOutline: true,
+    strokeColor: '#333',
+    outlineColor: '#ddd',
+    drawingColor: '#ff6b9d',
+    drawingWidth: 6,
+    strokeAnimationSpeed: 1,
+    delayBetweenStrokes: 300,
+    highlightColor: '#a18cd1',
+    showHintAfterMisses: 3,
+    highlightOnComplete: true
+  });
+
+  hanziStrokeIndicator.textContent = '看笔顺...';
+
+  // Animate first, then start quiz
+  hanziWriter.animateCharacter({
+    onComplete: function() {
+      startHanziQuiz();
+    }
+  });
+}
+
+function startHanziQuiz() {
+  hanziStrokeIndicator.textContent = '第 1 笔';
+
+  hanziWriter.quiz({
+    leniency: 1.5,
+    showHintAfterMisses: 3,
+    highlightOnComplete: true,
+
+    onCorrectStroke: function(data) {
+      const strokeNum = data.strokeNum + 1;
+      const remaining = data.strokesRemaining;
+      if (remaining > 0) {
+        hanziStrokeIndicator.textContent = `第 ${strokeNum + 1} 笔`;
+      } else {
+        hanziStrokeIndicator.textContent = '完成！';
+      }
+    },
+
+    onComplete: function(data) {
+      showFlowerCelebration();
+    }
+  });
+}
+
+function showFlowerCelebration() {
+  // Falling flowers
+  for (let i = 0; i < 12; i++) {
+    setTimeout(() => {
+      const flower = document.createElement('div');
+      flower.className = 'falling-flower';
+      flower.textContent = '🌺';
+      flower.style.left = Math.random() * 100 + 'vw';
+      flower.style.animationDuration = (2 + Math.random() * 2) + 's';
+      flower.style.fontSize = (1.5 + Math.random() * 1.5) + 'rem';
+      document.body.appendChild(flower);
+      setTimeout(() => flower.remove(), 4000);
+    }, i * 150);
+  }
+
+  // Show celebration popup
+  flowerCelebration.classList.remove('hidden');
+  speakHanzi('太棒了');
+
+  setTimeout(() => {
+    flowerCelebration.classList.add('hidden');
+    exitHanziTraceScreen();
+  }, 2500);
+}
+
+function exitHanziTraceScreen() {
+  if (hanziWriter) {
+    hanziWriter.cancelQuiz();
+    hanziWriter = null;
+  }
+  const target = document.getElementById('hanzi-writer-target');
+  target.innerHTML = '';
+
+  hideAllScreens();
+  hanziDetailScreen.classList.add('active');
 }
 
 init();
