@@ -3402,6 +3402,8 @@ function openHanziDetail(hanziItem) {
 
     card.appendChild(imgDiv);
     card.appendChild(info);
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', () => speakHanzi(w.word));
     hanziWordsList.appendChild(card);
   });
 
