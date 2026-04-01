@@ -3650,15 +3650,9 @@ function openHanziTraceScreen() {
       showHintAfterMisses: 1,
       highlightOnComplete: true,
       charDataLoader: function(char, onComplete) {
-        fetch(`https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/${encodeURIComponent(char)}.json`)
+        fetch(`lib/hanzi-data/${encodeURIComponent(char)}.json`)
           .then(r => r.json())
-          .then(onComplete)
-          .catch(() => {
-            // Fallback CDN
-            fetch(`https://unpkg.com/hanzi-writer-data@2.0/${encodeURIComponent(char)}.json`)
-              .then(r => r.json())
-              .then(onComplete);
-          });
+          .then(onComplete);
       }
     });
 
