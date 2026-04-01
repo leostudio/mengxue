@@ -29,6 +29,11 @@
                 <div class="home-title">萌学汉字</div>
                 <div class="home-desc">学习常用汉字</div>
             </div>
+            <div id="btn-song" class="home-card song-card">
+                <div class="home-icon">🎵</div>
+                <div class="home-title">萌学儿歌</div>
+                <div class="home-desc">听儿歌学语言</div>
+            </div>
         </div>
     </div>
 
@@ -258,6 +263,43 @@
         </div>
     </div>
 
+    <!-- 萌学儿歌 -->
+    <div id="song-screen" class="screen">
+        <header class="song-header">
+            <button id="song-back-btn" class="back-btn">← 返回</button>
+            <h1 class="page-title">🎵 萌学儿歌</h1>
+        </header>
+        <div class="song-tabs">
+            <button class="song-tab active" data-lang="all">全部</button>
+            <button class="song-tab" data-lang="en">🇬🇧 英文歌</button>
+            <button class="song-tab" data-lang="zh">🇨🇳 中文歌</button>
+        </div>
+        <div id="song-card-area" class="song-card-area">
+            <div id="song-card" class="song-card-display">
+                <img id="song-bg-img" class="song-bg-img" src="" alt="">
+                <div class="song-bg-fallback" id="song-bg-fallback"></div>
+                <div class="song-overlay"></div>
+                <div class="song-content">
+                    <div id="song-title" class="song-title">歌名</div>
+                    <button id="song-play-btn" class="song-play-btn">▶</button>
+                    <div id="song-player-wrapper" class="song-player-wrapper hidden">
+                        <div id="song-player" class="song-player"></div>
+                    </div>
+                </div>
+                <div class="song-nav">
+                    <button id="song-prev-btn" class="song-nav-btn">⏮</button>
+                    <span id="song-index" class="song-index">1/100</span>
+                    <button id="song-next-btn" class="song-nav-btn">⏭</button>
+                </div>
+                <div class="song-auto-play">
+                    <label class="song-auto-label">
+                        <input type="checkbox" id="song-auto-check"> 🔁 顺序播放
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 小红花庆祝动画 -->
     <div id="flower-celebration" class="flower-celebration hidden">
         <div class="celebration-content">
@@ -267,6 +309,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script src="app.js"></script>
 </body>
 </html>

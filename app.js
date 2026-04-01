@@ -1539,6 +1539,113 @@ const HANZI_LIST = [
   ]},
 ];
 
+// === 萌学儿歌歌曲数据 ===
+const SONG_LIST = [
+  // --- 英文儿歌 (50首) ---
+  { title: 'Twinkle Twinkle Little Star', lang: 'en', youtubeId: 'yCjJyiqpAuU', imgQuery: 'starry,night,sky', emoji: '⭐🌙', gradient: 'linear-gradient(135deg, #0c3483 0%, #a2b6df 100%)' },
+  { title: 'Baby Shark', lang: 'en', youtubeId: 'XqZsoesa55w', imgQuery: 'cute,shark,ocean', emoji: '🦈🌊', gradient: 'linear-gradient(135deg, #00b4db 0%, #0083b0 100%)' },
+  { title: 'Old MacDonald Had a Farm', lang: 'en', youtubeId: 'CD44-a2_fB8', imgQuery: 'farm,animals,barn', emoji: '🐄🌾', gradient: 'linear-gradient(135deg, #56ab2f 0%, #a8e063 100%)' },
+  { title: 'Wheels on the Bus', lang: 'en', youtubeId: 'e_04ZrNroTo', imgQuery: 'school,bus,road', emoji: '🚌💨', gradient: 'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)' },
+  { title: 'Head Shoulders Knees and Toes', lang: 'en', youtubeId: 'ZanHgPprl-0', imgQuery: 'kids,dancing,playground', emoji: '🙆‍♂️🦵', gradient: 'linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%)' },
+  { title: 'If You\'re Happy and You Know It', lang: 'en', youtubeId: 'l4WNrvVjiTw', imgQuery: 'happy,kids,clapping', emoji: '😊👏', gradient: 'linear-gradient(135deg, #f953c6 0%, #b91d73 100%)' },
+  { title: 'Row Row Row Your Boat', lang: 'en', youtubeId: 'jXA2bHU4sng', imgQuery: 'boat,lake,gentle,water', emoji: '🚣🌅', gradient: 'linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%)' },
+  { title: 'Mary Had a Little Lamb', lang: 'en', youtubeId: 'KxGRhd_iWuE', imgQuery: 'lamb,meadow,spring', emoji: '🐑🌸', gradient: 'linear-gradient(135deg, #e8cbc0 0%, #636fa4 100%)' },
+  { title: 'Itsy Bitsy Spider', lang: 'en', youtubeId: 'w_lCBjjJkey', imgQuery: 'spider,rain,rainbow', emoji: '🕷️🌧️', gradient: 'linear-gradient(135deg, #4568dc 0%, #b06ab3 100%)' },
+  { title: 'Five Little Ducks', lang: 'en', youtubeId: 'pZw9veQ76fo', imgQuery: 'ducks,pond,cute', emoji: '🐥🐥', gradient: 'linear-gradient(135deg, #f2994a 0%, #f2c94c 100%)' },
+  { title: 'Baa Baa Black Sheep', lang: 'en', youtubeId: 'MR5XSOdjKMA', imgQuery: 'sheep,wool,countryside', emoji: '🐑🖤', gradient: 'linear-gradient(135deg, #3a3a3a 0%, #8e8e8e 100%)' },
+  { title: 'London Bridge Is Falling Down', lang: 'en', youtubeId: 'xBIXPg0DLCY', imgQuery: 'london,bridge,river', emoji: '🌉🇬🇧', gradient: 'linear-gradient(135deg, #c33764 0%, #1d2671 100%)' },
+  { title: 'Jack and Jill', lang: 'en', youtubeId: 'OazMCPHrQnU', imgQuery: 'hill,water,well', emoji: '⛰️🪣', gradient: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' },
+  { title: 'Humpty Dumpty', lang: 'en', youtubeId: 'nrv495corBc', imgQuery: 'egg,wall,castle', emoji: '🥚🧱', gradient: 'linear-gradient(135deg, #e44d26 0%, #f16529 100%)' },
+  { title: 'ABC Song', lang: 'en', youtubeId: '75p-N9YKqNo', imgQuery: 'alphabet,colorful,letters', emoji: '🔤🎶', gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
+  { title: 'Five Little Monkeys', lang: 'en', youtubeId: 'b0NHrFNZWh0', imgQuery: 'monkeys,jumping,bed', emoji: '🐒🛏️', gradient: 'linear-gradient(135deg, #8B4513 0%, #D2691E 100%)' },
+  { title: 'Rain Rain Go Away', lang: 'en', youtubeId: 'LFrKYjrIDs8', imgQuery: 'rain,umbrella,rainbow', emoji: '🌧️☂️', gradient: 'linear-gradient(135deg, #616161 0%, #9bc5c3 100%)' },
+  { title: 'Hickory Dickory Dock', lang: 'en', youtubeId: 'ygcB3QClMfk', imgQuery: 'clock,mouse,antique', emoji: '🕐🐭', gradient: 'linear-gradient(135deg, #834d9b 0%, #d04ed6 100%)' },
+  { title: 'This Old Man', lang: 'en', youtubeId: '4dzMPjDGoKU', imgQuery: 'grandpa,playful,park', emoji: '👴🥁', gradient: 'linear-gradient(135deg, #c0392b 0%, #8e44ad 100%)' },
+  { title: 'Hey Diddle Diddle', lang: 'en', youtubeId: 'xcJtL7QggTI', imgQuery: 'moon,cow,stars,fantasy', emoji: '🐄🌙', gradient: 'linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%)' },
+  { title: 'Johny Johny Yes Papa', lang: 'en', youtubeId: 'F4tHL8reNCs', imgQuery: 'baby,sugar,family', emoji: '👶🍬', gradient: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)' },
+  { title: 'One Two Buckle My Shoe', lang: 'en', youtubeId: 'Uf-aIt-UNMU', imgQuery: 'counting,shoes,numbers', emoji: '👟🔢', gradient: 'linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%)' },
+  { title: 'Three Blind Mice', lang: 'en', youtubeId: 'BRGqTsHLMyQ', imgQuery: 'mice,cheese,cute', emoji: '🐭🧀', gradient: 'linear-gradient(135deg, #f5af19 0%, #f12711 100%)' },
+  { title: 'Pat a Cake', lang: 'en', youtubeId: '3MXBHZLWMOQ', imgQuery: 'cake,baking,kitchen', emoji: '🎂👨‍🍳', gradient: 'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)' },
+  { title: 'Yankee Doodle', lang: 'en', youtubeId: 'JPqmMaOwnJI', imgQuery: 'horse,parade,patriotic', emoji: '🐴🎩', gradient: 'linear-gradient(135deg, #0052D4 0%, #4364F7 50%, #6FB1FC 100%)' },
+  { title: 'Do Re Mi', lang: 'en', youtubeId: 'ps0CMCMKizc', imgQuery: 'music,notes,mountains', emoji: '🎵🏔️', gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' },
+  { title: 'Jingle Bells', lang: 'en', youtubeId: 'eQ34DSTjsLQ', imgQuery: 'christmas,snow,bells', emoji: '🔔❄️', gradient: 'linear-gradient(135deg, #c31432 0%, #240b36 100%)' },
+  { title: 'Hokey Pokey', lang: 'en', youtubeId: 'iZinb6rVozc', imgQuery: 'dancing,kids,party', emoji: '🕺💃', gradient: 'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)' },
+  { title: 'Ten in the Bed', lang: 'en', youtubeId: 'TdDypyS_5zE', imgQuery: 'bed,teddy,bears,cozy', emoji: '🛏️🧸', gradient: 'linear-gradient(135deg, #2c3e50 0%, #3498db 100%)' },
+  { title: 'I\'m a Little Teapot', lang: 'en', youtubeId: '5QMKLQ1Ib-A', imgQuery: 'teapot,tea,cute', emoji: '🫖☕', gradient: 'linear-gradient(135deg, #ee9ca7 0%, #ffdde1 100%)' },
+  { title: 'The Muffin Man', lang: 'en', youtubeId: 'xwjCPB3pDAE', imgQuery: 'muffin,bakery,sweet', emoji: '🧁🧑‍🍳', gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
+  { title: 'Ring Around the Rosie', lang: 'en', youtubeId: 'FPyOSzzKBfw', imgQuery: 'roses,garden,children', emoji: '🌹🔴', gradient: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)' },
+  { title: 'Teddy Bear Teddy Bear', lang: 'en', youtubeId: 'sTBaq0eTylY', imgQuery: 'teddy,bear,cute,toy', emoji: '🧸💛', gradient: 'linear-gradient(135deg, #C6426E 0%, #642B73 100%)' },
+  { title: 'Finger Family', lang: 'en', youtubeId: '3Bw27TQxBKA', imgQuery: 'family,hands,cute', emoji: '👨‍👩‍👧‍👦✋', gradient: 'linear-gradient(135deg, #e1eec3 0%, #f05053 100%)' },
+  { title: 'Are You Sleeping', lang: 'en', youtubeId: '2ygr5PYFMLU', imgQuery: 'sleeping,morning,bells', emoji: '😴🔔', gradient: 'linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%)' },
+  { title: 'Six Little Ducks', lang: 'en', youtubeId: 'jgxOjb8pHKM', imgQuery: 'ducks,river,waddle', emoji: '🦆🌿', gradient: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' },
+  { title: 'BINGO', lang: 'en', youtubeId: '9mmF8zOlh_g', imgQuery: 'dog,puppy,happy', emoji: '🐕🅱️', gradient: 'linear-gradient(135deg, #f12711 0%, #f5af19 100%)' },
+  { title: 'Down by the Bay', lang: 'en', youtubeId: 'jAOkAQLEf8I', imgQuery: 'bay,watermelon,silly', emoji: '🌊🍉', gradient: 'linear-gradient(135deg, #56CCF2 0%, #2F80ED 100%)' },
+  { title: 'She\'ll Be Coming Round the Mountain', lang: 'en', youtubeId: 'aJm6_fXijBU', imgQuery: 'mountain,horses,adventure', emoji: '🏔️🐎', gradient: 'linear-gradient(135deg, #bc4e9c 0%, #f80759 100%)' },
+  { title: 'Skip to My Lou', lang: 'en', youtubeId: 'OQ-ZjAMqBYE', imgQuery: 'skipping,sunshine,meadow', emoji: '🌻🦋', gradient: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)' },
+  { title: 'The Ants Go Marching', lang: 'en', youtubeId: '2S__fbCGwOM', imgQuery: 'ants,marching,nature', emoji: '🐜🥁', gradient: 'linear-gradient(135deg, #654ea3 0%, #eaafc8 100%)' },
+  { title: 'Pop Goes the Weasel', lang: 'en', youtubeId: 'p5qWL-FPykI', imgQuery: 'jack,in,box,surprise', emoji: '🎪🎉', gradient: 'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)' },
+  { title: 'Happy Birthday', lang: 'en', youtubeId: 'jk--KDaxMco', imgQuery: 'birthday,cake,balloons', emoji: '🎂🎈', gradient: 'linear-gradient(135deg, #ff6a88 0%, #ff99ac 100%)' },
+  { title: 'Apples and Bananas', lang: 'en', youtubeId: 'r5WLXZspD1M', imgQuery: 'apples,bananas,fruit', emoji: '🍎🍌', gradient: 'linear-gradient(135deg, #a8e063 0%, #56ab2f 100%)' },
+  { title: 'Five Little Speckled Frogs', lang: 'en', youtubeId: 'WSC-gHBU_d0', imgQuery: 'frogs,pond,lily,pad', emoji: '🐸🌿', gradient: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' },
+  { title: 'Polly Put the Kettle On', lang: 'en', youtubeId: '5a1gemSfPGo', imgQuery: 'kettle,tea,cozy', emoji: '☕🫖', gradient: 'linear-gradient(135deg, #ee9ca7 0%, #ffdde1 100%)' },
+  { title: 'Little Bo Peep', lang: 'en', youtubeId: 'CqXX_WoVfB8', imgQuery: 'sheep,shepherdess,fields', emoji: '🐑🌾', gradient: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)' },
+  { title: 'Hot Cross Buns', lang: 'en', youtubeId: '1E-pCBrGrrk', imgQuery: 'bread,buns,bakery', emoji: '🍞🧈', gradient: 'linear-gradient(135deg, #f5af19 0%, #f12711 100%)' },
+  { title: 'Here We Go Round the Mulberry Bush', lang: 'en', youtubeId: 'jVFkFjBa2Hw', imgQuery: 'bush,garden,morning', emoji: '🌳🌅', gradient: 'linear-gradient(135deg, #56ab2f 0%, #a8e063 100%)' },
+  { title: 'Open Shut Them', lang: 'en', youtubeId: 'RuqvGiZi0qg', imgQuery: 'hands,clapping,toddler', emoji: '👐🤲', gradient: 'linear-gradient(135deg, #f953c6 0%, #b91d73 100%)' },
+
+  // --- 中文儿歌 (50首) ---
+  { title: '小星星', lang: 'zh', youtubeId: 'mQ5-ifHMaSo', imgQuery: 'starry,night,sky,beautiful', emoji: '⭐🌙', gradient: 'linear-gradient(135deg, #0c3483 0%, #a2b6df 100%)' },
+  { title: '两只老虎', lang: 'zh', youtubeId: 'RBW0NAmsg-I', imgQuery: 'tiger,cute,cartoon', emoji: '🐯🐯', gradient: 'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)' },
+  { title: '小兔子乖乖', lang: 'zh', youtubeId: 'dZKIuGOmLcE', imgQuery: 'bunny,rabbit,cute,white', emoji: '🐰🥕', gradient: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)' },
+  { title: '数鸭子', lang: 'zh', youtubeId: '8mq4ULHKqrI', imgQuery: 'ducks,river,counting', emoji: '🦆🔢', gradient: 'linear-gradient(135deg, #f2994a 0%, #f2c94c 100%)' },
+  { title: '小毛驴', lang: 'zh', youtubeId: 'INS5NRbiPow', imgQuery: 'donkey,cute,countryside', emoji: '🫏🌾', gradient: 'linear-gradient(135deg, #8B7355 0%, #D2B48C 100%)' },
+  { title: '拔萝卜', lang: 'zh', youtubeId: 'VFXT4eS4eIo', imgQuery: 'radish,garden,pulling', emoji: '🥕👴', gradient: 'linear-gradient(135deg, #56ab2f 0%, #a8e063 100%)' },
+  { title: '世上只有妈妈好', lang: 'zh', youtubeId: 'CE49x0qlHLI', imgQuery: 'mother,child,love,warm', emoji: '👩‍👦❤️', gradient: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)' },
+  { title: '找朋友', lang: 'zh', youtubeId: 'hhZBT1j0LLY', imgQuery: 'friends,kids,playground', emoji: '👫🤝', gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' },
+  { title: '小燕子', lang: 'zh', youtubeId: 'hxW2QKCZP3c', imgQuery: 'swallow,spring,flowers', emoji: '🐦🌸', gradient: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)' },
+  { title: '春天在哪里', lang: 'zh', youtubeId: 'V2tqI-9YWNM', imgQuery: 'spring,flowers,meadow', emoji: '🌺🌿', gradient: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' },
+  { title: '让我们荡起双桨', lang: 'zh', youtubeId: 'h2Jl-PW2iCY', imgQuery: 'lake,boat,rowing,sunset', emoji: '🚣🌅', gradient: 'linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%)' },
+  { title: '采蘑菇的小姑娘', lang: 'zh', youtubeId: 'oYPTCp0PKRU', imgQuery: 'mushroom,forest,girl', emoji: '🍄🌲', gradient: 'linear-gradient(135deg, #654ea3 0%, #eaafc8 100%)' },
+  { title: '蜗牛与黄鹂鸟', lang: 'zh', youtubeId: 'qVNn0EHOqPM', imgQuery: 'snail,bird,tree,spring', emoji: '🐌🐦', gradient: 'linear-gradient(135deg, #56ab2f 0%, #a8e063 100%)' },
+  { title: '泥娃娃', lang: 'zh', youtubeId: 'eZTDSTIqpQA', imgQuery: 'clay,doll,cute,kids', emoji: '🧸🎎', gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
+  { title: '虫儿飞', lang: 'zh', youtubeId: 'IhHgEiszmMs', imgQuery: 'firefly,night,magical', emoji: '🪲✨', gradient: 'linear-gradient(135deg, #0c3483 0%, #a2b6df 100%)' },
+  { title: '捉泥鳅', lang: 'zh', youtubeId: 'YXh2cHEVkLo', imgQuery: 'fish,pond,kids,summer', emoji: '🐟🌾', gradient: 'linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%)' },
+  { title: '卖报歌', lang: 'zh', youtubeId: 'r-SZAfAyBek', imgQuery: 'newspaper,kid,vintage', emoji: '📰👦', gradient: 'linear-gradient(135deg, #c0392b 0%, #8e44ad 100%)' },
+  { title: '外婆的澎湖湾', lang: 'zh', youtubeId: 'F-6kFMTx_s8', imgQuery: 'beach,ocean,grandmother', emoji: '🏖️👵', gradient: 'linear-gradient(135deg, #56CCF2 0%, #2F80ED 100%)' },
+  { title: '新年好', lang: 'zh', youtubeId: 'bLNqnVuvb8w', imgQuery: 'chinese,new,year,lantern', emoji: '🧧🎆', gradient: 'linear-gradient(135deg, #c31432 0%, #f5af19 100%)' },
+  { title: '粉刷匠', lang: 'zh', youtubeId: 'vS0_DSpwwnI', imgQuery: 'painting,house,colorful', emoji: '🖌️🏠', gradient: 'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)' },
+  { title: '一分钱', lang: 'zh', youtubeId: 'O0nFnlKzElo', imgQuery: 'coin,police,honest', emoji: '🪙👮', gradient: 'linear-gradient(135deg, #f5af19 0%, #f12711 100%)' },
+  { title: '丢手绢', lang: 'zh', youtubeId: 'aqVLx7fxLPc', imgQuery: 'kids,circle,game,park', emoji: '🧣🏃', gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' },
+  { title: '小白船', lang: 'zh', youtubeId: 'JBBK7O7A6vI', imgQuery: 'moon,boat,dreamy,night', emoji: '🌙⛵', gradient: 'linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%)' },
+  { title: '上学歌', lang: 'zh', youtubeId: 'fACPPzm16Bk', imgQuery: 'school,sunrise,backpack', emoji: '🎒🏫', gradient: 'linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%)' },
+  { title: '幸福拍手歌', lang: 'zh', youtubeId: 'Gj4px8yUlZM', imgQuery: 'clapping,happy,sunshine', emoji: '👏😄', gradient: 'linear-gradient(135deg, #f953c6 0%, #b91d73 100%)' },
+  { title: '我是一个粉刷匠', lang: 'zh', youtubeId: 'vr1syxkb12w', imgQuery: 'painter,colorful,wall', emoji: '🎨🧑‍🎨', gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
+  { title: '小螺号', lang: 'zh', youtubeId: 'bWNaF63J6dA', imgQuery: 'sea,shell,beach,horn', emoji: '🐚🌊', gradient: 'linear-gradient(135deg, #56CCF2 0%, #2F80ED 100%)' },
+  { title: '数字歌', lang: 'zh', youtubeId: 'fXmF1D6z7nw', imgQuery: 'numbers,colorful,counting', emoji: '🔢🎶', gradient: 'linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%)' },
+  { title: '小老鼠上灯台', lang: 'zh', youtubeId: 'qW7GJKn6RUI', imgQuery: 'mouse,lamp,cute', emoji: '🐭💡', gradient: 'linear-gradient(135deg, #834d9b 0%, #d04ed6 100%)' },
+  { title: '生日快乐', lang: 'zh', youtubeId: 'lYBig5iSOhI', imgQuery: 'birthday,cake,candles', emoji: '🎂🎉', gradient: 'linear-gradient(135deg, #ff6a88 0%, #ff99ac 100%)' },
+  { title: '三只小熊', lang: 'zh', youtubeId: 'FSgGy5LFqCY', imgQuery: 'bears,cute,family', emoji: '🐻🐻', gradient: 'linear-gradient(135deg, #8B4513 0%, #D2691E 100%)' },
+  { title: '洋娃娃和小熊跳舞', lang: 'zh', youtubeId: 'MrP8rQmn4H0', imgQuery: 'doll,bear,dancing', emoji: '🎎🐻', gradient: 'linear-gradient(135deg, #ee9ca7 0%, #ffdde1 100%)' },
+  { title: '学习雷锋好榜样', lang: 'zh', youtubeId: 'gAJKb_OLVrk', imgQuery: 'hero,helping,sunshine', emoji: '⭐🫡', gradient: 'linear-gradient(135deg, #c31432 0%, #240b36 100%)' },
+  { title: '茉莉花', lang: 'zh', youtubeId: 'HTLK4ROY31U', imgQuery: 'jasmine,flower,garden', emoji: '🌼🤍', gradient: 'linear-gradient(135deg, #a8e063 0%, #56ab2f 100%)' },
+  { title: '鲁冰花', lang: 'zh', youtubeId: 'M8kJzHBBmDQ', imgQuery: 'lupin,flowers,mother,love', emoji: '💐💗', gradient: 'linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%)' },
+  { title: '我爱北京天安门', lang: 'zh', youtubeId: 'xaFJkJd1gg0', imgQuery: 'beijing,tiananmen,sunset', emoji: '🇨🇳❤️', gradient: 'linear-gradient(135deg, #c31432 0%, #f5af19 100%)' },
+  { title: '小手拍拍', lang: 'zh', youtubeId: 'oaUGkZGOFDk', imgQuery: 'baby,hands,clapping', emoji: '👶👏', gradient: 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)' },
+  { title: '大风车', lang: 'zh', youtubeId: 'SJAKzVkfvQs', imgQuery: 'windmill,colorful,sky', emoji: '🎡🌬️', gradient: 'linear-gradient(135deg, #36d1dc 0%, #5b86e5 100%)' },
+  { title: '爱我你就抱抱我', lang: 'zh', youtubeId: 'mZ1T_X6yFP4', imgQuery: 'hug,parent,child,love', emoji: '🤗💕', gradient: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)' },
+  { title: '我的好妈妈', lang: 'zh', youtubeId: 'lOHB5Epl0bU', imgQuery: 'mother,daughter,warm', emoji: '👩❤️', gradient: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)' },
+  { title: '小鸭子', lang: 'zh', youtubeId: 'YHxJ_RUVNH4', imgQuery: 'duckling,cute,pond', emoji: '🐥🌊', gradient: 'linear-gradient(135deg, #f2994a 0%, #f2c94c 100%)' },
+  { title: '拍手歌', lang: 'zh', youtubeId: 'f1s7xA3A-ZA', imgQuery: 'clapping,animals,fun', emoji: '👏🐘', gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' },
+  { title: '花仙子之歌', lang: 'zh', youtubeId: 'J2FaYu03z3U', imgQuery: 'fairy,flowers,magical', emoji: '🧚🌸', gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' },
+  { title: '蓝精灵之歌', lang: 'zh', youtubeId: 'xnZT9w8S1FE', imgQuery: 'smurf,blue,forest,mushroom', emoji: '🔵🍄', gradient: 'linear-gradient(135deg, #4568dc 0%, #b06ab3 100%)' },
+  { title: '哈巴狗', lang: 'zh', youtubeId: 'HaFz7ZL_z9k', imgQuery: 'pug,dog,cute,bone', emoji: '🐶🦴', gradient: 'linear-gradient(135deg, #C6426E 0%, #642B73 100%)' },
+  { title: '铃儿响叮当', lang: 'zh', youtubeId: 'nQerdddWoyA', imgQuery: 'jingle,bells,christmas,snow', emoji: '🔔🎄', gradient: 'linear-gradient(135deg, #c31432 0%, #240b36 100%)' },
+  { title: '我有一头小毛驴', lang: 'zh', youtubeId: 'J6O9L4-94c8', imgQuery: 'donkey,ride,fun', emoji: '🫏😊', gradient: 'linear-gradient(135deg, #f7971e 0%, #ffd200 100%)' },
+  { title: '葫芦娃', lang: 'zh', youtubeId: 'uY8nZ4G1r_E', imgQuery: 'gourd,heroes,mountain', emoji: '🫛⚔️', gradient: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' },
+  { title: '黑猫警长', lang: 'zh', youtubeId: '7qmS6OQFkVU', imgQuery: 'black,cat,police,hero', emoji: '🐱🚔', gradient: 'linear-gradient(135deg, #3a3a3a 0%, #8e8e8e 100%)' },
+  { title: '聪明的一休', lang: 'zh', youtubeId: 'dCLuL4h9Mb4', imgQuery: 'monk,thinking,wisdom', emoji: '🧒💡', gradient: 'linear-gradient(135deg, #f5af19 0%, #f12711 100%)' }
+];
+
 const gridScreen = document.getElementById('grid-screen');
 const detailScreen = document.getElementById('detail-screen');
 const traceScreen = document.getElementById('trace-screen');
@@ -1605,6 +1712,28 @@ const flowerCelebration = document.getElementById('flower-celebration');
 let currentHanzi = null;
 let hanziWriter = null;
 let hanziCurrentLevel = 'all';
+
+// 萌学儿歌 DOM refs
+const btnSong = document.getElementById('btn-song');
+const songScreen = document.getElementById('song-screen');
+const songBackBtn = document.getElementById('song-back-btn');
+const songCardArea = document.getElementById('song-card-area');
+const songCard = document.getElementById('song-card');
+const songBgImg = document.getElementById('song-bg-img');
+const songBgFallback = document.getElementById('song-bg-fallback');
+const songTitle = document.getElementById('song-title');
+const songPlayBtn = document.getElementById('song-play-btn');
+const songPlayerWrapper = document.getElementById('song-player-wrapper');
+const songPrevBtn = document.getElementById('song-prev-btn');
+const songNextBtn = document.getElementById('song-next-btn');
+const songIndex = document.getElementById('song-index');
+const songAutoCheck = document.getElementById('song-auto-check');
+
+let currentSongIdx = 0;
+let filteredSongs = SONG_LIST;
+let songCurrentLang = 'all';
+let ytPlayer = null;
+let ytReady = false;
 const gridBackBtn = document.getElementById('grid-back-btn');
 const visionBackBtn = document.getElementById('vision-back-btn');
 const visionDetailBackBtn = document.getElementById('vision-detail-back-btn');
@@ -2919,6 +3048,7 @@ function hideAllScreens() {
   hanziGridScreen.classList.remove('active');
   hanziDetailScreen.classList.remove('active');
   hanziTraceScreen.classList.remove('active');
+  songScreen.classList.remove('active');
 }
 
 // === 视力表学习 ===
@@ -3260,6 +3390,51 @@ function setupEventListeners() {
   visionTraceDraw.addEventListener('touchend', stopVisionTrace);
   visionTraceDraw.addEventListener('touchcancel', stopVisionTrace);
 
+  // 萌学儿歌事件
+  btnSong.addEventListener('click', openSongScreen);
+  songBackBtn.addEventListener('click', () => {
+    destroySongPlayer();
+    goToHome();
+  });
+  songPlayBtn.addEventListener('click', toggleSongPlayer);
+  songPrevBtn.addEventListener('click', () => switchSong(-1));
+  songNextBtn.addEventListener('click', () => switchSong(1));
+
+  document.querySelectorAll('.song-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.song-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      songCurrentLang = tab.dataset.lang;
+      filterSongs();
+    });
+  });
+
+  // Song card swipe
+  let songTouchStartX = 0, songTouchStartY = 0;
+  songCardArea.addEventListener('touchstart', e => {
+    songTouchStartX = e.touches[0].clientX;
+    songTouchStartY = e.touches[0].clientY;
+  }, { passive: true });
+  songCardArea.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - songTouchStartX;
+    const dy = e.changedTouches[0].clientY - songTouchStartY;
+    if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 50) {
+      // Up/down swipe: switch song
+      switchSong(dy < 0 ? 1 : -1, dy < 0 ? 'up' : 'down');
+    } else if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+      // Left/right swipe: switch category
+      const tabs = ['all', 'en', 'zh'];
+      const curIdx = tabs.indexOf(songCurrentLang);
+      const newIdx = dx < 0 ? Math.min(curIdx + 1, 2) : Math.max(curIdx - 1, 0);
+      if (newIdx !== curIdx) {
+        songCurrentLang = tabs[newIdx];
+        document.querySelectorAll('.song-tab').forEach(t => t.classList.remove('active'));
+        document.querySelector(`.song-tab[data-lang="${songCurrentLang}"]`).classList.add('active');
+        filterSongs();
+      }
+    }
+  }, { passive: true });
+
   // 萌学汉字事件
   hanziGridBackBtn.addEventListener('click', () => goToHome());
   hanziSearchInput.addEventListener('input', filterHanziList);
@@ -3545,5 +3720,151 @@ function exitHanziTraceScreen() {
   hideAllScreens();
   hanziDetailScreen.classList.add('active');
 }
+
+// === 萌学儿歌 ===
+
+function openSongScreen() {
+  hideAllScreens();
+  songScreen.classList.add('active');
+  songCurrentLang = 'all';
+  document.querySelectorAll('.song-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.song-tab[data-lang="all"]').classList.add('active');
+  filteredSongs = SONG_LIST;
+  currentSongIdx = 0;
+  renderSongCard();
+}
+
+function filterSongs() {
+  destroySongPlayer();
+  filteredSongs = songCurrentLang === 'all'
+    ? SONG_LIST
+    : SONG_LIST.filter(s => s.lang === songCurrentLang);
+  currentSongIdx = 0;
+  renderSongCard();
+}
+
+function renderSongCard() {
+  if (filteredSongs.length === 0) {
+    songTitle.textContent = '暂无歌曲';
+    songBgImg.style.display = 'none';
+    songBgFallback.style.display = 'none';
+    songIndex.textContent = '0/0';
+    return;
+  }
+
+  const song = filteredSongs[currentSongIdx];
+  songTitle.textContent = song.title;
+  songIndex.textContent = `${currentSongIdx + 1}/${filteredSongs.length}`;
+
+  // Background image
+  songBgImg.style.display = 'block';
+  songBgFallback.style.display = 'none';
+  songBgImg.src = `https://source.unsplash.com/800x600/?${encodeURIComponent(song.imgQuery)}`;
+  songBgImg.onerror = function() {
+    this.style.display = 'none';
+    songBgFallback.textContent = song.emoji;
+    songBgFallback.style.display = 'flex';
+    songBgFallback.style.background = song.gradient;
+  };
+
+  // Reset player state
+  songPlayBtn.textContent = '▶';
+  songPlayBtn.classList.remove('playing');
+  songPlayerWrapper.classList.add('hidden');
+}
+
+function switchSong(dir, animDir) {
+  const newIdx = currentSongIdx + dir;
+  if (newIdx < 0 || newIdx >= filteredSongs.length) return;
+
+  destroySongPlayer();
+
+  // Animate out
+  if (animDir) {
+    songCard.classList.add(animDir === 'up' ? 'slide-up' : 'slide-down');
+    setTimeout(() => {
+      currentSongIdx = newIdx;
+      renderSongCard();
+      songCard.classList.remove('slide-up', 'slide-down');
+      songCard.classList.add(animDir === 'up' ? 'slide-in-up' : 'slide-in-down');
+      setTimeout(() => songCard.classList.remove('slide-in-up', 'slide-in-down'), 400);
+    }, 300);
+  } else {
+    currentSongIdx = newIdx;
+    renderSongCard();
+  }
+}
+
+function toggleSongPlayer() {
+  if (!songPlayerWrapper.classList.contains('hidden')) {
+    // Close player
+    destroySongPlayer();
+    songPlayBtn.textContent = '▶';
+    songPlayBtn.classList.remove('playing');
+    songPlayerWrapper.classList.add('hidden');
+    return;
+  }
+
+  // Open player
+  songPlayBtn.textContent = '⏸';
+  songPlayBtn.classList.add('playing');
+  songPlayerWrapper.classList.remove('hidden');
+
+  const song = filteredSongs[currentSongIdx];
+
+  if (ytReady) {
+    createYTPlayer(song.youtubeId);
+  } else {
+    // Fallback: use iframe directly
+    const playerDiv = document.getElementById('song-player');
+    playerDiv.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${song.youtubeId}?autoplay=1&rel=0&playsinline=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+  }
+}
+
+function createYTPlayer(videoId) {
+  const playerDiv = document.getElementById('song-player');
+  playerDiv.innerHTML = '';
+
+  ytPlayer = new YT.Player('song-player', {
+    videoId: videoId,
+    playerVars: {
+      autoplay: 1,
+      rel: 0,
+      playsinline: 1,
+      modestbranding: 1
+    },
+    events: {
+      onStateChange: onYTStateChange
+    }
+  });
+}
+
+function onYTStateChange(event) {
+  if (event.data === YT.PlayerState.ENDED && songAutoCheck.checked) {
+    // Auto play next
+    if (currentSongIdx < filteredSongs.length - 1) {
+      currentSongIdx++;
+      renderSongCard();
+      songPlayBtn.textContent = '⏸';
+      songPlayBtn.classList.add('playing');
+      songPlayerWrapper.classList.remove('hidden');
+      createYTPlayer(filteredSongs[currentSongIdx].youtubeId);
+    }
+  }
+}
+
+function destroySongPlayer() {
+  if (ytPlayer && typeof ytPlayer.destroy === 'function') {
+    try { ytPlayer.destroy(); } catch(e) {}
+    ytPlayer = null;
+  }
+  const playerDiv = document.getElementById('song-player');
+  if (playerDiv) playerDiv.innerHTML = '';
+}
+
+// YouTube IFrame API callback
+window.onYouTubeIframeAPIReady = function() {
+  ytReady = true;
+};
 
 init();
