@@ -3629,7 +3629,8 @@ function openHanziTraceScreen() {
   const target = document.getElementById('hanzi-writer-target');
   target.innerHTML = '';
 
-  // Determine size based on container
+  // Wait for layout to complete so clientWidth is available
+  requestAnimationFrame(() => {
   const containerWidth = target.clientWidth || 300;
   const size = Math.min(containerWidth, 300);
 
@@ -3658,6 +3659,7 @@ function openHanziTraceScreen() {
       startHanziQuiz();
     }
   });
+  }); // end requestAnimationFrame
 }
 
 function startHanziQuiz() {
@@ -3812,20 +3814,34 @@ function toggleSongPlayer() {
 
   const song = filteredSongs[currentSongIdx];
 
-  if (ytReady) {
+  if (ytReady && typeof YT !== 'undefined' && YT.Player) {
     createYTPlayer(song.youtubeId);
   } else {
     // Fallback: use iframe directly
     const playerDiv = document.getElementById('song-player');
-    playerDiv.innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${song.youtubeId}?autoplay=1&rel=0&playsinline=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    playerDiv.innerHTML = '';
+    const iframe = document.createElement('iframe');
+    iframe.width = '100%';
+    iframe.height = '100%';
+    iframe.src = `https://www.youtube.com/embed/${song.youtubeId}?autoplay=1&rel=0&playsinline=1`;
+    iframe.allow = 'autoplay; encrypted-media';
+    iframe.allowFullscreen = true;
+    iframe.style.border = 'none';
+    playerDiv.appendChild(iframe);
   }
 }
 
 function createYTPlayer(videoId) {
+  destroySongPlayer();
   const playerDiv = document.getElementById('song-player');
-  playerDiv.innerHTML = '';
+  // Create a fresh container div for YT.Player
+  const ytDiv = document.createElement('div');
+  ytDiv.id = 'yt-player-inner';
+  playerDiv.appendChild(ytDiv);
 
-  ytPlayer = new YT.Player('song-player', {
+  ytPlayer = new YT.Player('yt-player-inner', {
+    width: '100%',
+    height: '100%',
     videoId: videoId,
     playerVars: {
       autoplay: 1,
