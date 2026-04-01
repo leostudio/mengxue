@@ -3629,37 +3629,48 @@ function openHanziTraceScreen() {
   const target = document.getElementById('hanzi-writer-target');
   target.innerHTML = '';
 
-  // Wait for layout to complete so clientWidth is available
-  requestAnimationFrame(() => {
-  const containerWidth = target.clientWidth || 300;
-  const size = Math.min(containerWidth, 300);
+  // Wait for layout to complete
+  setTimeout(() => {
+    const containerWidth = target.clientWidth || 300;
+    const size = Math.min(containerWidth, 300);
 
-  hanziWriter = HanziWriter.create('hanzi-writer-target', currentHanzi.char, {
-    width: size,
-    height: size,
-    padding: 20,
-    showCharacter: false,
-    showOutline: true,
-    strokeColor: '#333',
-    outlineColor: '#ddd',
-    drawingColor: '#ff6b9d',
-    drawingWidth: 6,
-    strokeAnimationSpeed: 1,
-    delayBetweenStrokes: 300,
-    highlightColor: '#a18cd1',
-    showHintAfterMisses: 1,
-    highlightOnComplete: true
-  });
+    hanziWriter = HanziWriter.create('hanzi-writer-target', currentHanzi.char, {
+      width: size,
+      height: size,
+      padding: 20,
+      showCharacter: false,
+      showOutline: true,
+      strokeColor: '#333',
+      outlineColor: '#ccc',
+      drawingColor: '#ff6b9d',
+      drawingWidth: 6,
+      strokeAnimationSpeed: 1,
+      delayBetweenStrokes: 300,
+      highlightColor: '#a18cd1',
+      showHintAfterMisses: 1,
+      highlightOnComplete: true,
+      charDataLoader: function(char, onComplete) {
+        fetch(`https://cdn.jsdelivr.net/npm/hanzi-writer-data@2.0/${encodeURIComponent(char)}.json`)
+          .then(r => r.json())
+          .then(onComplete)
+          .catch(() => {
+            // Fallback CDN
+            fetch(`https://unpkg.com/hanzi-writer-data@2.0/${encodeURIComponent(char)}.json`)
+              .then(r => r.json())
+              .then(onComplete);
+          });
+      }
+    });
 
-  hanziStrokeIndicator.textContent = '看笔顺...';
+    hanziStrokeIndicator.textContent = '看笔顺...';
 
-  // Animate first, then start quiz
-  hanziWriter.animateCharacter({
-    onComplete: function() {
-      startHanziQuiz();
-    }
-  });
-  }); // end requestAnimationFrame
+    // Animate first, then start quiz
+    hanziWriter.animateCharacter({
+      onComplete: function() {
+        startHanziQuiz();
+      }
+    });
+  }, 200);
 }
 
 function startHanziQuiz() {
