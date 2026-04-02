@@ -136,25 +136,11 @@ const ALPHABET_DATA = [
 ];
 
 
-let currentLetter = 'A';
-let currentStrokeIndex = 0;
-let completedStrokes = new Set();
-let completedStrokePaths = {};
-let isDrawing = false;
-let lastX = 0;
-let lastY = 0;
-let currentStrokePath = [];
-let isAnimating = false;
-let lastStartHintTime = 0;
-
-// 绘本相关变量
-let bookCurrentStrokeIndex = 0;
-let bookCompletedStrokes = new Set();
-let bookIsDrawing = false;
-let bookLastX = 0;
-let bookLastY = 0;
-let bookCurrentStrokePath = [];
-let bookIsAnimating = false;
+let currentLetter = null; // current ALPHABET_DATA item
+let letterTraceAnimating = false;
+let letterTraceDrawing = false;
+let letterTraceLastX = 0;
+let letterTraceLastY = 0;
 
 // 视力表相关变量
 let currentVisionDirection = null;
@@ -1302,38 +1288,20 @@ const gridScreen = document.getElementById('grid-screen');
 const detailScreen = document.getElementById('detail-screen');
 const traceScreen = document.getElementById('trace-screen');
 const alphabetGrid = document.getElementById('alphabet-grid');
+const gridBackBtn = document.getElementById('grid-back-btn');
+const detailBackBtn = document.getElementById('detail-back-btn');
 const bigLetter = document.getElementById('big-letter');
-const backBtn = document.getElementById('back-btn');
-const audioBtn = document.getElementById('audio-btn');
-const traceBtn = document.getElementById('trace-btn');
+const bigLetterLower = document.getElementById('big-letter-lower');
+const letterAudioBtn = document.getElementById('letter-audio-btn');
+const letterTraceBtn = document.getElementById('letter-trace-btn');
+const letterWordsList = document.getElementById('letter-words-list');
 const traceBackBtn = document.getElementById('trace-back-btn');
 const traceReplayBtn = document.getElementById('trace-replay-btn');
 const traceClearBtn = document.getElementById('trace-clear-btn');
-const traceCompleteBtn = document.getElementById('trace-complete-btn');
-const strokeIndicator = document.getElementById('stroke-indicator');
-const guideCanvas = document.getElementById('trace-guide-canvas');
-const drawCanvas = document.getElementById('trace-draw-canvas');
-const celebration = document.getElementById('celebration');
-const traceTryAgain = document.getElementById('trace-try-again');
-const traceStartHint = document.getElementById('trace-start-hint');
-const traceHint = document.getElementById('trace-hint');
-const traceClearIcon = document.getElementById('trace-clear-icon');
-const traceClearText = document.getElementById('trace-clear-text');
-
-// 绘本相关 DOM 元素
-const bookScreen = document.getElementById('book-screen');
-const bookBtn = document.getElementById('book-btn');
-const bookBackBtn = document.getElementById('book-back-btn');
-const bookLetter = document.getElementById('book-letter');
-const wordText = document.getElementById('word-text');
-const wordChinese = document.getElementById('word-chinese');
-const wordAudioBtn = document.getElementById('word-audio-btn');
-const bookGuideCanvas = document.getElementById('book-guide-canvas');
-const bookDrawCanvas = document.getElementById('book-draw-canvas');
-const bookReplayBtn = document.getElementById('book-replay-btn');
-const bookClearBtn = document.getElementById('book-clear-btn');
-const bookCompleteBtn = document.getElementById('book-complete-btn');
-const bookHint = document.getElementById('book-hint');
+const traceDoneBtn = document.getElementById('trace-done-btn');
+const traceLetterLabel = document.getElementById('trace-letter-label');
+const traceGuideCanvas = document.getElementById('trace-guide-canvas');
+const traceDrawCanvas = document.getElementById('trace-draw-canvas');
 
 // 视力表相关 DOM 元素
 const homeScreen = document.getElementById('home-screen');
@@ -1386,7 +1354,6 @@ let filteredSongs = SONG_LIST;
 let songCurrentLang = 'all';
 let ytPlayer = null;
 let ytReady = false;
-const gridBackBtn = document.getElementById('grid-back-btn');
 const visionBackBtn = document.getElementById('vision-back-btn');
 const visionDetailBackBtn = document.getElementById('vision-detail-back-btn');
 const visionDetailTitle = document.getElementById('vision-detail-title');
@@ -1412,238 +1379,183 @@ function init() {
   createAlphabetGrid();
   createVisionEGrid();
   setupEventListeners();
-  resizeTraceCanvas();
-  resizeBookCanvas();
 
   if ('speechSynthesis' in window) {
-    speechSynthesis.onvoiceschanged = () => {
-      speechSynthesis.getVoices();
-    };
+    speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
     speechSynthesis.getVoices();
   }
 }
 
+// === 字母网格 ===
+
 function createAlphabetGrid() {
   alphabetGrid.innerHTML = '';
-  ALPHABETS.forEach(letter => {
+  ALPHABET_DATA.forEach(item => {
     const card = document.createElement('div');
     card.className = 'letter-card';
-    card.dataset.letter = letter;
-    card.textContent = letter;
-    card.addEventListener('click', () => openLetterDetail(letter));
+    card.dataset.letter = item.letter;
+    card.innerHTML = `
+      <div class="letter-card-upper">${item.letter}</div>
+      <div class="letter-card-lower">${item.lower}</div>
+    `;
+    card.addEventListener('click', () => openLetterDetail(item));
     alphabetGrid.appendChild(card);
   });
 }
 
-function openLetterDetail(letter) {
-  currentLetter = letter;
-  bigLetter.textContent = letter;
-
-  const gradients = {
-    'A': '#ff6b9d', 'B': '#ff9a9e', 'C': '#f093fb', 'D': '#a18cd1', 'E': '#667eea',
-    'F': '#4facfe', 'G': '#43e97b', 'H': '#fa709a', 'I': '#ff9a56', 'J': '#ffecd2',
-    'K': '#a1c4fd', 'L': '#d4fc79', 'M': '#84fab0', 'N': '#fddb92', 'O': '#2af598',
-    'P': '#f093fb', 'Q': '#30cfd0', 'R': '#a8edea', 'S': '#ffecd2', 'T': '#ff9a9e',
-    'U': '#ffecd2', 'V': '#a1c4fd', 'W': '#f093fb', 'X': '#4facfe', 'Y': '#fa709a', 'Z': '#ff6b9d'
-  };
-  const color = gradients[letter] || '#ff6b9d';
-  bigLetter.style.background = `linear-gradient(135deg, ${color} 0%, ${lightenColor(color, 30)} 100%)`;
-  bigLetter.style.webkitBackgroundClip = 'text';
-  bigLetter.style.webkitTextFillColor = 'transparent';
-
-  gridScreen.classList.remove('active');
-  detailScreen.classList.add('active');
-}
-
-function goBack() {
-  detailScreen.classList.remove('active');
+function openAlphabetScreen() {
+  hideAllScreens();
   gridScreen.classList.add('active');
 }
 
-let audioElement = null;
-
-function playAudio() {
-  audioBtn.classList.add('playing');
-
-  const mp3Path = `assets/audio/${currentLetter}.mp3`;
-
-  if (!audioElement) {
-    audioElement = new Audio();
-  }
-
-  fetch(mp3Path)
-    .then(response => {
-      if (response.ok) {
-        audioElement.src = mp3Path;
-        audioElement.play();
-      } else {
-        playTTS();
-      }
-    })
-    .catch(() => {
-      playTTS();
-    });
-
-  setTimeout(() => {
-    audioBtn.classList.remove('playing');
-  }, 800);
+function goBackFromGrid() {
+  goToHome();
 }
 
-function playTTS() {
-  if ('speechSynthesis' in window) {
-    speechSynthesis.cancel();
+// === 字母详情 ===
 
-    const voices = speechSynthesis.getVoices();
-    const utterance = new SpeechSynthesisUtterance(currentLetter.toLowerCase());
+function openLetterDetail(item) {
+  currentLetter = item;
 
-    let preferredVoice = null;
-    for (let voice of voices) {
-      if (voice.lang === 'en-US' && (voice.name.includes('Female') || voice.name.includes('Samantha') || voice.name.includes('Victoria') || voice.name.includes('Karen') || voice.name.includes('Tessa'))) {
-        preferredVoice = voice;
-        break;
-      }
-    }
-    if (!preferredVoice) {
-      for (let voice of voices) {
-        if (voice.lang === 'en-US') {
-          preferredVoice = voice;
-          break;
-        }
-      }
-    }
+  hideAllScreens();
+  detailScreen.classList.add('active');
 
-    if (preferredVoice) utterance.voice = preferredVoice;
-    utterance.lang = 'en-US';
-    utterance.rate = 0.65;
-    utterance.pitch = 1.4;
-    utterance.volume = 1.0;
+  bigLetter.textContent = item.letter;
+  bigLetterLower.textContent = item.lower;
 
-    speechSynthesis.speak(utterance);
-  }
+  // Render word cards (same pattern as hanzi)
+  letterWordsList.innerHTML = '';
+  const gradients = [
+    'linear-gradient(135deg, #74b9ff, #0984e3)',
+    'linear-gradient(135deg, #a29bfe, #6c5ce7)',
+    'linear-gradient(135deg, #55efc4, #00b894)',
+    'linear-gradient(135deg, #fd79a8, #e84393)',
+    'linear-gradient(135deg, #fdcb6e, #f39c12)'
+  ];
+
+  item.words.forEach((w, i) => {
+    const card = document.createElement('div');
+    card.className = 'hanzi-word-card';
+
+    const imgDiv = document.createElement('div');
+    imgDiv.className = 'hanzi-word-img';
+    imgDiv.style.background = gradients[i % gradients.length];
+
+    const img = document.createElement('img');
+    img.src = `https://source.unsplash.com/200x200/?${encodeURIComponent(w.imgQuery)}`;
+    img.alt = w.word;
+    img.onerror = function() {
+      this.style.display = 'none';
+      const fallback = document.createElement('div');
+      fallback.className = 'emoji-fallback';
+      fallback.textContent = w.emoji;
+      imgDiv.appendChild(fallback);
+    };
+    imgDiv.appendChild(img);
+
+    const info = document.createElement('div');
+    info.className = 'hanzi-word-info';
+    info.innerHTML = `
+      <div class="hanzi-word-text">${w.word}</div>
+      <div class="hanzi-word-pinyin">${w.chinese}</div>
+    `;
+
+    card.appendChild(imgDiv);
+    card.appendChild(info);
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', () => speakEnglish(w.word));
+    letterWordsList.appendChild(card);
+  });
+
+  // Auto-play letter pronunciation
+  setTimeout(() => speakEnglish(item.letter), 300);
 }
 
-function openTraceScreen() {
-  currentStrokeIndex = 0;
-  completedStrokes = new Set();
-  completedStrokePaths = {};
-  currentStrokePath = [];
-  traceCompleteBtn.classList.add('hidden');
-  traceCompleteBtn.classList.remove('show');
+function speakEnglish(text) {
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'en-US';
+  utterance.rate = 0.7;
+  utterance.pitch = 1.2;
+  const voices = speechSynthesis.getVoices();
+  const enVoice = voices.find(v => v.lang === 'en-US');
+  if (enVoice) utterance.voice = enVoice;
+  speechSynthesis.speak(utterance);
+}
 
-  detailScreen.classList.remove('active');
+// === 字母描红（动画演示 + 自由书写）===
+
+function openLetterTraceScreen() {
+  if (!currentLetter) return;
+
+  hideAllScreens();
   traceScreen.classList.add('active');
+  traceLetterLabel.textContent = currentLetter.letter;
 
-  resizeTraceCanvas();
-  clearTraceCanvas();
-  drawLetterGuide();
-  updateStrokeIndicator();
+  resizeLetterTraceCanvas();
+  drawLetterTraceGuide();
 
-  setTimeout(() => animateCurrentStroke(), 300);
+  setTimeout(() => animateLetterWriting(), 400);
 }
 
-function exitTraceScreen() {
-  isAnimating = false;
-  traceScreen.classList.remove('active');
+function exitLetterTraceScreen() {
+  letterTraceAnimating = false;
+  hideAllScreens();
   detailScreen.classList.add('active');
 }
 
-function completeTrace() {
-  showCelebration();
-  speakChinese('太棒了');
-  setTimeout(() => {
-    exitTraceScreen();
-  }, 2500);
-}
-
-function speakChinese(text) {
-  if ('speechSynthesis' in window) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'zh-CN';
-    utterance.rate = 0.8;
-    utterance.pitch = 1.2;
-    utterance.volume = 1.0;
-    speechSynthesis.speak(utterance);
-  }
-}
-
-function resizeTraceCanvas() {
-  const container = guideCanvas.parentElement;
-  const headerEl = document.querySelector('.trace-header');
-  const controlsEl = document.querySelector('.trace-controls');
+function resizeLetterTraceCanvas() {
+  const container = traceGuideCanvas.parentElement;
+  const headerEl = document.querySelector('.hanzi-trace-header');
+  const controlsEl = document.querySelector('.hanzi-trace-controls');
   const headerH = headerEl ? headerEl.offsetHeight : 80;
   const controlsH = controlsEl ? controlsEl.offsetHeight : 80;
   const availableH = window.innerHeight - headerH - controlsH - 40;
   const availableW = window.innerWidth - 40;
-  const size = Math.min(availableW, availableH, 800);
+  const size = Math.min(availableW, availableH, 500);
 
-  guideCanvas.width = size;
-  guideCanvas.height = size;
-  guideCanvas.style.width = size + 'px';
-  guideCanvas.style.height = size + 'px';
-  drawCanvas.width = size;
-  drawCanvas.height = size;
-  drawCanvas.style.width = size + 'px';
-  drawCanvas.style.height = size + 'px';
-
-  // Clear mask cache on resize since dimensions changed
-  Object.keys(letterMaskCache).forEach(k => delete letterMaskCache[k]);
-
-  if (traceScreen.classList.contains('active')) {
-    drawLetterGuide();
-    drawCompletedStrokes();
-  }
+  traceGuideCanvas.width = size;
+  traceGuideCanvas.height = size;
+  traceGuideCanvas.style.width = size + 'px';
+  traceGuideCanvas.style.height = size + 'px';
+  traceDrawCanvas.width = size;
+  traceDrawCanvas.height = size;
+  traceDrawCanvas.style.width = size + 'px';
+  traceDrawCanvas.style.height = size + 'px';
 }
 
-function getGuideCtx() { return guideCanvas.getContext('2d'); }
-function getDrawCtx() { return drawCanvas.getContext('2d'); }
-
-function clearTraceCanvas() {
-  getGuideCtx().clearRect(0, 0, guideCanvas.width, guideCanvas.height);
-  getDrawCtx().clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-}
-
-function toCanvasX(x) { return (x / 100) * guideCanvas.width; }
-function toCanvasY(y) { return (y / 100) * guideCanvas.height; }
-
-function getLetterData(letter) {
-  return LETTER_GUIDES[letter] || getDefaultStrokes(letter);
-}
-
-function drawLetterGuide() {
-  const ctx = getGuideCtx();
-  const w = guideCanvas.width;
-  const h = guideCanvas.height;
-
+function drawLetterTraceGuide() {
+  const ctx = traceGuideCanvas.getContext('2d');
+  const w = traceGuideCanvas.width;
+  const h = traceGuideCanvas.height;
   ctx.clearRect(0, 0, w, h);
 
-  // 渐变字母（先画，在参考线下方）
+  // Draw faint letter outline as reference
   const fontSize = h * 0.78;
   ctx.font = `bold ${fontSize}px sans-serif`;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.save();
-  ctx.globalAlpha = 0.35;
+  ctx.globalAlpha = 0.15;
   const grad = ctx.createLinearGradient(0, 0, w, h);
   grad.addColorStop(0, '#ff6b9d');
   grad.addColorStop(0.5, '#ff8a80');
   grad.addColorStop(1, '#a18cd1');
   ctx.fillStyle = grad;
-  ctx.shadowColor = 'rgba(255, 107, 157, 0.15)';
-  ctx.shadowBlur = 15;
-  ctx.fillText(currentLetter, w / 2, h / 2);
+  ctx.fillText(currentLetter.letter, w / 2, h / 2);
   ctx.restore();
 
-  // 四线三格参考线（暖粉色调）
+  // Draw guide lines (four-line grid)
   ctx.strokeStyle = 'rgba(255, 150, 180, 0.3)';
   ctx.lineWidth = 1.5;
   ctx.setLineDash([8, 8]);
-  [0.1, 0.5, 0.9].forEach(ratio => {
+  [0.15, 0.5, 0.85].forEach(ratio => {
     ctx.beginPath();
     ctx.moveTo(w * 0.05, h * ratio);
     ctx.lineTo(w * 0.95, h * ratio);
     ctx.stroke();
   });
-  // 垂直中线
   ctx.strokeStyle = 'rgba(255, 150, 180, 0.2)';
   ctx.beginPath();
   ctx.moveTo(w * 0.5, h * 0.05);
@@ -1652,559 +1564,112 @@ function drawLetterGuide() {
   ctx.setLineDash([]);
 }
 
-function drawStroke(ctx, stroke, options = {}) {
-  const { color = '#333', lineWidth = 8, dash = [] } = options;
-  if (stroke.length < 2) return;
+function animateLetterWriting() {
+  if (letterTraceAnimating) return;
+  letterTraceAnimating = true;
 
-  ctx.save();
-  ctx.strokeStyle = color;
-  ctx.lineWidth = lineWidth;
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  ctx.setLineDash(dash);
+  const ctx = traceDrawCanvas.getContext('2d');
+  const w = traceDrawCanvas.width;
+  const h = traceDrawCanvas.height;
+  ctx.clearRect(0, 0, w, h);
 
-  ctx.beginPath();
-  stroke.forEach((point, i) => {
-    const x = toCanvasX(point.x);
-    const y = toCanvasY(point.y);
-    if (i === 0 || point.type === 'move') {
-      ctx.moveTo(x, y);
-    } else {
-      ctx.lineTo(x, y);
-    }
-  });
-  ctx.stroke();
-  ctx.restore();
-}
+  // Use a clipping approach: draw the letter by revealing it from top to bottom
+  const fontSize = h * 0.78;
+  const totalFrames = 60;
+  let frame = 0;
 
-// Catmull-Rom 样条插值 — 让曲线字母（O、S、C 等）的引导线平滑
-function catmullRomInterpolate(points, segmentsPerSpan = 12) {
-  if (points.length < 3) return points;
-  const result = [points[0]];
-  for (let i = 0; i < points.length - 1; i++) {
-    const p0 = points[Math.max(0, i - 1)];
-    const p1 = points[i];
-    const p2 = points[i + 1];
-    const p3 = points[Math.min(points.length - 1, i + 2)];
-    for (let t = 1; t <= segmentsPerSpan; t++) {
-      const s = t / segmentsPerSpan;
-      const s2 = s * s;
-      const s3 = s2 * s;
-      result.push({
-        x: 0.5 * ((2*p1.x) + (-p0.x+p2.x)*s + (2*p0.x-5*p1.x+4*p2.x-p3.x)*s2 + (-p0.x+3*p1.x-3*p2.x+p3.x)*s3),
-        y: 0.5 * ((2*p1.y) + (-p0.y+p2.y)*s + (2*p0.y-5*p1.y+4*p2.y-p3.y)*s2 + (-p0.y+3*p1.y-3*p2.y+p3.y)*s3)
-      });
-    }
-  }
-  return result;
-}
+  function drawFrame() {
+    if (!letterTraceAnimating) return;
 
-// 4+ 控制点的笔画用样条平滑，2-3 点保持直线（如 A、M、W 的折线）
-function smoothStroke(stroke) {
-  return stroke.length >= 4 ? catmullRomInterpolate(stroke) : stroke;
-}
+    ctx.clearRect(0, 0, w, h);
+    ctx.save();
 
-function drawGuideStroke(ctx, stroke, options = {}) {
-  const { color = '#333', lineWidth = 8, dash = [] } = options;
-  if (stroke.length < 2) return;
-  const pts = smoothStroke(stroke);
-
-  ctx.save();
-  ctx.strokeStyle = color;
-  ctx.lineWidth = lineWidth;
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  ctx.setLineDash(dash);
-
-  ctx.beginPath();
-  ctx.moveTo(toCanvasX(pts[0].x), toCanvasY(pts[0].y));
-  for (let i = 1; i < pts.length; i++) {
-    ctx.lineTo(toCanvasX(pts[i].x), toCanvasY(pts[i].y));
-  }
-  ctx.stroke();
-  ctx.restore();
-}
-
-function drawStartPoint(ctx, x, y) {
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(x, y, 20, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(255, 107, 157, 0.3)';
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(x, y, 12, 0, Math.PI * 2);
-  ctx.fillStyle = '#ff6b9d';
-  ctx.fill();
-  ctx.restore();
-}
-
-function drawArrowHint(ctx, stroke) {
-  if (stroke.length < 2) return;
-  const start = stroke[0];
-  const end = stroke[Math.min(3, stroke.length - 1)];
-  const x1 = toCanvasX(start.x);
-  const y1 = toCanvasY(start.y);
-  const x2 = toCanvasX(end.x);
-  const y2 = toCanvasY(end.y);
-
-  // 渐隐圆点轨迹 - 比箭头更直观
-  ctx.save();
-  const numDots = 6;
-  const dx = x2 - x1;
-  const dy = y2 - y1;
-  for (let i = 1; i <= numDots; i++) {
-    const t = i / (numDots + 1) * 0.5;
-    const dotX = x1 + dx * t;
-    const dotY = y1 + dy * t;
-    const radius = 6 - i * 0.7;
-    const alpha = 0.6 - i * 0.07;
+    // Clip to reveal portion of the letter
+    const revealHeight = (frame / totalFrames) * h;
     ctx.beginPath();
-    ctx.arc(dotX, dotY, Math.max(radius, 1.5), 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255, 107, 157, ${alpha})`;
-    ctx.fill();
-  }
-  ctx.restore();
-}
+    ctx.rect(0, 0, w, revealHeight);
+    ctx.clip();
 
-function animateCurrentStroke() {
-  if (isAnimating) return;
+    // Draw the solid letter
+    ctx.font = `bold ${fontSize}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const grad = ctx.createLinearGradient(0, 0, w, h);
+    grad.addColorStop(0, '#ff6b9d');
+    grad.addColorStop(1, '#a18cd1');
+    ctx.fillStyle = grad;
+    ctx.globalAlpha = 0.6;
+    ctx.fillText(currentLetter.letter, w / 2, h / 2);
 
-  const letterData = getLetterData(currentLetter);
-  if (currentStrokeIndex >= letterData.strokes.length) return;
+    ctx.restore();
 
-  const rawStroke = letterData.strokes[currentStrokeIndex];
-  const stroke = smoothStroke(rawStroke); // 平滑曲线笔画
-  const ctx = getGuideCtx();
-  isAnimating = true;
-
-  // Calculate total path length
-  let totalLength = 0;
-  for (let i = 0; i < stroke.length - 1; i++) {
-    const dx = toCanvasX(stroke[i+1].x) - toCanvasX(stroke[i].x);
-    const dy = toCanvasY(stroke[i+1].y) - toCanvasY(stroke[i].y);
-    totalLength += Math.sqrt(dx*dx + dy*dy);
-  }
-
-  let progress = 0;
-  const speed = Math.max(1.0, totalLength / 180); // slower for children
-
-  const animate = () => {
-    if (!isAnimating || !traceScreen.classList.contains('active')) {
-      isAnimating = false;
-      return;
-    }
-
-    drawLetterGuide();
-    drawCompletedStrokes();
-
-    if (progress < totalLength) {
-      ctx.save();
-      ctx.strokeStyle = 'rgba(255, 107, 157, 0.8)';
-      ctx.lineWidth = 10;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-      ctx.beginPath();
-
-      let remaining = progress;
-      ctx.moveTo(toCanvasX(stroke[0].x), toCanvasY(stroke[0].y));
-
-      for (let i = 0; i < stroke.length - 1; i++) {
-        const x1 = toCanvasX(stroke[i].x);
-        const y1 = toCanvasY(stroke[i].y);
-        const x2 = toCanvasX(stroke[i+1].x);
-        const y2 = toCanvasY(stroke[i+1].y);
-        const segLen = Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
-
-        if (remaining >= segLen) {
-          ctx.lineTo(x2, y2);
-          remaining -= segLen;
-        } else {
-          const t = remaining / segLen;
-          ctx.lineTo(x1 + (x2-x1)*t, y1 + (y2-y1)*t);
-          break;
-        }
-      }
-      ctx.stroke();
-
-      // Animated dot at the tip
-      let tipX, tipY, tipRemaining = progress;
-      tipX = toCanvasX(stroke[0].x);
-      tipY = toCanvasY(stroke[0].y);
-      for (let i = 0; i < stroke.length - 1; i++) {
-        const x1 = toCanvasX(stroke[i].x);
-        const y1 = toCanvasY(stroke[i].y);
-        const x2 = toCanvasX(stroke[i+1].x);
-        const y2 = toCanvasY(stroke[i+1].y);
-        const segLen = Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
-        if (tipRemaining >= segLen) {
-          tipX = x2; tipY = y2;
-          tipRemaining -= segLen;
-        } else {
-          const t = tipRemaining / segLen;
-          tipX = x1 + (x2-x1)*t;
-          tipY = y1 + (y2-y1)*t;
-          break;
-        }
-      }
-      ctx.beginPath();
-      ctx.arc(tipX, tipY, 8, 0, Math.PI * 2);
-      ctx.fillStyle = '#ff6b9d';
-      ctx.fill();
-      ctx.restore();
-
-      progress += speed;
-      requestAnimationFrame(animate);
+    frame++;
+    if (frame <= totalFrames) {
+      requestAnimationFrame(drawFrame);
     } else {
-      isAnimating = false;
-      drawLetterGuide();
-      drawCompletedStrokes();
-      drawCurrentStrokeHints();
-    }
-  };
-  animate();
-}
-
-function drawCurrentStrokeHints() {
-  const letterData = getLetterData(currentLetter);
-  if (currentStrokeIndex >= letterData.strokes.length) return;
-
-  const ctx = getGuideCtx();
-  const stroke = letterData.strokes[currentStrokeIndex];
-
-  // Draw guide center line as dashed highlight
-  drawGuideStroke(ctx, stroke, {
-    color: 'rgba(255, 107, 157, 0.35)',
-    lineWidth: 6,
-    dash: [10, 8]
-  });
-
-  // Start point
-  const startPoint = stroke[0];
-  drawStartPoint(ctx, toCanvasX(startPoint.x), toCanvasY(startPoint.y));
-
-  // Direction arrow
-  drawArrowHint(ctx, stroke);
-}
-
-function drawCompletedStrokes() {
-  const ctx = getDrawCtx();
-  const letterData = getLetterData(currentLetter);
-
-  completedStrokes.forEach(index => {
-    if (index < letterData.strokes.length) {
-      // 始终绘制干净的引导线作为完成笔画，确保字母形状正确
-      drawGuideStroke(ctx, letterData.strokes[index], {
-        color: '#ff6b9d',
-        lineWidth: 14,
-        dash: []
-      });
-    }
-  });
-}
-
-function updateStrokeIndicator() {
-  const letterData = getLetterData(currentLetter);
-  const total = letterData.strokes.length;
-  let dots = '';
-  for (let i = 0; i < total; i++) {
-    if (i < currentStrokeIndex) {
-      dots += '<span class="stroke-dot completed"></span>';
-    } else if (i === currentStrokeIndex) {
-      dots += '<span class="stroke-dot current"></span>';
-    } else {
-      dots += '<span class="stroke-dot pending"></span>';
+      // Animation done — clear for user drawing
+      letterTraceAnimating = false;
+      setTimeout(() => {
+        ctx.clearRect(0, 0, w, h);
+      }, 800);
     }
   }
-  if (currentStrokeIndex >= total) {
-    dots = '';
-    for (let i = 0; i < total; i++) {
-      dots += '<span class="stroke-dot completed"></span>';
-    }
-  }
-  strokeIndicator.innerHTML = dots;
+
+  requestAnimationFrame(drawFrame);
 }
 
-function isPointNearStroke(point, stroke, tolerance = 40) {
-  for (let i = 0; i < stroke.length - 1; i++) {
-    const p1 = { x: toCanvasX(stroke[i].x), y: toCanvasY(stroke[i].y) };
-    const p2 = { x: toCanvasX(stroke[i+1].x), y: toCanvasY(stroke[i+1].y) };
-    const dist = pointToLineDistance(point, p1, p2);
-    if (dist < tolerance) return true;
-  }
-  return false;
+function clearLetterTrace() {
+  const ctx = traceDrawCanvas.getContext('2d');
+  ctx.clearRect(0, 0, traceDrawCanvas.width, traceDrawCanvas.height);
 }
 
-function pointToLineDistance(point, lineStart, lineEnd) {
-  const A = point.x - lineStart.x;
-  const B = point.y - lineStart.y;
-  const C = lineEnd.x - lineStart.x;
-  const D = lineEnd.y - lineStart.y;
-  const dot = A * C + B * D;
-  const lenSq = C * C + D * D;
-  let param = -1;
-  if (lenSq !== 0) param = dot / lenSq;
-
-  let xx, yy;
-  if (param < 0) {
-    xx = lineStart.x;
-    yy = lineStart.y;
-  } else if (param > 1) {
-    xx = lineEnd.x;
-    yy = lineEnd.y;
-  } else {
-    xx = lineStart.x + param * C;
-    yy = lineStart.y + param * D;
-  }
-
-  const dx = point.x - xx;
-  const dy = point.y - yy;
-  return Math.sqrt(dx * dx + dy * dy);
+function completeLetterTrace() {
+  showFlowerCelebration();
+  setTimeout(() => {
+    exitLetterTraceScreen();
+  }, 2500);
 }
 
-function checkStrokeCompletion(path, stroke) {
-  if (path.length < 5) return false;
-
-  const canvasSize = guideCanvas.width;
-  const nearTolerance = canvasSize * 0.1;   // 10% of canvas for path proximity
-  const endTolerance = canvasSize * 0.15;   // 15% for start/end points
-
-  const start = { x: toCanvasX(stroke[0].x), y: toCanvasY(stroke[0].y) };
-  const end = { x: toCanvasX(stroke[stroke.length-1].x), y: toCanvasY(stroke[stroke.length-1].y) };
-  const pathStart = path[0];
-  const pathEnd = path[path.length-1];
-
-  // 1. Start point must be near guide start
-  const distToStart = Math.hypot(pathStart.x - start.x, pathStart.y - start.y);
-  if (distToStart > endTolerance) return false;
-
-  // 2. End point must be near guide end
-  const distToEnd = Math.hypot(pathEnd.x - end.x, pathEnd.y - end.y);
-  if (distToEnd > endTolerance) return false;
-
-  // 3. Most path points must be near the guide stroke
-  let nearStrokeCount = 0;
-  path.forEach(p => {
-    if (isPointNearStroke(p, stroke, nearTolerance)) nearStrokeCount++;
-  });
-  if (nearStrokeCount < path.length * 0.5) return false;
-
-  // 4. Path must cover most of the guide stroke (prevent short scribbles)
-  const guidePoints = [];
-  for (let i = 0; i < stroke.length - 1; i++) {
-    const p1 = { x: toCanvasX(stroke[i].x), y: toCanvasY(stroke[i].y) };
-    const p2 = { x: toCanvasX(stroke[i+1].x), y: toCanvasY(stroke[i+1].y) };
-    const segLen = Math.hypot(p2.x - p1.x, p2.y - p1.y);
-    const steps = Math.max(3, Math.ceil(segLen / 15));
-    for (let s = 0; s <= steps; s++) {
-      const t = s / steps;
-      guidePoints.push({ x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y) });
-    }
-  }
-  let coveredCount = 0;
-  const coverTolerance = nearTolerance * 1.3;
-  guidePoints.forEach(gp => {
-    for (const pp of path) {
-      if (Math.hypot(pp.x - gp.x, pp.y - gp.y) < coverTolerance) {
-        coveredCount++;
-        break;
-      }
-    }
-  });
-  if (coveredCount < guidePoints.length * 0.55) return false;
-
-  // 5. Direction must be roughly correct
-  const strokeDx = end.x - start.x;
-  const strokeDy = end.y - start.y;
-  const pathDx = pathEnd.x - pathStart.x;
-  const pathDy = pathEnd.y - pathStart.y;
-  const dot = strokeDx * pathDx + strokeDy * pathDy;
-  const strokeLen = Math.hypot(strokeDx, strokeDy);
-  // Only check direction for strokes with meaningful length
-  if (strokeLen > canvasSize * 0.1 && dot < 0) return false;
-
-  return true;
-}
-
-function getPosition(e, canvas) {
-  const rect = canvas.getBoundingClientRect();
-  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-  const scaleX = canvas.width / rect.width;
-  const scaleY = canvas.height / rect.height;
-  return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
-}
-
-function startDrawing(e) {
-  if (isAnimating) return;
+// Letter trace drawing handlers
+function startLetterDraw(e) {
+  if (letterTraceAnimating) return;
   e.preventDefault();
-
-  const letterData = getLetterData(currentLetter);
-  if (currentStrokeIndex >= letterData.strokes.length) return;
-
-  const pos = getPosition(e, drawCanvas);
-  const stroke = letterData.strokes[currentStrokeIndex];
-  const start = { x: toCanvasX(stroke[0].x), y: toCanvasY(stroke[0].y) };
-  const distToStart = Math.hypot(pos.x - start.x, pos.y - start.y);
-
-  // Must start near the guide start point
-  const startTolerance = guideCanvas.width * 0.18;
-
-  if (distToStart > startTolerance) {
-    // 提示用户从起笔点开始
-    const now = Date.now();
-    if (now - lastStartHintTime > 2000) {
-      lastStartHintTime = now;
-      traceStartHint.classList.add('show');
-      // 重绘起笔点以引起注意
-      const ctx = getGuideCtx();
-      drawLetterGuide();
-      drawCompletedStrokes();
-      drawCurrentStrokeHints();
-      // 画更大的起笔点闪烁
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(start.x, start.y, 30, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(255, 107, 157, 0.25)';
-      ctx.fill();
-      ctx.restore();
-      setTimeout(() => traceStartHint.classList.remove('show'), 1500);
-    }
-    return;
-  }
-
-  // 开始绘制时隐藏提示
-  traceHint.style.opacity = '0';
-  isDrawing = true;
-  lastX = pos.x;
-  lastY = pos.y;
-  currentStrokePath = [pos];
+  letterTraceDrawing = true;
+  const pos = getLetterTracePos(e);
+  letterTraceLastX = pos.x;
+  letterTraceLastY = pos.y;
 }
 
-function draw(e) {
-  if (!isDrawing) return;
+function doLetterDraw(e) {
+  if (!letterTraceDrawing || letterTraceAnimating) return;
   e.preventDefault();
-
-  const pos = getPosition(e, drawCanvas);
-  const ctx = getDrawCtx();
-  const letterData = getLetterData(currentLetter);
-  const stroke = letterData.strokes[currentStrokeIndex];
-
-  // Real-time feedback: check if point is near the guide stroke
-  const nearTolerance = guideCanvas.width * 0.1;
-  const onPath = isPointNearStroke(pos, stroke, nearTolerance);
-
-  ctx.beginPath();
-  ctx.moveTo(lastX, lastY);
-  ctx.lineTo(pos.x, pos.y);
-  ctx.strokeStyle = onPath ? '#ff6b9d' : 'rgba(255, 150, 150, 0.3)';
-  ctx.lineWidth = onPath ? 12 : 6;
+  const pos = getLetterTracePos(e);
+  const ctx = traceDrawCanvas.getContext('2d');
+  ctx.strokeStyle = '#ff6b9d';
+  ctx.lineWidth = 6;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(letterTraceLastX, letterTraceLastY);
+  ctx.lineTo(pos.x, pos.y);
   ctx.stroke();
-
-  lastX = pos.x;
-  lastY = pos.y;
-  currentStrokePath.push(pos);
+  letterTraceLastX = pos.x;
+  letterTraceLastY = pos.y;
 }
 
-function stopDrawing() {
-  if (!isDrawing) return;
-  isDrawing = false;
-  traceHint.style.opacity = '1';
-
-  const letterData = getLetterData(currentLetter);
-  if (currentStrokeIndex >= letterData.strokes.length) return;
-
-  const stroke = letterData.strokes[currentStrokeIndex];
-
-  if (checkStrokeCompletion(currentStrokePath, stroke)) {
-    // 保存用户实际笔迹（百分比坐标，resize 安全）
-    const cw = drawCanvas.width;
-    const ch = drawCanvas.height;
-    completedStrokePaths[currentStrokeIndex] = currentStrokePath.map(p => ({
-      x: (p.x / cw) * 100,
-      y: (p.y / ch) * 100
-    }));
-    completedStrokes.add(currentStrokeIndex);
-    currentStrokeIndex++;
-    updateStrokeIndicator();
-
-    getDrawCtx().clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-    drawLetterGuide();
-    drawCompletedStrokes();
-
-    if (currentStrokeIndex >= letterData.strokes.length) {
-      traceCompleteBtn.classList.remove('hidden');
-      traceCompleteBtn.classList.add('show');
-      // 更新重写按钮
-      traceClearIcon.textContent = '🔄';
-      traceClearText.textContent = '重新写';
-    } else {
-      setTimeout(() => animateCurrentStroke(), 300);
-    }
-  } else {
-    // 笔画失败反馈：shake + 提示（期间阻止新绘制）
-    isAnimating = true;
-    const container = guideCanvas.parentElement;
-    container.classList.add('shaking');
-    traceTryAgain.classList.add('show');
-    setTimeout(() => {
-      container.classList.remove('shaking');
-      traceTryAgain.classList.remove('show');
-      getDrawCtx().clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-      drawCompletedStrokes();
-      drawCurrentStrokeHints();
-      isAnimating = false;
-    }, 1000);
-  }
-
-  currentStrokePath = [];
+function stopLetterDraw(e) {
+  letterTraceDrawing = false;
 }
 
-function replayAnimation() {
-  if (isAnimating) return;
-  getDrawCtx().clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-  drawCompletedStrokes();
-
-  const letterData = getLetterData(currentLetter);
-  if (currentStrokeIndex < letterData.strokes.length) {
-    animateCurrentStroke();
-  } else {
-    drawLetterGuide();
-    drawCompletedStrokes();
-  }
-}
-
-function clearCurrentStroke() {
-  if (isAnimating) return;
-
-  const letterData = getLetterData(currentLetter);
-  if (currentStrokeIndex < letterData.strokes.length) {
-    getDrawCtx().clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-    drawCompletedStrokes();
-    drawCurrentStrokeHints();
-  } else {
-    // 全部重写
-    currentStrokeIndex = 0;
-    completedStrokes = new Set();
-    completedStrokePaths = {};
-    traceCompleteBtn.classList.add('hidden');
-    traceCompleteBtn.classList.remove('show');
-    // 恢复按钮文字
-    traceClearIcon.textContent = '🗑️';
-    traceClearText.textContent = '重写';
-    getDrawCtx().clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-    drawLetterGuide();
-    updateStrokeIndicator();
-    setTimeout(() => animateCurrentStroke(), 300);
-  }
-}
-
-function showCelebration() {
-  celebration.classList.remove('hidden');
-  setTimeout(() => {
-    celebration.classList.add('hidden');
-  }, 2000);
+function getLetterTracePos(e) {
+  const rect = traceDrawCanvas.getBoundingClientRect();
+  const touch = e.touches ? e.touches[0] : e;
+  const scaleX = traceDrawCanvas.width / rect.width;
+  const scaleY = traceDrawCanvas.height / rect.height;
+  return {
+    x: (touch.clientX - rect.left) * scaleX,
+    y: (touch.clientY - rect.top) * scaleY
+  };
 }
 
 function lightenColor(color, percent) {
@@ -2220,455 +1685,6 @@ function lightenColor(color, percent) {
   ).toString(16).slice(1);
 }
 
-// === 字母小绘本相关函数 ===
-
-function openBookScreen() {
-  bookCurrentStrokeIndex = 0;
-  bookCompletedStrokes = new Set();
-  bookCurrentStrokePath = [];
-  bookCompleteBtn.classList.add('hidden');
-
-  const bookData = BOOK_DATA[currentLetter] || getDefaultBookData(currentLetter);
-  bookLetter.textContent = currentLetter;
-  wordText.textContent = bookData.word;
-  wordChinese.textContent = bookData.chinese;
-
-  detailScreen.classList.remove('active');
-  bookScreen.classList.add('active');
-
-  resizeBookCanvas();
-  clearBookCanvas();
-  drawBookGuide();
-  setTimeout(() => animateBookCurrentStroke(), 300);
-}
-
-function exitBookScreen() {
-  bookIsAnimating = false;
-  bookScreen.classList.remove('active');
-  detailScreen.classList.add('active');
-}
-
-function playWordAudio() {
-  const bookData = BOOK_DATA[currentLetter] || getDefaultBookData(currentLetter);
-  wordAudioBtn.classList.add('playing');
-
-  if ('speechSynthesis' in window) {
-    speechSynthesis.cancel();
-    const voices = speechSynthesis.getVoices();
-    const utterance = new SpeechSynthesisUtterance(bookData.word);
-
-    let preferredVoice = null;
-    for (let voice of voices) {
-      if (voice.lang === 'en-US' && (voice.name.includes('Female') || voice.name.includes('Samantha') || voice.name.includes('Victoria'))) {
-        preferredVoice = voice;
-        break;
-      }
-    }
-    if (!preferredVoice) {
-      for (let voice of voices) {
-        if (voice.lang === 'en-US') {
-          preferredVoice = voice;
-          break;
-        }
-      }
-    }
-
-    if (preferredVoice) utterance.voice = preferredVoice;
-    utterance.lang = 'en-US';
-    utterance.rate = 0.7;
-    utterance.pitch = 1.3;
-    utterance.volume = 1.0;
-
-    speechSynthesis.speak(utterance);
-  }
-
-  setTimeout(() => {
-    wordAudioBtn.classList.remove('playing');
-  }, 800);
-}
-
-function resizeBookCanvas() {
-  const container = bookGuideCanvas.parentElement;
-  const size = Math.min(window.innerWidth - 80, window.innerHeight - 350, 400);
-
-  bookGuideCanvas.width = size;
-  bookGuideCanvas.height = size;
-  bookGuideCanvas.style.width = size + 'px';
-  bookGuideCanvas.style.height = size + 'px';
-  bookDrawCanvas.width = size;
-  bookDrawCanvas.height = size;
-  bookDrawCanvas.style.width = size + 'px';
-  bookDrawCanvas.style.height = size + 'px';
-
-  if (bookScreen.classList.contains('active')) {
-    drawBookGuide();
-    drawBookCompletedStrokes();
-  }
-}
-
-function getBookGuideCtx() { return bookGuideCanvas.getContext('2d'); }
-function getBookDrawCtx() { return bookDrawCanvas.getContext('2d'); }
-
-function clearBookCanvas() {
-  getBookGuideCtx().clearRect(0, 0, bookGuideCanvas.width, bookGuideCanvas.height);
-  getBookDrawCtx().clearRect(0, 0, bookDrawCanvas.width, bookDrawCanvas.height);
-}
-
-function toBookCanvasX(x) { return (x / 100) * bookGuideCanvas.width; }
-function toBookCanvasY(y) { return (y / 100) * bookGuideCanvas.height; }
-
-function getBookData(letter) {
-  return BOOK_DATA[letter] || getDefaultBookData(letter);
-}
-
-function drawBookGuide() {
-  const ctx = getBookGuideCtx();
-  const bookData = getBookData(currentLetter);
-  const w = bookGuideCanvas.width;
-  const h = bookGuideCanvas.height;
-
-  ctx.clearRect(0, 0, w, h);
-
-  ctx.beginPath();
-  ctx.arc(w/2, h/2, Math.min(w, h) * 0.45, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(250, 112, 154, 0.15)';
-  ctx.lineWidth = 2;
-  ctx.setLineDash([10, 10]);
-  ctx.stroke();
-  ctx.setLineDash([]);
-
-  bookData.strokes.forEach((stroke, index) => {
-    drawBookStroke(ctx, stroke, {
-      color: bookCompletedStrokes.has(index) ? bookData.color : 'rgba(180, 180, 180, 0.4)',
-      lineWidth: 10,
-      dash: bookCompletedStrokes.has(index) ? [] : [6, 6]
-    });
-  });
-}
-
-function drawBookStroke(ctx, stroke, options = {}) {
-  const { color = '#333', lineWidth = 8, dash = [] } = options;
-  if (stroke.length < 2) return;
-
-  ctx.save();
-  ctx.strokeStyle = color;
-  ctx.lineWidth = lineWidth;
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  ctx.setLineDash(dash);
-
-  ctx.beginPath();
-  stroke.forEach((point, i) => {
-    const x = toBookCanvasX(point.x);
-    const y = toBookCanvasY(point.y);
-    if (i === 0 || point.type === 'move') {
-      ctx.moveTo(x, y);
-    } else {
-      ctx.lineTo(x, y);
-    }
-  });
-  ctx.stroke();
-  ctx.restore();
-}
-
-function drawBookStartPoint(ctx, x, y, color) {
-  ctx.save();
-  ctx.beginPath();
-  ctx.arc(x, y, 18, 0, Math.PI * 2);
-  ctx.fillStyle = color.replace(')', ', 0.3)').replace('rgb', 'rgba');
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(x, y, 10, 0, Math.PI * 2);
-  ctx.fillStyle = color;
-  ctx.fill();
-  ctx.restore();
-}
-
-function drawBookArrowHint(ctx, stroke, color) {
-  if (stroke.length < 2) return;
-  const start = stroke[0];
-  const end = stroke[Math.min(3, stroke.length - 1)];
-  const x1 = toBookCanvasX(start.x);
-  const y1 = toBookCanvasY(start.y);
-  const x2 = toBookCanvasX(end.x);
-  const y2 = toBookCanvasY(end.y);
-  const angle = Math.atan2(y2 - y1, x2 - x1);
-  const arrowLen = 25;
-
-  ctx.save();
-  ctx.strokeStyle = color.replace(')', ', 0.6)').replace('rgb', 'rgba');
-  ctx.fillStyle = ctx.strokeStyle;
-  ctx.lineWidth = 3;
-
-  const midX = x1 + (x2 - x1) * 0.5;
-  const midY = y1 + (y2 - y1) * 0.5;
-
-  ctx.beginPath();
-  ctx.moveTo(midX - arrowLen * Math.cos(angle - 0.4), midY - arrowLen * Math.sin(angle - 0.4));
-  ctx.lineTo(midX + arrowLen * 0.3 * Math.cos(angle), midY + arrowLen * 0.3 * Math.sin(angle));
-  ctx.lineTo(midX - arrowLen * Math.cos(angle + 0.4), midY - arrowLen * Math.sin(angle + 0.4));
-  ctx.stroke();
-  ctx.fill();
-  ctx.restore();
-}
-
-function animateBookCurrentStroke() {
-  if (bookIsAnimating) return;
-
-  const bookData = getBookData(currentLetter);
-  if (bookCurrentStrokeIndex >= bookData.strokes.length) return;
-
-  const stroke = bookData.strokes[bookCurrentStrokeIndex];
-  const ctx = getBookGuideCtx();
-  bookIsAnimating = true;
-  let progress = 0;
-
-  const animate = () => {
-    if (!bookIsAnimating || !bookScreen.classList.contains('active')) {
-      bookIsAnimating = false;
-      return;
-    }
-
-    drawBookGuide();
-    drawBookCompletedStrokes();
-
-    if (progress < stroke.length) {
-      const subStroke = stroke.slice(0, Math.ceil(progress) + 1);
-      drawBookStroke(ctx, subStroke, {
-        color: bookData.color,
-        lineWidth: 12,
-        dash: []
-      });
-      progress += 0.15;
-      requestAnimationFrame(animate);
-    } else {
-      bookIsAnimating = false;
-      drawBookGuide();
-      drawBookCompletedStrokes();
-      drawBookCurrentStrokeHints();
-    }
-  };
-  animate();
-}
-
-function drawBookCurrentStrokeHints() {
-  const bookData = getBookData(currentLetter);
-  if (bookCurrentStrokeIndex >= bookData.strokes.length) return;
-
-  const ctx = getBookGuideCtx();
-  const stroke = bookData.strokes[bookCurrentStrokeIndex];
-  const startPoint = stroke[0];
-
-  drawBookStartPoint(ctx, toBookCanvasX(startPoint.x), toBookCanvasY(startPoint.y), bookData.color);
-  drawBookArrowHint(ctx, stroke, bookData.color);
-}
-
-function drawBookCompletedStrokes() {
-  const ctx = getBookDrawCtx();
-  const bookData = getBookData(currentLetter);
-
-  bookCompletedStrokes.forEach(index => {
-    if (index < bookData.strokes.length) {
-      drawBookStroke(ctx, bookData.strokes[index], {
-        color: bookData.color,
-        lineWidth: 12,
-        dash: []
-      });
-    }
-  });
-}
-
-function isPointNearBookStroke(point, stroke, tolerance = 55) {
-  for (let i = 0; i < stroke.length - 1; i++) {
-    const p1 = { x: toBookCanvasX(stroke[i].x), y: toBookCanvasY(stroke[i].y) };
-    const p2 = { x: toBookCanvasX(stroke[i+1].x), y: toBookCanvasY(stroke[i+1].y) };
-    const dist = pointToLineDistance(point, p1, p2);
-    if (dist < tolerance) return true;
-  }
-  return false;
-}
-
-function checkBookStrokeCompletion(path, stroke) {
-  if (path.length < 5) return false;
-
-  const canvasSize = bookGuideCanvas.width;
-  const nearTolerance = canvasSize * 0.12;
-  const endTolerance = canvasSize * 0.16;
-
-  const start = { x: toBookCanvasX(stroke[0].x), y: toBookCanvasY(stroke[0].y) };
-  const end = { x: toBookCanvasX(stroke[stroke.length-1].x), y: toBookCanvasY(stroke[stroke.length-1].y) };
-  const pathStart = path[0];
-  const pathEnd = path[path.length-1];
-
-  const distToStart = Math.hypot(pathStart.x - start.x, pathStart.y - start.y);
-  const distToEnd = Math.hypot(pathEnd.x - end.x, pathEnd.y - end.y);
-
-  if (distToStart > endTolerance || distToEnd > endTolerance) return false;
-
-  let nearStrokeCount = 0;
-  path.forEach(p => {
-    if (isPointNearBookStroke(p, stroke, nearTolerance)) nearStrokeCount++;
-  });
-  if (nearStrokeCount < path.length * 0.45) return false;
-
-  // Check coverage of guide stroke
-  const guidePoints = [];
-  for (let i = 0; i < stroke.length - 1; i++) {
-    const p1 = { x: toBookCanvasX(stroke[i].x), y: toBookCanvasY(stroke[i].y) };
-    const p2 = { x: toBookCanvasX(stroke[i+1].x), y: toBookCanvasY(stroke[i+1].y) };
-    const segLen = Math.hypot(p2.x - p1.x, p2.y - p1.y);
-    const steps = Math.max(3, Math.ceil(segLen / 15));
-    for (let s = 0; s <= steps; s++) {
-      const t = s / steps;
-      guidePoints.push({ x: p1.x + t * (p2.x - p1.x), y: p1.y + t * (p2.y - p1.y) });
-    }
-  }
-  let coveredCount = 0;
-  const coverTolerance = nearTolerance * 1.3;
-  guidePoints.forEach(gp => {
-    for (const pp of path) {
-      if (Math.hypot(pp.x - gp.x, pp.y - gp.y) < coverTolerance) {
-        coveredCount++;
-        break;
-      }
-    }
-  });
-  if (coveredCount < guidePoints.length * 0.5) return false;
-
-  return true;
-}
-
-function getBookPosition(e, canvas) {
-  const rect = canvas.getBoundingClientRect();
-  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-  const scaleX = canvas.width / rect.width;
-  const scaleY = canvas.height / rect.height;
-  return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
-}
-
-function startBookDrawing(e) {
-  if (bookIsAnimating) return;
-  e.preventDefault();
-
-  const bookData = getBookData(currentLetter);
-  if (bookCurrentStrokeIndex >= bookData.strokes.length) return;
-
-  const pos = getBookPosition(e, bookDrawCanvas);
-  const stroke = bookData.strokes[bookCurrentStrokeIndex];
-  const start = { x: toBookCanvasX(stroke[0].x), y: toBookCanvasY(stroke[0].y) };
-  const distToStart = Math.hypot(pos.x - start.x, pos.y - start.y);
-
-  if (distToStart > bookGuideCanvas.width * 0.16) return;
-
-  bookIsDrawing = true;
-  bookLastX = pos.x;
-  bookLastY = pos.y;
-  bookCurrentStrokePath = [pos];
-}
-
-function drawBook(e) {
-  if (!bookIsDrawing) return;
-  e.preventDefault();
-
-  const pos = getBookPosition(e, bookDrawCanvas);
-  const ctx = getBookDrawCtx();
-  const bookData = getBookData(currentLetter);
-  const stroke = bookData.strokes[bookCurrentStrokeIndex];
-
-  // Real-time feedback
-  const nearTolerance = bookGuideCanvas.width * 0.12;
-  const onPath = isPointNearBookStroke(pos, stroke, nearTolerance);
-
-  ctx.beginPath();
-  ctx.moveTo(bookLastX, bookLastY);
-  ctx.lineTo(pos.x, pos.y);
-  ctx.strokeStyle = onPath ? bookData.color : 'rgba(200, 200, 200, 0.3)';
-  ctx.lineWidth = onPath ? 10 : 5;
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-  ctx.stroke();
-
-  bookLastX = pos.x;
-  bookLastY = pos.y;
-  bookCurrentStrokePath.push(pos);
-}
-
-function stopBookDrawing() {
-  if (!bookIsDrawing) return;
-  bookIsDrawing = false;
-
-  const bookData = getBookData(currentLetter);
-  if (bookCurrentStrokeIndex >= bookData.strokes.length) return;
-
-  const stroke = bookData.strokes[bookCurrentStrokeIndex];
-
-  if (checkBookStrokeCompletion(bookCurrentStrokePath, stroke)) {
-    bookCompletedStrokes.add(bookCurrentStrokeIndex);
-    bookCurrentStrokeIndex++;
-
-    getBookDrawCtx().clearRect(0, 0, bookDrawCanvas.width, bookDrawCanvas.height);
-    drawBookGuide();
-    drawBookCompletedStrokes();
-
-    if (bookCurrentStrokeIndex >= bookData.strokes.length) {
-      bookCompleteBtn.classList.remove('hidden');
-      showCelebration();
-      speakChinese('画得真好！');
-    } else {
-      setTimeout(() => animateBookCurrentStroke(), 300);
-    }
-  } else {
-    setTimeout(() => {
-      getBookDrawCtx().clearRect(0, 0, bookDrawCanvas.width, bookDrawCanvas.height);
-      drawBookCompletedStrokes();
-      drawBookCurrentStrokeHints();
-    }, 200);
-  }
-
-  bookCurrentStrokePath = [];
-}
-
-function replayBookAnimation() {
-  if (bookIsAnimating) return;
-  getBookDrawCtx().clearRect(0, 0, bookDrawCanvas.width, bookDrawCanvas.height);
-  drawBookCompletedStrokes();
-
-  const bookData = getBookData(currentLetter);
-  if (bookCurrentStrokeIndex < bookData.strokes.length) {
-    animateBookCurrentStroke();
-  } else {
-    drawBookGuide();
-    drawBookCompletedStrokes();
-  }
-}
-
-function clearBookDrawing() {
-  if (bookIsAnimating) return;
-
-  const bookData = getBookData(currentLetter);
-  if (bookCurrentStrokeIndex < bookData.strokes.length) {
-    getBookDrawCtx().clearRect(0, 0, bookDrawCanvas.width, bookDrawCanvas.height);
-    drawBookCompletedStrokes();
-    drawBookCurrentStrokeHints();
-  } else {
-    bookCurrentStrokeIndex = 0;
-    bookCompletedStrokes = new Set();
-    bookCompleteBtn.classList.add('hidden');
-    getBookDrawCtx().clearRect(0, 0, bookDrawCanvas.width, bookDrawCanvas.height);
-    drawBookGuide();
-    setTimeout(() => animateBookCurrentStroke(), 300);
-  }
-}
-
-function completeBookDrawing() {
-  showCelebration();
-  speakChinese('太棒了！');
-  setTimeout(() => {
-    exitBookScreen();
-  }, 2000);
-}
-
 // === 主页导航 ===
 function goToHome() {
   hideAllScreens();
@@ -2680,21 +1696,11 @@ function openVisionScreen() {
   visionScreen.classList.add('active');
 }
 
-function openAlphabetScreen() {
-  hideAllScreens();
-  gridScreen.classList.add('active');
-}
-
-function goBackFromGrid() {
-  goToHome();
-}
-
 function hideAllScreens() {
   homeScreen.classList.remove('active');
   gridScreen.classList.remove('active');
   detailScreen.classList.remove('active');
   traceScreen.classList.remove('active');
-  bookScreen.classList.remove('active');
   visionScreen.classList.remove('active');
   visionDetailScreen.classList.remove('active');
   hanziGridScreen.classList.remove('active');
@@ -2983,45 +1989,33 @@ function setupEventListeners() {
   btnVision.addEventListener('click', openVisionScreen);
   btnAlphabet.addEventListener('click', openAlphabetScreen);
   btnHanzi.addEventListener('click', openHanziGridScreen);
+  // 萌学字母事件
   gridBackBtn.addEventListener('click', goBackFromGrid);
+  detailBackBtn.addEventListener('click', () => {
+    hideAllScreens();
+    gridScreen.classList.add('active');
+  });
+  letterAudioBtn.addEventListener('click', () => {
+    if (currentLetter) speakEnglish(currentLetter.letter);
+  });
+  letterTraceBtn.addEventListener('click', openLetterTraceScreen);
+  traceBackBtn.addEventListener('click', exitLetterTraceScreen);
+  traceReplayBtn.addEventListener('click', () => {
+    clearLetterTrace();
+    animateLetterWriting();
+  });
+  traceClearBtn.addEventListener('click', clearLetterTrace);
+  traceDoneBtn.addEventListener('click', completeLetterTrace);
 
-  backBtn.addEventListener('click', goBack);
-  audioBtn.addEventListener('click', playAudio);
-  traceBtn.addEventListener('click', openTraceScreen);
-  bookBtn.addEventListener('click', openBookScreen);
-  traceBackBtn.addEventListener('click', exitTraceScreen);
-  traceReplayBtn.addEventListener('click', replayAnimation);
-  traceClearBtn.addEventListener('click', clearCurrentStroke);
-  traceCompleteBtn.addEventListener('click', completeTrace);
-
-  drawCanvas.addEventListener('mousedown', startDrawing);
-  drawCanvas.addEventListener('mousemove', draw);
-  drawCanvas.addEventListener('mouseup', stopDrawing);
-  drawCanvas.addEventListener('mouseout', stopDrawing);
-
-  drawCanvas.addEventListener('touchstart', startDrawing, { passive: false });
-  drawCanvas.addEventListener('touchmove', draw, { passive: false });
-  drawCanvas.addEventListener('touchend', stopDrawing);
-  drawCanvas.addEventListener('touchcancel', stopDrawing);
-
-  // 防止描红页面触摸滚动/弹跳
+  traceDrawCanvas.addEventListener('mousedown', startLetterDraw);
+  traceDrawCanvas.addEventListener('mousemove', doLetterDraw);
+  traceDrawCanvas.addEventListener('mouseup', stopLetterDraw);
+  traceDrawCanvas.addEventListener('mouseout', stopLetterDraw);
+  traceDrawCanvas.addEventListener('touchstart', startLetterDraw, { passive: false });
+  traceDrawCanvas.addEventListener('touchmove', doLetterDraw, { passive: false });
+  traceDrawCanvas.addEventListener('touchend', stopLetterDraw);
+  traceDrawCanvas.addEventListener('touchcancel', stopLetterDraw);
   traceScreen.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
-
-  bookBackBtn.addEventListener('click', exitBookScreen);
-  wordAudioBtn.addEventListener('click', playWordAudio);
-  bookReplayBtn.addEventListener('click', replayBookAnimation);
-  bookClearBtn.addEventListener('click', clearBookDrawing);
-  bookCompleteBtn.addEventListener('click', completeBookDrawing);
-
-  bookDrawCanvas.addEventListener('mousedown', startBookDrawing);
-  bookDrawCanvas.addEventListener('mousemove', drawBook);
-  bookDrawCanvas.addEventListener('mouseup', stopBookDrawing);
-  bookDrawCanvas.addEventListener('mouseout', stopBookDrawing);
-
-  bookDrawCanvas.addEventListener('touchstart', startBookDrawing, { passive: false });
-  bookDrawCanvas.addEventListener('touchmove', drawBook, { passive: false });
-  bookDrawCanvas.addEventListener('touchend', stopBookDrawing);
-  bookDrawCanvas.addEventListener('touchcancel', stopBookDrawing);
 
   visionBackBtn.addEventListener('click', exitVisionScreen);
   visionDetailBackBtn.addEventListener('click', exitVisionDetail);
@@ -3134,16 +2128,9 @@ function setupEventListeners() {
   hanziTraceScreen.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
 
   window.addEventListener('resize', () => {
-    resizeTraceCanvas();
-    resizeBookCanvas();
     if (traceScreen.classList.contains('active')) {
-      drawLetterGuide();
-      drawCompletedStrokes();
-      drawCurrentStrokeHints();
-    }
-    if (bookScreen.classList.contains('active')) {
-      drawBookGuide();
-      drawBookCompletedStrokes();
+      resizeLetterTraceCanvas();
+      drawLetterTraceGuide();
     }
     if (visionDetailScreen.classList.contains('active')) {
       initVisionTrace();
