@@ -41,103 +41,60 @@
     <div id="grid-screen" class="screen">
         <header class="detail-header">
             <button id="grid-back-btn" class="back-btn">← 返回</button>
-            <h1 class="page-title">🌟 萌学字母 🌟</h1>
+            <h1 class="page-title">🔤 萌学字母 🔤</h1>
         </header>
         <div id="alphabet-grid" class="alphabet-grid"></div>
     </div>
 
-    <!-- 详情页面 - 字母学习 -->
+    <!-- 字母详情页面 -->
     <div id="detail-screen" class="screen">
         <header class="detail-header">
-            <button id="back-btn" class="back-btn">← 返回</button>
+            <button id="detail-back-btn" class="back-btn">← 返回</button>
         </header>
         <div class="letter-display">
             <div id="big-letter" class="big-letter">A</div>
+            <div id="big-letter-lower" class="big-letter-lower">a</div>
         </div>
-        <div class="controls">
-            <button id="audio-btn" class="audio-btn">
+        <div class="letter-detail-controls">
+            <button id="letter-audio-btn" class="hanzi-audio-btn">
                 <span class="audio-icon">🔊</span>
                 <span class="audio-text">听发音</span>
             </button>
-            <button id="trace-btn" class="trace-btn">
+            <button id="letter-trace-btn" class="hanzi-trace-btn">
                 <span class="trace-icon">✏️</span>
                 <span class="trace-text">开始描红</span>
             </button>
-            <button id="book-btn" class="book-btn">
-                <span class="book-icon">📖</span>
-                <span class="book-text">字母小绘本</span>
-            </button>
+        </div>
+        <div class="hanzi-words-section">
+            <div class="hanzi-words-title">📝 相关单词</div>
+            <div id="letter-words-list" class="hanzi-words-list"></div>
+            <div class="hanzi-words-hint">← 左右滑动查看更多 →</div>
         </div>
     </div>
 
-    <!-- 描红页面 - 全屏 -->
+    <!-- 字母描红页面 -->
     <div id="trace-screen" class="screen">
-        <div class="trace-header">
+        <div class="hanzi-trace-header">
             <button id="trace-back-btn" class="trace-back-btn">← 退出</button>
-            <div class="trace-progress">
-                <span id="stroke-indicator" class="stroke-indicator">第 1 笔</span>
+            <div class="hanzi-trace-progress">
+                <span id="trace-letter-label" class="stroke-indicator">A</span>
             </div>
-            <button id="trace-complete-btn" class="trace-complete-btn hidden">✓ 完成</button>
+            <div class="hanzi-trace-spacer"></div>
         </div>
         <div class="trace-canvas-container">
             <canvas id="trace-guide-canvas" class="trace-canvas guide"></canvas>
             <canvas id="trace-draw-canvas" class="trace-canvas draw"></canvas>
-            <div id="trace-hint" class="trace-hint">↓ 按照箭头方向描红 ↓</div>
-            <div id="trace-try-again" class="trace-try-again">再试一次！</div>
-            <div id="trace-start-hint" class="trace-start-hint">从粉色圆点开始哦</div>
         </div>
-        <div class="trace-controls">
+        <div class="hanzi-trace-controls">
             <button id="trace-replay-btn" class="trace-control-btn">
-                <span>🔄</span> 看演示
+                <span>🎬</span> 看演示
             </button>
             <button id="trace-clear-btn" class="trace-control-btn">
-                <span id="trace-clear-icon">🗑️</span> <span id="trace-clear-text">重写</span>
+                <span>🗑️</span> 清除
             </button>
-        </div>
-    </div>
-
-    <!-- 字母小绘本页面 -->
-    <div id="book-screen" class="screen">
-        <div class="book-header">
-            <button id="book-back-btn" class="book-back-btn">← 返回</button>
-            <div class="book-title">
-                <span id="book-letter" class="book-letter">A</span>
-                <span class="book-title-text">的小绘本</span>
-            </div>
-        </div>
-
-        <div class="book-content">
-            <!-- 单词卡片区域 -->
-            <div class="word-card">
-                <div class="word-display">
-                    <span id="word-text" class="word-text">apple</span>
-                    <span id="word-chinese" class="word-chinese">苹果</span>
-                </div>
-                <button id="word-audio-btn" class="word-audio-btn">
-                    <span class="word-audio-icon">🔊</span>
-                    <span class="word-audio-text">听单词</span>
-                </button>
-            </div>
-
-            <!-- 绘本画板区域 -->
-            <div class="book-canvas-container">
-                <canvas id="book-guide-canvas" class="book-canvas guide"></canvas>
-                <canvas id="book-draw-canvas" class="book-canvas draw"></canvas>
-                <div id="book-hint" class="book-hint">↓ 按照轮廓描绘图片 ↓</div>
-            </div>
-
-            <!-- 绘本控制区域 -->
-            <div class="book-controls">
-                <button id="book-replay-btn" class="book-control-btn">
-                    <span>🎬</span> 看动画
-                </button>
-                <button id="book-clear-btn" class="book-control-btn">
-                    <span>🗑️</span> 重画
-                </button>
-                <button id="book-complete-btn" class="book-control-btn complete hidden">
-                    <span>⭐</span> 完成啦
-                </button>
-            </div>
+            <button id="trace-done-btn" class="trace-control-btn">
+                <span>✅</span> 完成
+            </button>
         </div>
     </div>
 
