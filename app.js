@@ -1,488 +1,140 @@
 // 萌学字母 - 主逻辑
 
-// 字母数据
-const ALPHABETS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
-
-// 每个字母的笔画引导中心线 - 仅用于演示动画和方向引导
-// 坐标为百分比(0-100)，每笔是起点→终点（可含中间弯曲点）
-const LETTER_GUIDES = {
-  'A': { strokes: [
-    [{x:29,y:76}, {x:50,y:25}],
-    [{x:50,y:25}, {x:71,y:76}],
-    [{x:34,y:61}, {x:65,y:61}]
+// 字母数据 — 每个字母对应 3-4 个常见单词
+const ALPHABET_DATA = [
+  { letter: 'A', lower: 'a', words: [
+    { word: 'apple', chinese: '苹果', imgQuery: 'red apple fruit', emoji: '🍎' },
+    { word: 'ant', chinese: '蚂蚁', imgQuery: 'ant insect close', emoji: '🐜' },
+    { word: 'airplane', chinese: '飞机', imgQuery: 'airplane blue sky', emoji: '✈️' },
   ]},
-  'B': { strokes: [
-    [{x:31,y:25}, {x:31,y:76}],
-    [{x:31,y:25}, {x:55,y:25}, {x:66,y:38}, {x:55,y:52}, {x:31,y:52}],
-    [{x:31,y:52}, {x:57,y:52}, {x:69,y:64}, {x:57,y:76}, {x:31,y:76}]
+  { letter: 'B', lower: 'b', words: [
+    { word: 'ball', chinese: '球', imgQuery: 'colorful ball toy', emoji: '⚽' },
+    { word: 'banana', chinese: '香蕉', imgQuery: 'banana fruit yellow', emoji: '🍌' },
+    { word: 'bear', chinese: '熊', imgQuery: 'cute bear animal', emoji: '🐻' },
+    { word: 'butterfly', chinese: '蝴蝶', imgQuery: 'butterfly colorful wings', emoji: '🦋' },
   ]},
-  'C': { strokes: [
-    [{x:73,y:30}, {x:54,y:24}, {x:33,y:30}, {x:25,y:50}, {x:33,y:70}, {x:54,y:77}, {x:73,y:70}]
+  { letter: 'C', lower: 'c', words: [
+    { word: 'cat', chinese: '猫', imgQuery: 'cute cat kitten', emoji: '🐱' },
+    { word: 'cake', chinese: '蛋糕', imgQuery: 'birthday cake colorful', emoji: '🎂' },
+    { word: 'car', chinese: '汽车', imgQuery: 'toy car colorful', emoji: '🚗' },
   ]},
-  'D': { strokes: [
-    [{x:31,y:25}, {x:31,y:76}],
-    [{x:31,y:25}, {x:52,y:25}, {x:70,y:38}, {x:73,y:50}, {x:70,y:64}, {x:52,y:76}, {x:31,y:76}]
+  { letter: 'D', lower: 'd', words: [
+    { word: 'dog', chinese: '狗', imgQuery: 'cute puppy dog', emoji: '🐶' },
+    { word: 'duck', chinese: '鸭子', imgQuery: 'yellow duck bird', emoji: '🦆' },
+    { word: 'dolphin', chinese: '海豚', imgQuery: 'dolphin ocean jumping', emoji: '🐬' },
   ]},
-  'E': { strokes: [
-    [{x:33,y:25}, {x:33,y:76}],
-    [{x:33,y:25}, {x:68,y:25}],
-    [{x:33,y:50}, {x:61,y:50}],
-    [{x:33,y:76}, {x:68,y:76}]
+  { letter: 'E', lower: 'e', words: [
+    { word: 'elephant', chinese: '大象', imgQuery: 'elephant animal safari', emoji: '🐘' },
+    { word: 'egg', chinese: '鸡蛋', imgQuery: 'egg breakfast food', emoji: '🥚' },
+    { word: 'eagle', chinese: '鹰', imgQuery: 'eagle bird flying', emoji: '🦅' },
   ]},
-  'F': { strokes: [
-    [{x:35,y:25}, {x:35,y:76}],
-    [{x:35,y:25}, {x:68,y:25}],
-    [{x:35,y:50}, {x:61,y:50}]
+  { letter: 'F', lower: 'f', words: [
+    { word: 'fish', chinese: '鱼', imgQuery: 'colorful fish underwater', emoji: '🐟' },
+    { word: 'flower', chinese: '花', imgQuery: 'beautiful flower garden', emoji: '🌸' },
+    { word: 'frog', chinese: '青蛙', imgQuery: 'green frog cute', emoji: '🐸' },
   ]},
-  'G': { strokes: [
-    [{x:72,y:30}, {x:54,y:24}, {x:34,y:30}, {x:26,y:50}, {x:34,y:70}, {x:54,y:78}, {x:72,y:70}, {x:72,y:56}],
-    [{x:50,y:56}, {x:72,y:56}]
+  { letter: 'G', lower: 'g', words: [
+    { word: 'grape', chinese: '葡萄', imgQuery: 'purple grape fruit', emoji: '🍇' },
+    { word: 'giraffe', chinese: '长颈鹿', imgQuery: 'giraffe tall animal', emoji: '🦒' },
+    { word: 'guitar', chinese: '吉他', imgQuery: 'guitar musical instrument', emoji: '🎸' },
   ]},
-  'H': { strokes: [
-    [{x:29,y:25}, {x:29,y:76}],
-    [{x:71,y:25}, {x:71,y:76}],
-    [{x:29,y:50}, {x:71,y:50}]
+  { letter: 'H', lower: 'h', words: [
+    { word: 'house', chinese: '房子', imgQuery: 'cute house home', emoji: '🏠' },
+    { word: 'horse', chinese: '马', imgQuery: 'horse running field', emoji: '🐴' },
+    { word: 'hat', chinese: '帽子', imgQuery: 'colorful hat cap', emoji: '🎩' },
   ]},
-  'I': { strokes: [
-    [{x:48,y:25}, {x:52,y:25}],
-    [{x:50,y:25}, {x:50,y:76}],
-    [{x:48,y:76}, {x:52,y:76}]
+  { letter: 'I', lower: 'i', words: [
+    { word: 'ice cream', chinese: '冰淇淋', imgQuery: 'ice cream colorful cone', emoji: '🍦' },
+    { word: 'island', chinese: '岛屿', imgQuery: 'tropical island beach', emoji: '🏝️' },
+    { word: 'igloo', chinese: '冰屋', imgQuery: 'igloo snow winter', emoji: '🏔️' },
   ]},
-  'J': { strokes: [
-    [{x:56,y:25}, {x:56,y:64}, {x:48,y:76}, {x:39,y:76}, {x:33,y:68}]
+  { letter: 'J', lower: 'j', words: [
+    { word: 'juice', chinese: '果汁', imgQuery: 'orange juice glass', emoji: '🧃' },
+    { word: 'jellyfish', chinese: '水母', imgQuery: 'jellyfish ocean glowing', emoji: '🪼' },
+    { word: 'jungle', chinese: '丛林', imgQuery: 'jungle tropical forest', emoji: '🌴' },
   ]},
-  'K': { strokes: [
-    [{x:30,y:25}, {x:30,y:76}],
-    [{x:69,y:25}, {x:30,y:50}],
-    [{x:30,y:50}, {x:69,y:76}]
+  { letter: 'K', lower: 'k', words: [
+    { word: 'kite', chinese: '风筝', imgQuery: 'kite flying sky colorful', emoji: '🪁' },
+    { word: 'koala', chinese: '考拉', imgQuery: 'koala cute animal tree', emoji: '🐨' },
+    { word: 'key', chinese: '钥匙', imgQuery: 'golden key vintage', emoji: '🔑' },
   ]},
-  'L': { strokes: [
-    [{x:35,y:25}, {x:35,y:76}],
-    [{x:35,y:76}, {x:68,y:76}]
+  { letter: 'L', lower: 'l', words: [
+    { word: 'lion', chinese: '狮子', imgQuery: 'lion animal safari', emoji: '🦁' },
+    { word: 'lemon', chinese: '柠檬', imgQuery: 'lemon yellow fruit', emoji: '🍋' },
+    { word: 'ladybug', chinese: '瓢虫', imgQuery: 'ladybug insect red', emoji: '🐞' },
   ]},
-  'M': { strokes: [
-    [{x:24,y:76}, {x:24,y:25}],
-    [{x:24,y:25}, {x:50,y:62}],
-    [{x:50,y:62}, {x:76,y:25}],
-    [{x:76,y:25}, {x:76,y:76}]
+  { letter: 'M', lower: 'm', words: [
+    { word: 'moon', chinese: '月亮', imgQuery: 'full moon night sky', emoji: '🌙' },
+    { word: 'monkey', chinese: '猴子', imgQuery: 'monkey cute animal', emoji: '🐵' },
+    { word: 'mushroom', chinese: '蘑菇', imgQuery: 'mushroom forest colorful', emoji: '🍄' },
   ]},
-  'N': { strokes: [
-    [{x:29,y:76}, {x:29,y:25}],
-    [{x:29,y:25}, {x:71,y:76}],
-    [{x:71,y:76}, {x:71,y:25}]
+  { letter: 'N', lower: 'n', words: [
+    { word: 'nest', chinese: '鸟巢', imgQuery: 'bird nest eggs tree', emoji: '🪹' },
+    { word: 'nose', chinese: '鼻子', imgQuery: 'cute nose face', emoji: '👃' },
+    { word: 'nut', chinese: '坚果', imgQuery: 'nuts walnut almond', emoji: '🥜' },
   ]},
-  'O': { strokes: [
-    [{x:50,y:24}, {x:31,y:30}, {x:26,y:50}, {x:29,y:70}, {x:50,y:78}, {x:71,y:70}, {x:74,y:50}, {x:69,y:30}, {x:50,y:24}]
+  { letter: 'O', lower: 'o', words: [
+    { word: 'orange', chinese: '橙子', imgQuery: 'orange fruit citrus', emoji: '🍊' },
+    { word: 'owl', chinese: '猫头鹰', imgQuery: 'owl bird night cute', emoji: '🦉' },
+    { word: 'octopus', chinese: '章鱼', imgQuery: 'octopus ocean cute', emoji: '🐙' },
   ]},
-  'P': { strokes: [
-    [{x:32,y:25}, {x:32,y:76}],
-    [{x:32,y:25}, {x:56,y:25}, {x:70,y:34}, {x:70,y:46}, {x:56,y:54}, {x:32,y:54}]
+  { letter: 'P', lower: 'p', words: [
+    { word: 'panda', chinese: '熊猫', imgQuery: 'panda cute animal bamboo', emoji: '🐼' },
+    { word: 'penguin', chinese: '企鹅', imgQuery: 'penguin cute ice', emoji: '🐧' },
+    { word: 'pizza', chinese: '披萨', imgQuery: 'pizza cheese delicious', emoji: '🍕' },
   ]},
-  'Q': { strokes: [
-    [{x:49,y:24}, {x:31,y:30}, {x:26,y:50}, {x:29,y:70}, {x:49,y:77}, {x:69,y:70}, {x:73,y:50}, {x:67,y:30}, {x:49,y:24}],
-    [{x:56,y:70}, {x:73,y:82}]
+  { letter: 'Q', lower: 'q', words: [
+    { word: 'queen', chinese: '女王', imgQuery: 'queen crown royal', emoji: '👸' },
+    { word: 'quail', chinese: '鹌鹑', imgQuery: 'quail bird cute', emoji: '🐦' },
+    { word: 'quilt', chinese: '被子', imgQuery: 'colorful quilt blanket', emoji: '🛏️' },
   ]},
-  'R': { strokes: [
-    [{x:31,y:25}, {x:31,y:76}],
-    [{x:31,y:25}, {x:54,y:25}, {x:67,y:34}, {x:67,y:46}, {x:54,y:54}, {x:31,y:54}],
-    [{x:45,y:54}, {x:67,y:76}]
+  { letter: 'R', lower: 'r', words: [
+    { word: 'rabbit', chinese: '兔子', imgQuery: 'rabbit bunny cute', emoji: '🐰' },
+    { word: 'rainbow', chinese: '彩虹', imgQuery: 'rainbow sky colorful', emoji: '🌈' },
+    { word: 'rocket', chinese: '火箭', imgQuery: 'rocket space launch', emoji: '🚀' },
   ]},
-  'S': { strokes: [
-    [{x:68,y:30}, {x:52,y:24}, {x:36,y:30}, {x:30,y:42}, {x:39,y:52}, {x:61,y:56}, {x:70,y:64}, {x:66,y:74}, {x:50,y:79}, {x:34,y:72}]
+  { letter: 'S', lower: 's', words: [
+    { word: 'star', chinese: '星星', imgQuery: 'star night sky shiny', emoji: '⭐' },
+    { word: 'sun', chinese: '太阳', imgQuery: 'sun sunshine bright', emoji: '☀️' },
+    { word: 'snake', chinese: '蛇', imgQuery: 'snake colorful reptile', emoji: '🐍' },
   ]},
-  'T': { strokes: [
-    [{x:30,y:25}, {x:70,y:25}],
-    [{x:50,y:25}, {x:50,y:76}]
+  { letter: 'T', lower: 't', words: [
+    { word: 'tree', chinese: '树', imgQuery: 'big green tree nature', emoji: '🌳' },
+    { word: 'tiger', chinese: '老虎', imgQuery: 'tiger animal stripes', emoji: '🐯' },
+    { word: 'turtle', chinese: '乌龟', imgQuery: 'turtle cute green', emoji: '🐢' },
   ]},
-  'U': { strokes: [
-    [{x:29,y:25}, {x:29,y:62}, {x:36,y:74}, {x:50,y:77}, {x:64,y:74}, {x:71,y:62}, {x:71,y:25}]
+  { letter: 'U', lower: 'u', words: [
+    { word: 'umbrella', chinese: '雨伞', imgQuery: 'colorful umbrella rain', emoji: '☂️' },
+    { word: 'unicorn', chinese: '独角兽', imgQuery: 'unicorn magical fantasy', emoji: '🦄' },
+    { word: 'ukulele', chinese: '尤克里里', imgQuery: 'ukulele instrument music', emoji: '🎵' },
   ]},
-  'V': { strokes: [
-    [{x:29,y:25}, {x:50,y:76}],
-    [{x:71,y:25}, {x:50,y:76}]
+  { letter: 'V', lower: 'v', words: [
+    { word: 'violin', chinese: '小提琴', imgQuery: 'violin musical instrument', emoji: '🎻' },
+    { word: 'volcano', chinese: '火山', imgQuery: 'volcano eruption nature', emoji: '🌋' },
+    { word: 'vase', chinese: '花瓶', imgQuery: 'vase flowers beautiful', emoji: '🏺' },
   ]},
-  'W': { strokes: [
-    [{x:16,y:25}, {x:34,y:76}, {x:50,y:25}],
-    [{x:50,y:25}, {x:66,y:76}, {x:84,y:25}]
+  { letter: 'W', lower: 'w', words: [
+    { word: 'whale', chinese: '鲸鱼', imgQuery: 'whale ocean jumping', emoji: '🐳' },
+    { word: 'watermelon', chinese: '西瓜', imgQuery: 'watermelon slice fruit', emoji: '🍉' },
+    { word: 'wolf', chinese: '狼', imgQuery: 'wolf animal wild', emoji: '🐺' },
   ]},
-  'X': { strokes: [
-    [{x:28,y:25}, {x:71,y:76}],
-    [{x:71,y:25}, {x:28,y:76}]
+  { letter: 'X', lower: 'x', words: [
+    { word: 'xylophone', chinese: '木琴', imgQuery: 'xylophone colorful instrument', emoji: '🎵' },
+    { word: 'x-ray', chinese: 'X光', imgQuery: 'xray medical skeleton', emoji: '🩻' },
+    { word: 'fox', chinese: '狐狸', imgQuery: 'fox cute animal red', emoji: '🦊' },
   ]},
-  'Y': { strokes: [
-    [{x:27,y:25}, {x:50,y:52}],
-    [{x:72,y:25}, {x:50,y:52}],
-    [{x:50,y:52}, {x:50,y:76}]
+  { letter: 'Y', lower: 'y', words: [
+    { word: 'yak', chinese: '牦牛', imgQuery: 'yak animal mountain', emoji: '🐂' },
+    { word: 'yacht', chinese: '游艇', imgQuery: 'yacht boat ocean', emoji: '🛥️' },
+    { word: 'yogurt', chinese: '酸奶', imgQuery: 'yogurt food breakfast', emoji: '🥛' },
   ]},
-  'Z': { strokes: [
-    [{x:30,y:25}, {x:71,y:25}],
-    [{x:71,y:25}, {x:30,y:76}],
-    [{x:30,y:76}, {x:71,y:76}]
-  ]}
-};
-
-// 字母小绘本数据 - 每个字母对应的单词和图片轮廓
-const BOOK_DATA = {
-  'A': {
-    word: 'apple',
-    chinese: '苹果',
-    color: '#ff6b9d',
-    strokes: [
-      [ {x:50, y:25, type:'move'}, {x:40, y:20, type:'line'}, {x:30, y:25, type:'line'}, {x:25, y:40, type:'line'}, {x:25, y:60, type:'line'}, {x:30, y:75, type:'line'}, {x:40, y:80, type:'line'}, {x:50, y:82, type:'line'}, {x:60, y:80, type:'line'}, {x:70, y:75, type:'line'}, {x:75, y:60, type:'line'}, {x:75, y:40, type:'line'}, {x:70, y:25, type:'line'}, {x:60, y:20, type:'line'}, {x:50, y:25, type:'line'} ],
-      [ {x:50, y:20, type:'move'}, {x:50, y:12, type:'line'} ],
-      [ {x:50, y:15, type:'move'}, {x:58, y:10, type:'line'}, {x:65, y:15, type:'line'} ],
-      [ {x:50, y:15, type:'move'}, {x:42, y:10, type:'line'}, {x:35, y:15, type:'line'} ]
-    ]
-  },
-  'B': {
-    word: 'ball',
-    chinese: '球',
-    color: '#ff9a9e',
-    strokes: [
-      [ {x:50, y:15, type:'move'}, {x:70, y:25, type:'line'}, {x:80, y:45, type:'line'}, {x:80, y:55, type:'line'}, {x:70, y:75, type:'line'}, {x:50, y:85, type:'line'}, {x:30, y:75, type:'line'}, {x:20, y:55, type:'line'}, {x:20, y:45, type:'line'}, {x:30, y:25, type:'line'}, {x:50, y:15, type:'line'} ],
-      [ {x:35, y:35, type:'move'}, {x:40, y:30, type:'line'}, {x:50, y:35, type:'line'} ],
-      [ {x:55, y:55, type:'move'}, {x:60, y:60, type:'line'}, {x:55, y:65, type:'line'} ]
-    ]
-  },
-  'C': {
-    word: 'cat',
-    chinese: '猫',
-    color: '#f093fb',
-    strokes: [
-      [ {x:25, y:35, type:'move'}, {x:20, y:25, type:'line'}, {x:30, y:15, type:'line'}, {x:50, y:10, type:'line'}, {x:70, y:15, type:'line'}, {x:80, y:25, type:'line'}, {x:82, y:40, type:'line'}, {x:80, y:55, type:'line'}, {x:70, y:70, type:'line'}, {x:50, y:78, type:'line'}, {x:30, y:70, type:'line'}, {x:20, y:55, type:'line'} ],
-      [ {x:30, y:40, type:'move'}, {x:25, y:35, type:'line'} ],
-      [ {x:70, y:40, type:'move'}, {x:75, y:35, type:'line'} ],
-      [ {x:45, y:55, type:'move'}, {x:55, y:55, type:'line'} ]
-    ]
-  },
-  'D': {
-    word: 'dog',
-    chinese: '狗',
-    color: '#a18cd1',
-    strokes: [
-      [ {x:30, y:20, type:'move'}, {x:25, y:15, type:'line'}, {x:20, y:25, type:'line'}, {x:22, y:35, type:'line'}, {x:28, y:40, type:'line'}, {x:35, y:38, type:'line'}, {x:40, y:30, type:'line'}, {x:38, y:20, type:'line'}, {x:30, y:20, type:'line'} ],
-      [ {x:50, y:25, type:'move'}, {x:75, y:25, type:'line'}, {x:80, y:40, type:'line'}, {x:80, y:55, type:'line'}, {x:75, y:70, type:'line'}, {x:50, y:75, type:'line'}, {x:35, y:70, type:'line'}, {x:30, y:55, type:'line'}, {x:30, y:40, type:'line'}, {x:35, y:30, type:'line'} ],
-      [ {x:45, y:45, type:'move'}, {x:48, y:45, type:'line'} ],
-      [ {x:58, y:45, type:'move'}, {x:61, y:45, type:'line'} ],
-      [ {x:50, y:58, type:'move'}, {x:55, y:58, type:'line'} ]
-    ]
-  },
-  'E': {
-    word: 'elephant',
-    chinese: '大象',
-    color: '#667eea',
-    strokes: [
-      [ {x:20, y:20, type:'move'}, {x:20, y:80, type:'line'}, {x:65, y:80, type:'line'}, {x:75, y:70, type:'line'}, {x:78, y:55, type:'line'}, {x:75, y:45, type:'line'}, {x:68, y:50, type:'line'}, {x:65, y:60, type:'line'}, {x:50, y:60, type:'line'} ],
-      [ {x:20, y:20, type:'move'}, {x:55, y:20, type:'line'}, {x:60, y:25, type:'line'}, {x:58, y:35, type:'line'}, {x:50, y:38, type:'line'}, {x:20, y:38, type:'line'} ],
-      [ {x:35, y:50, type:'move'}, {x:50, y:50, type:'line'} ]
-    ]
-  },
-  'F': {
-    word: 'fish',
-    chinese: '鱼',
-    color: '#4facfe',
-    strokes: [
-      [ {x:25, y:45, type:'move'}, {x:30, y:35, type:'line'}, {x:45, y:30, type:'line'}, {x:60, y:35, type:'line'}, {x:70, y:45, type:'line'}, {x:60, y:55, type:'line'}, {x:45, y:60, type:'line'}, {x:30, y:55, type:'line'}, {x:25, y:45, type:'line'} ],
-      [ {x:75, y:35, type:'move'}, {x:82, y:45, type:'line'}, {x:75, y:55, type:'line'} ],
-      [ {x:45, y:43, type:'move'}, {x:48, y:43, type:'line'} ]
-    ]
-  },
-  'G': {
-    word: 'grape',
-    chinese: '葡萄',
-    color: '#43e97b',
-    strokes: [
-      [ {x:50, y:20, type:'move'}, {x:35, y:25, type:'line'}, {x:25, y:40, type:'line'}, {x:22, y:55, type:'line'}, {x:28, y:70, type:'line'}, {x:42, y:80, type:'line'}, {x:58, y:80, type:'line'}, {x:72, y:70, type:'line'}, {x:78, y:55, type:'line'}, {x:75, y:45, type:'line'}, {x:65, y:45, type:'line'} ],
-      [ {x:40, y:35, type:'move'}, {x:35, y:32, type:'line'}, {x:38, y:28, type:'line'} ],
-      [ {x:42, y:55, type:'move'}, {x:38, y:55, type:'line'}, {x:38, y:59, type:'line'}, {x:42, y:59, type:'line'} ],
-      [ {x:55, y:50, type:'move'}, {x:51, y:50, type:'line'}, {x:51, y:54, type:'line'}, {x:55, y:54, type:'line'} ],
-      [ {x:62, y:65, type:'move'}, {x:58, y:65, type:'line'}, {x:58, y:69, type:'line'}, {x:62, y:69, type:'line'} ]
-    ]
-  },
-  'H': {
-    word: 'house',
-    chinese: '房子',
-    color: '#fa709a',
-    strokes: [
-      [ {x:50, y:15, type:'move'}, {x:20, y:40, type:'line'}, {x:20, y:82, type:'line'}, {x:80, y:82, type:'line'}, {x:80, y:40, type:'line'}, {x:50, y:15, type:'line'} ],
-      [ {x:42, y:55, type:'move'}, {x:42, y:82, type:'line'}, {x:58, y:82, type:'line'}, {x:58, y:55, type:'line'}, {x:50, y:50, type:'line'}, {x:42, y:55, type:'line'} ],
-      [ {x:68, y:50, type:'move'}, {x:68, y:58, type:'line'}, {x:76, y:58, type:'line'}, {x:76, y:50, type:'line'}, {x:68, y:50, type:'line'} ]
-    ]
-  },
-  'I': {
-    word: 'ice cream',
-    chinese: '冰淇淋',
-    color: '#ff9a56',
-    strokes: [
-      [ {x:35, y:70, type:'move'}, {x:50, y:85, type:'line'}, {x:65, y:70, type:'line'} ],
-      [ {x:40, y:70, type:'move'}, {x:38, y:50, type:'line'}, {x:42, y:35, type:'line'}, {x:50, y:28, type:'line'}, {x:58, y:35, type:'line'}, {x:62, y:50, type:'line'}, {x:60, y:70, type:'line'}, {x:40, y:70, type:'line'} ],
-      [ {x:45, y:25, type:'move'}, {x:43, y:18, type:'line'}, {x:50, y:12, type:'line'}, {x:57, y:18, type:'line'}, {x:55, y:25, type:'line'} ]
-    ]
-  },
-  'J': {
-    word: 'juice',
-    chinese: '果汁',
-    color: '#fcb69f',
-    strokes: [
-      [ {x:35, y:25, type:'move'}, {x:32, y:22, type:'line'}, {x:30, y:25, type:'line'}, {x:30, y:30, type:'line'}, {x:35, y:32, type:'line'}, {x:70, y:32, type:'line'}, {x:75, y:30, type:'line'}, {x:75, y:25, type:'line'}, {x:73, y:22, type:'line'}, {x:70, y:25, type:'line'} ],
-      [ {x:38, y:32, type:'move'}, {x:35, y:75, type:'line'}, {x:50, y:82, type:'line'}, {x:65, y:75, type:'line'}, {x:62, y:32, type:'line'} ],
-      [ {x:45, y:45, type:'move'}, {x:45, y:65, type:'line'}, {x:55, y:65, type:'line'}, {x:55, y:45, type:'line'} ]
-    ]
-  },
-  'K': {
-    word: 'kite',
-    chinese: '风筝',
-    color: '#a1c4fd',
-    strokes: [
-      [ {x:50, y:15, type:'move'}, {x:30, y:45, type:'line'}, {x:50, y:75, type:'line'}, {x:70, y:45, type:'line'}, {x:50, y:15, type:'line'} ],
-      [ {x:50, y:75, type:'move'}, {x:45, y:85, type:'line'}, {x:50, y:80, type:'line'}, {x:55, y:88, type:'line'}, {x:50, y:82, type:'line'} ],
-      [ {x:50, y:45, type:'move'}, {x:55, y:48, type:'line'}, {x:52, y:52, type:'line'} ]
-    ]
-  },
-  'L': {
-    word: 'lion',
-    chinese: '狮子',
-    color: '#96e6a1',
-    strokes: [
-      [ {x:50, y:30, type:'move'}, {x:35, y:25, type:'line'}, {x:25, y:35, type:'line'}, {x:22, y:50, type:'line'}, {x:28, y:65, type:'line'}, {x:40, y:72, type:'line'}, {x:55, y:72, type:'line'}, {x:68, y:65, type:'line'}, {x:74, y:50, type:'line'}, {x:72, y:35, type:'line'}, {x:62, y:25, type:'line'}, {x:50, y:30, type:'line'} ],
-      [ {x:35, y:45, type:'move'}, {x:38, y:45, type:'line'} ],
-      [ {x:62, y:45, type:'move'}, {x:65, y:45, type:'line'} ],
-      [ {x:45, y:58, type:'move'}, {x:55, y:58, type:'line'} ],
-      [ {x:28, y:20, type:'move'}, {x:25, y:12, type:'line'}, {x:32, y:18, type:'line'} ],
-      [ {x:72, y:20, type:'move'}, {x:75, y:12, type:'line'}, {x:68, y:18, type:'line'} ]
-    ]
-  },
-  'M': {
-    word: 'moon',
-    chinese: '月亮',
-    color: '#84fab0',
-    strokes: [
-      [ {x:50, y:15, type:'move'}, {x:30, y:25, type:'line'}, {x:20, y:45, type:'line'}, {x:20, y:55, type:'line'}, {x:30, y:75, type:'line'}, {x:50, y:85, type:'line'}, {x:70, y:75, type:'line'}, {x:80, y:55, type:'line'}, {x:80, y:45, type:'line'}, {x:70, y:25, type:'line'}, {x:50, y:15, type:'line'} ],
-      [ {x:45, y:40, type:'move'}, {x:42, y:40, type:'line'} ],
-      [ {x:58, y:40, type:'move'}, {x:55, y:40, type:'line'} ]
-    ]
-  },
-  'N': {
-    word: 'nose',
-    chinese: '鼻子',
-    color: '#fddb92',
-    strokes: [
-      [ {x:35, y:25, type:'move'}, {x:30, y:45, type:'line'}, {x:32, y:60, type:'line'}, {x:40, y:70, type:'line'}, {x:50, y:72, type:'line'}, {x:60, y:70, type:'line'}, {x:68, y:60, type:'line'}, {x:70, y:45, type:'line'}, {x:65, y:25, type:'line'}, {x:50, y:20, type:'line'}, {x:35, y:25, type:'line'} ],
-      [ {x:42, y:42, type:'move'}, {x:42, y:45, type:'line'}, {x:45, y:45, type:'line'} ],
-      [ {x:58, y:42, type:'move'}, {x:55, y:42, type:'line'}, {x:55, y:45, type:'line'} ],
-      [ {x:50, y:55, type:'move'}, {x:48, y:58, type:'line'}, {x:52, y:58, type:'line'} ]
-    ]
-  },
-  'O': {
-    word: 'orange',
-    chinese: '橙子',
-    color: '#2af598',
-    strokes: [
-      [ {x:50, y:18, type:'move'}, {x:30, y:28, type:'line'}, {x:20, y:50, type:'line'}, {x:30, y:72, type:'line'}, {x:50, y:82, type:'line'}, {x:70, y:72, type:'line'}, {x:80, y:50, type:'line'}, {x:70, y:28, type:'line'}, {x:50, y:18, type:'line'} ],
-      [ {x:50, y:18, type:'move'}, {x:50, y:10, type:'line'} ],
-      [ {x:50, y:13, type:'move'}, {x:42, y:8, type:'line'}, {x:38, y:13, type:'line'} ],
-      [ {x:45, y:45, type:'move'}, {x:42, y:48, type:'line'}, {x:45, y:51, type:'line'} ]
-    ]
-  },
-  'P': {
-    word: 'penguin',
-    chinese: '企鹅',
-    color: '#f093fb',
-    strokes: [
-      [ {x:50, y:20, type:'move'}, {x:38, y:25, type:'line'}, {x:32, y:38, type:'line'}, {x:30, y:55, type:'line'}, {x:35, y:70, type:'line'}, {x:45, y:78, type:'line'}, {x:50, y:80, type:'line'}, {x:55, y:78, type:'line'}, {x:65, y:70, type:'line'}, {x:70, y:55, type:'line'}, {x:68, y:38, type:'line'}, {x:62, y:25, type:'line'}, {x:50, y:20, type:'line'} ],
-      [ {x:38, y:35, type:'move'}, {x:28, y:28, type:'line'}, {x:32, y:22, type:'line'} ],
-      [ {x:62, y:35, type:'move'}, {x:72, y:28, type:'line'}, {x:68, y:22, type:'line'} ],
-      [ {x:42, y:45, type:'move'}, {x:45, y:45, type:'line'} ],
-      [ {x:55, y:45, type:'move'}, {x:58, y:45, type:'line'} ],
-      [ {x:47, y:58, type:'move'}, {x:53, y:58, type:'line'} ],
-      [ {x:40, y:78, type:'move'}, {x:38, y:85, type:'line'}, {x:45, y:82, type:'line'} ],
-      [ {x:60, y:78, type:'move'}, {x:62, y:85, type:'line'}, {x:55, y:82, type:'line'} ]
-    ]
-  },
-  'Q': {
-    word: 'queen',
-    chinese: '女王',
-    color: '#30cfd0',
-    strokes: [
-      [ {x:40, y:25, type:'move'}, {x:38, y:20, type:'line'}, {x:42, y:18, type:'line'}, {x:45, y:22, type:'line'}, {x:50, y:15, type:'line'}, {x:55, y:22, type:'line'}, {x:58, y:18, type:'line'}, {x:62, y:20, type:'line'}, {x:60, y:25, type:'line'} ],
-      [ {x:35, y:28, type:'move'}, {x:30, y:45, type:'line'}, {x:32, y:65, type:'line'}, {x:45, y:75, type:'line'}, {x:55, y:75, type:'line'}, {x:68, y:65, type:'line'}, {x:70, y:45, type:'line'}, {x:65, y:28, type:'line'}, {x:50, y:25, type:'line'}, {x:35, y:28, type:'line'} ],
-      [ {x:45, y:45, type:'move'}, {x:45, y:58, type:'line'}, {x:55, y:58, type:'line'}, {x:55, y:45, type:'line'} ],
-      [ {x:62, y:68, type:'move'}, {x:75, y:80, type:'line'} ]
-    ]
-  },
-  'R': {
-    word: 'rabbit',
-    chinese: '兔子',
-    color: '#a8edea',
-    strokes: [
-      [ {x:35, y:15, type:'move'}, {x:30, y:10, type:'line'}, {x:28, y:25, type:'line'}, {x:32, y:40, type:'line'} ],
-      [ {x:65, y:15, type:'move'}, {x:70, y:10, type:'line'}, {x:72, y:25, type:'line'}, {x:68, y:40, type:'line'} ],
-      [ {x:50, y:30, type:'move'}, {x:35, y:38, type:'line'}, {x:30, y:55, type:'line'}, {x:35, y:72, type:'line'}, {x:50, y:78, type:'line'}, {x:65, y:72, type:'line'}, {x:70, y:55, type:'line'}, {x:65, y:38, type:'line'}, {x:50, y:30, type:'line'} ],
-      [ {x:42, y:50, type:'move'}, {x:44, y:50, type:'line'} ],
-      [ {x:56, y:50, type:'move'}, {x:58, y:50, type:'line'} ],
-      [ {x:47, y:62, type:'move'}, {x:53, y:62, type:'line'} ]
-    ]
-  },
-  'S': {
-    word: 'star',
-    chinese: '星星',
-    color: '#fcb69f',
-    strokes: [
-      [ {x:50, y:15, type:'move'}, {x:45, y:35, type:'line'}, {x:25, y:38, type:'line'}, {x:40, y:52, type:'line'}, {x:35, y:75, type:'line'}, {x:50, y:62, type:'line'}, {x:65, y:75, type:'line'}, {x:60, y:52, type:'line'}, {x:75, y:38, type:'line'}, {x:55, y:35, type:'line'}, {x:50, y:15, type:'line'} ]
-    ]
-  },
-  'T': {
-    word: 'tree',
-    chinese: '树',
-    color: '#ff9a9e',
-    strokes: [
-      [ {x:50, y:12, type:'move'}, {x:30, y:35, type:'line'}, {x:38, y:35, type:'line'}, {x:25, y:55, type:'line'}, {x:40, y:55, type:'line'}, {x:30, y:75, type:'line'}, {x:70, y:75, type:'line'}, {x:60, y:55, type:'line'}, {x:75, y:55, type:'line'}, {x:62, y:35, type:'line'}, {x:70, y:35, type:'line'}, {x:50, y:12, type:'line'} ],
-      [ {x:45, y:75, type:'move'}, {x:45, y:85, type:'line'}, {x:55, y:85, type:'line'}, {x:55, y:75, type:'line'} ]
-    ]
-  },
-  'U': {
-    word: 'umbrella',
-    chinese: '雨伞',
-    color: '#ffecd2',
-    strokes: [
-      [ {x:50, y:15, type:'move'}, {x:30, y:28, type:'line'}, {x:22, y:45, type:'line'}, {x:25, y:55, type:'line'}, {x:40, y:58, type:'line'}, {x:50, y:55, type:'line'}, {x:60, y:58, type:'line'}, {x:75, y:55, type:'line'}, {x:78, y:45, type:'line'}, {x:70, y:28, type:'line'}, {x:50, y:15, type:'line'} ],
-      [ {x:50, y:15, type:'move'}, {x:50, y:60, type:'line'} ],
-      [ {x:50, y:60, type:'move'}, {x:45, y:72, type:'line'}, {x:55, y:78, type:'line'}, {x:45, y:82, type:'line'} ]
-    ]
-  },
-  'V': {
-    word: 'violin',
-    chinese: '小提琴',
-    color: '#a1c4fd',
-    strokes: [
-      [ {x:50, y:20, type:'move'}, {x:38, y:35, type:'line'}, {x:32, y:55, type:'line'}, {x:35, y:72, type:'line'}, {x:50, y:80, type:'line'}, {x:65, y:72, type:'line'}, {x:68, y:55, type:'line'}, {x:62, y:35, type:'line'}, {x:50, y:20, type:'line'} ],
-      [ {x:50, y:15, type:'move'}, {x:50, y:10, type:'line'} ],
-      [ {x:45, y:45, type:'move'}, {x:42, y:48, type:'line'}, {x:45, y:51, type:'line'} ],
-      [ {x:55, y:45, type:'move'}, {x:58, y:48, type:'line'}, {x:55, y:51, type:'line'} ]
-    ]
-  },
-  'W': {
-    word: 'watermelon',
-    chinese: '西瓜',
-    color: '#f093fb',
-    strokes: [
-      [ {x:20, y:50, type:'move'}, {x:30, y:25, type:'line'}, {x:50, y:18, type:'line'}, {x:70, y:25, type:'line'}, {x:80, y:50, type:'line'}, {x:70, y:75, type:'line'}, {x:50, y:82, type:'line'}, {x:30, y:75, type:'line'}, {x:20, y:50, type:'line'} ],
-      [ {x:50, y:18, type:'move'}, {x:50, y:82, type:'line'} ],
-      [ {x:35, y:30, type:'move'}, {x:45, y:70, type:'line'} ],
-      [ {x:65, y:30, type:'move'}, {x:55, y:70, type:'line'} ]
-    ]
-  },
-  'X': {
-    word: 'xylophone',
-    chinese: '木琴',
-    color: '#4facfe',
-    strokes: [
-      [ {x:25, y:25, type:'move'}, {x:75, y:75, type:'line'} ],
-      [ {x:75, y:25, type:'move'}, {x:25, y:75, type:'line'} ],
-      [ {x:30, y:40, type:'move'}, {x:25, y:45, type:'line'}, {x:30, y:50, type:'line'}, {x:35, y:45, type:'line'}, {x:30, y:40, type:'line'} ],
-      [ {x:45, y:30, type:'move'}, {x:40, y:35, type:'line'}, {x:45, y:40, type:'line'}, {x:50, y:35, type:'line'}, {x:45, y:30, type:'line'} ],
-      [ {x:55, y:55, type:'move'}, {x:50, y:60, type:'line'}, {x:55, y:65, type:'line'}, {x:60, y:60, type:'line'}, {x:55, y:55, type:'line'} ],
-      [ {x:70, y:45, type:'move'}, {x:65, y:50, type:'line'}, {x:70, y:55, type:'line'}, {x:75, y:50, type:'line'}, {x:70, y:45, type:'line'} ]
-    ]
-  },
-  'Y': {
-    word: 'yo-yo',
-    chinese: '溜溜球',
-    color: '#fa709a',
-    strokes: [
-      [ {x:50, y:15, type:'move'}, {x:50, y:35, type:'line'} ],
-      [ {x:35, y:40, type:'move'}, {x:25, y:50, type:'line'}, {x:25, y:65, type:'line'}, {x:35, y:75, type:'line'}, {x:50, y:78, type:'line'}, {x:65, y:75, type:'line'}, {x:75, y:65, type:'line'}, {x:75, y:50, type:'line'}, {x:65, y:40, type:'line'}, {x:50, y:38, type:'line'}, {x:35, y:40, type:'line'} ],
-      [ {x:50, y:50, type:'move'}, {x:48, y:58, type:'line'}, {x:52, y:58, type:'line'}, {x:50, y:50, type:'line'} ]
-    ]
-  },
-  'Z': {
-    word: 'zebra',
-    chinese: '斑马',
-    color: '#ff6b9d',
-    strokes: [
-      [ {x:35, y:20, type:'move'}, {x:28, y:28, type:'line'}, {x:25, y:45, type:'line'}, {x:30, y:65, type:'line'}, {x:45, y:75, type:'line'}, {x:55, y:75, type:'line'}, {x:70, y:65, type:'line'}, {x:75, y:45, type:'line'}, {x:72, y:28, type:'line'}, {x:65, y:20, type:'line'}, {x:50, y:18, type:'line'}, {x:35, y:20, type:'line'} ],
-      [ {x:30, y:30, type:'move'}, {x:22, y:25, type:'line'}, {x:20, y:18, type:'line'} ],
-      [ {x:70, y:30, type:'move'}, {x:78, y:25, type:'line'}, {x:80, y:18, type:'line'} ],
-      [ {x:40, y:42, type:'move'}, {x:42, y:42, type:'line'} ],
-      [ {x:58, y:42, type:'move'}, {x:60, y:42, type:'line'} ],
-      [ {x:48, y:55, type:'move'}, {x:52, y:55, type:'line'} ],
-      [ {x:35, y:68, type:'move'}, {x:32, y:78, type:'line'}, {x:38, y:75, type:'line'} ],
-      [ {x:65, y:68, type:'move'}, {x:68, y:78, type:'line'}, {x:62, y:75, type:'line'} ]
-    ]
-  }
-};
-
-function getDefaultBookData(letter) {
-  return {
-    word: letter.toLowerCase(),
-    chinese: letter.toLowerCase(),
-    color: '#ff6b9d',
-    strokes: [
-      [ {x:30, y:30, type:'move'}, {x:70, y:30, type:'line'}, {x:70, y:70, type:'line'}, {x:30, y:70, type:'line'}, {x:30, y:30, type:'line'} ]
-    ]
-  };
-}
-
-// 视力表 E 字方向数据
-const VISION_E_DIRECTIONS = [
-  { name: 'up',    chinese: '上', arrow: '↑', rotation: 270, color: '#ff6b9d', hint: '开口朝上就是上' },
-  { name: 'down',  chinese: '下', arrow: '↓', rotation: 90,  color: '#4facfe', hint: '开口朝下就是下' },
-  { name: 'left',  chinese: '左', arrow: '←', rotation: 180, color: '#43e97b', hint: '开口朝左就是左' },
-  { name: 'right', chinese: '右', arrow: '→', rotation: 0,   color: '#ff9a56', hint: '开口朝右就是右' },
+  { letter: 'Z', lower: 'z', words: [
+    { word: 'zebra', chinese: '斑马', imgQuery: 'zebra stripes animal', emoji: '🦓' },
+    { word: 'zoo', chinese: '动物园', imgQuery: 'zoo animals children', emoji: '🦁' },
+    { word: 'zipper', chinese: '拉链', imgQuery: 'zipper close colorful', emoji: '🧥' },
+  ]},
 ];
 
-// 视力表方向描红引导数据（百分比坐标 0-100）
-const VISION_DIRECTION_GUIDES = {
-  up:    [{x:50, y:75}, {x:50, y:25}],
-  down:  [{x:50, y:25}, {x:50, y:75}],
-  left:  [{x:75, y:50}, {x:25, y:50}],
-  right: [{x:25, y:50}, {x:75, y:50}],
-};
-
-function getDefaultStrokes(letter) {
-  return {
-    strokes: [
-      [ {x:50, y:20}, {x:50, y:80} ]
-    ]
-  };
-}
-
-// === 字母 Mask 生成 ===
-const letterMaskCache = {};
-
-function createLetterMask(letter, canvasWidth, canvasHeight) {
-  const key = `${letter}_${canvasWidth}_${canvasHeight}`;
-  if (letterMaskCache[key]) return letterMaskCache[key];
-
-  const offscreen = document.createElement('canvas');
-  offscreen.width = canvasWidth;
-  offscreen.height = canvasHeight;
-  const ctx = offscreen.getContext('2d');
-
-  const fontSize = canvasHeight * 0.78;
-  ctx.font = `bold ${fontSize}px sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillStyle = '#000';
-  ctx.fillText(letter, canvasWidth / 2, canvasHeight / 2);
-
-  const imageData = ctx.getImageData(0, 0, canvasWidth, canvasHeight);
-  const mask = new Uint8Array(canvasWidth * canvasHeight);
-  for (let i = 0; i < mask.length; i++) {
-    mask[i] = imageData.data[i * 4 + 3] > 50 ? 1 : 0;
-  }
-
-  letterMaskCache[key] = mask;
-  return mask;
-}
-
-function isPointInLetterMask(x, y, letter, canvasWidth, canvasHeight) {
-  const mask = createLetterMask(letter, canvasWidth, canvasHeight);
-  const ix = Math.round(x);
-  const iy = Math.round(y);
-  if (ix < 0 || ix >= canvasWidth || iy < 0 || iy >= canvasHeight) return false;
-  return mask[iy * canvasWidth + ix] === 1;
-}
 
 let currentLetter = 'A';
 let currentStrokeIndex = 0;
