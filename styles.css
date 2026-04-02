@@ -64,16 +64,27 @@ body {
     aspect-ratio: 1;
     border-radius: 25px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 4rem;
-    font-weight: bold;
     color: white;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     position: relative;
     overflow: hidden;
+}
+
+.letter-card-upper {
+    font-size: 2.8rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.letter-card-lower {
+    font-size: 1.4rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 0.2rem;
 }
 
 .letter-card::before {
@@ -190,61 +201,22 @@ body {
     50% { transform: scale(1.05); }
 }
 
-.controls {
-    text-align: center;
-    margin: 20px 0;
+.big-letter-lower {
+    font-size: 5rem;
+    font-weight: bold;
+    color: #a18cd1;
+    margin-top: -1rem;
+    margin-bottom: 1rem;
+}
+
+.letter-detail-controls {
     display: flex;
-    gap: 20px;
+    gap: 1rem;
     justify-content: center;
-    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
 }
 
-.audio-btn, .trace-btn, .book-btn {
-    background: linear-gradient(135deg, #ff6b9d 0%, #ff8a80 100%);
-    color: white;
-    border: none;
-    padding: 20px 40px;
-    border-radius: 50px;
-    font-size: 1.5rem;
-    cursor: pointer;
-    box-shadow: 0 8px 25px rgba(255,107,157,0.4);
-    transition: transform 0.2s, box-shadow 0.2s;
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.trace-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    box-shadow: 0 8px 25px rgba(102,126,234,0.4);
-}
-
-.book-btn {
-    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-    box-shadow: 0 8px 25px rgba(250,112,154,0.4);
-}
-
-.audio-btn:hover, .trace-btn:hover, .book-btn:hover {
-    transform: scale(1.08);
-}
-
-.audio-btn:active, .trace-btn:active, .book-btn:active {
-    transform: scale(0.95);
-}
-
-.audio-btn.playing {
-    animation: wiggle 0.5s ease-in-out;
-}
-
-@keyframes wiggle {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(-5deg); }
-    75% { transform: rotate(5deg); }
-}
-
-.audio-icon, .trace-icon {
-    font-size: 2rem;
-}
+/* old button styles removed — using hanzi button classes */
 
 /* === 描红页面 - 全屏 === */
 #trace-screen {
@@ -261,31 +233,6 @@ body {
     display: flex;
 }
 
-.trace-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 30px;
-    background: rgba(255,255,255,0.9);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-}
-
-.trace-back-btn {
-    background: linear-gradient(135deg, #888 0%, #666 100%);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 20px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    transition: transform 0.2s;
-}
-
-.trace-back-btn:hover {
-    transform: scale(1.05);
-}
-
 .stroke-indicator {
     font-size: 1.5rem;
     color: #ff6b9d;
@@ -293,28 +240,6 @@ body {
     background: linear-gradient(135deg, #ff6b9d 0%, #ff8a80 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-}
-
-.trace-complete-btn {
-    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-    color: white;
-    border: none;
-    padding: 12px 28px;
-    border-radius: 20px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(67, 233, 123, 0.4);
-    transition: transform 0.2s, opacity 0.3s;
-    font-weight: bold;
-}
-
-.trace-complete-btn:hover {
-    transform: scale(1.08);
-}
-
-.trace-complete-btn.hidden {
-    opacity: 0;
-    pointer-events: none;
 }
 
 .trace-canvas-container {
@@ -343,31 +268,6 @@ body {
     z-index: 2;
     cursor: crosshair;
     background: transparent;
-}
-
-.trace-hint {
-    position: absolute;
-    bottom: 40px;
-    font-size: 1.3rem;
-    color: #666;
-    z-index: 10;
-    pointer-events: none;
-    animation: hintFloat 2s ease-in-out infinite;
-    transition: opacity 0.3s;
-}
-
-@keyframes hintFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-}
-
-.trace-controls {
-    display: flex;
-    gap: 30px;
-    justify-content: center;
-    padding: 25px 30px;
-    background: rgba(255,255,255,0.9);
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
 }
 
 .trace-control-btn {
@@ -406,49 +306,7 @@ body {
     animation: shake 0.4s ease-out;
 }
 
-.trace-try-again {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 2rem;
-    font-weight: bold;
-    color: #ff6b9d;
-    background: rgba(255,255,255,0.9);
-    padding: 15px 35px;
-    border-radius: 25px;
-    box-shadow: 0 8px 30px rgba(255,107,157,0.3);
-    z-index: 20;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.trace-try-again.show {
-    opacity: 1;
-}
-
-.trace-start-hint {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #43e97b;
-    background: rgba(255,255,255,0.9);
-    padding: 12px 28px;
-    border-radius: 20px;
-    box-shadow: 0 6px 20px rgba(67,233,123,0.3);
-    z-index: 20;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.trace-start-hint.show {
-    opacity: 1;
-}
+/* old trace hints removed */
 
 /* 圆点进度指示器 */
 .stroke-dot {
@@ -488,10 +346,6 @@ body {
     50% { transform: scale(1.2); }
     70% { transform: scale(0.9); }
     100% { transform: scale(1); opacity: 1; }
-}
-
-.trace-complete-btn.show {
-    animation: bounceIn 0.5s ease-out;
 }
 
 /* 庆祝动画*/
@@ -557,192 +411,6 @@ body {
     display: flex;
 }
 
-.book-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 30px;
-    background: rgba(255,255,255,0.95);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-}
-
-.book-back-btn {
-    background: linear-gradient(135deg, #888 0%, #666 100%);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 20px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    transition: transform 0.2s;
-}
-
-.book-back-btn:hover {
-    transform: scale(1.05);
-}
-
-.book-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.book-letter {
-    font-size: 2.5rem;
-    font-weight: bold;
-    background: linear-gradient(135deg, #ff6b9d 0%, #ff8a80 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.book-title-text {
-    font-size: 1.5rem;
-    color: #666;
-}
-
-.book-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    overflow-y: auto;
-}
-
-.word-card {
-    background: white;
-    border-radius: 30px;
-    padding: 25px 30px;
-    margin-bottom: 20px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.word-display {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.word-text {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #ff6b9d;
-    text-transform: lowercase;
-}
-
-.word-chinese {
-    font-size: 1.5rem;
-    color: #888;
-}
-
-.word-audio-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 25px;
-    font-size: 1.3rem;
-    cursor: pointer;
-    box-shadow: 0 6px 20px rgba(102,126,234,0.4);
-    transition: transform 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.word-audio-btn:hover {
-    transform: scale(1.08);
-}
-
-.word-audio-btn:active {
-    transform: scale(0.95);
-}
-
-.book-canvas-container {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    padding: 20px;
-    min-height: 300px;
-}
-
-.book-canvas {
-    position: absolute;
-    border-radius: 40px;
-    background: white;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-    touch-action: none;
-}
-
-.book-canvas.guide {
-    z-index: 1;
-}
-
-.book-canvas.draw {
-    z-index: 2;
-    cursor: crosshair;
-    background: transparent;
-}
-
-.book-hint {
-    position: absolute;
-    bottom: 30px;
-    font-size: 1.2rem;
-    color: #888;
-    z-index: 10;
-    pointer-events: none;
-    animation: hintFloat 2s ease-in-out infinite;
-}
-
-.book-controls {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    padding: 20px 30px;
-    background: rgba(255,255,255,0.95);
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-    flex-wrap: wrap;
-}
-
-.book-control-btn {
-    background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
-    color: white;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 25px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    box-shadow: 0 6px 20px rgba(161,140,209,0.4);
-    transition: transform 0.2s, opacity 0.3s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.book-control-btn:hover {
-    transform: scale(1.08);
-}
-
-.book-control-btn:active {
-    transform: scale(0.95);
-}
-
-.book-control-btn.complete {
-    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
-    box-shadow: 0 6px 20px rgba(67,233,123,0.4);
-}
-
-.book-control-btn.hidden {
-    opacity: 0;
-    pointer-events: none;
-}
 
 /* 响应式适配 */
 @media (max-width: 768px) {
@@ -761,49 +429,12 @@ body {
     .big-letter {
         font-size: 10rem;
     }
-    .book-title {
-        font-size: 1.2rem;
-    }
-    .book-letter {
-        font-size: 2rem;
-    }
-    .word-text {
-        font-size: 2rem;
-    }
-    .word-chinese {
-        font-size: 1.2rem;
-    }
-    .word-card {
-        padding: 20px;
-    }
-    .controls {
-        gap: 12px;
-    }
-    .audio-btn, .trace-btn, .book-btn {
-        padding: 15px 25px;
-        font-size: 1.2rem;
-    }
-    .trace-header {
-        padding: 12px 16px;
-    }
-    .trace-controls {
-        padding: 12px 16px;
-        gap: 16px;
-    }
-    .trace-back-btn {
-        padding: 8px 16px;
-        font-size: 1rem;
+    .big-letter-lower {
+        font-size: 3.5rem;
     }
     .trace-control-btn {
         padding: 10px 20px;
         font-size: 1.1rem;
-    }
-    .trace-hint {
-        font-size: 1.1rem;
-        bottom: 20px;
-    }
-    .trace-try-again {
-        font-size: 1.5rem;
     }
 }
 
