@@ -62,8 +62,55 @@
             <div id="btn-sketch" class="sub-entry-card sketch-entry">
                 <div class="sub-entry-icon">📐</div>
                 <div class="sub-entry-title">简笔画</div>
-                <div class="sub-entry-desc">敬请期待</div>
+                <div class="sub-entry-desc">100+ 模板</div>
             </div>
+        </div>
+    </div>
+
+    <!-- 简笔画选择网格 -->
+    <div id="sketch-grid-screen" class="screen">
+        <header class="detail-header">
+            <button id="sketch-grid-back-btn" class="back-btn">← 返回</button>
+            <h1 class="page-title">📐 选一个简笔画</h1>
+        </header>
+        <div id="sketch-grid" class="sketch-grid"></div>
+    </div>
+
+    <!-- 简笔画描红 -->
+    <div id="sketch-trace-screen" class="screen">
+        <div class="paint-header">
+            <button id="sketch-trace-back-btn" class="back-btn">← 返回</button>
+            <div class="paint-title" id="sketch-trace-title">🐱 小猫</div>
+            <button id="sketch-clear-btn" class="paint-clear-btn">🗑️ 清空</button>
+        </div>
+        <div class="paint-toolbar">
+            <div class="paint-colors" id="sketch-colors"></div>
+            <div class="paint-sizes" id="sketch-sizes"></div>
+        </div>
+        <div class="sketch-canvas-wrap">
+            <canvas id="sketch-guide-canvas" class="sketch-canvas-layer"></canvas>
+            <canvas id="sketch-draw-canvas" class="sketch-canvas-layer"></canvas>
+        </div>
+    </div>
+
+    <!-- 连线画选择网格 -->
+    <div id="connect-grid-screen" class="screen">
+        <header class="detail-header">
+            <button id="connect-grid-back-btn" class="back-btn">← 返回</button>
+            <h1 class="page-title">🔗 选一个连线画</h1>
+        </header>
+        <div id="connect-grid" class="sketch-grid"></div>
+    </div>
+
+    <!-- 连线画游戏 -->
+    <div id="connect-play-screen" class="screen">
+        <div class="count-header">
+            <button id="connect-play-back-btn" class="back-btn">← 返回</button>
+            <div class="count-title" id="connect-play-title">连线画</div>
+            <div class="count-score" id="connect-play-progress">1 / 10</div>
+        </div>
+        <div class="connect-canvas-wrap">
+            <canvas id="connect-canvas" class="connect-canvas"></canvas>
         </div>
     </div>
 
@@ -115,10 +162,10 @@
                 <div class="sub-entry-title">喂食游戏</div>
                 <div class="sub-entry-desc">喂小怪兽吃东西</div>
             </div>
-            <div class="sub-entry-card disabled">
+            <div id="btn-connect" class="sub-entry-card connect-entry">
                 <div class="sub-entry-icon">🔗</div>
                 <div class="sub-entry-title">连线画</div>
-                <div class="sub-entry-desc">敬请期待</div>
+                <div class="sub-entry-desc">按数字连点</div>
             </div>
         </div>
         <div class="numbers-section-title">📈 进阶练习</div>

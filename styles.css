@@ -2294,6 +2294,67 @@ body {
     opacity: 0;
 }
 
+/* === Phase 3: 简笔画 + 连线画 === */
+.connect-entry { background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%); }
+
+.sketch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 12px;
+    padding: 16px;
+    max-width: 720px;
+    margin: 0 auto;
+}
+.sketch-tile {
+    aspect-ratio: 1;
+    border-radius: 18px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    cursor: pointer;
+    transition: transform 0.15s;
+    padding: 4px;
+}
+.sketch-tile:active { transform: scale(0.92); }
+.sketch-tile-emoji { font-size: 2.4rem; }
+.sketch-tile-name { font-size: 0.7rem; color: #888; margin-top: 2px; text-align: center; }
+
+.sketch-canvas-wrap {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding: 8px 12px 20px;
+}
+.sketch-canvas-layer {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    touch-action: none;
+}
+.sketch-canvas-layer + .sketch-canvas-layer {
+    position: absolute;
+    background: transparent;
+    box-shadow: none;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.connect-canvas-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 12px;
+}
+.connect-canvas {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    touch-action: none;
+}
+
 /* === Vision tip === */
 .vision-tip {
     text-align: center;

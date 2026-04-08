@@ -3280,7 +3280,7 @@ function setupPhase1Listeners() {
 
   drawEntryBackBtn.addEventListener('click', () => goToHome());
   btnPaint.addEventListener('click', openPaintScreen);
-  btnSketch.addEventListener('click', () => speakChinese('简笔画功能即将上线'));
+  // btnSketch wired up in setupPhase3Listeners
 
   paintBackBtn.addEventListener('click', () => goBack());
   paintClearBtn.addEventListener('click', clearPaintCanvas);
@@ -3555,8 +3555,375 @@ function setupPhase2Listeners() {
   compareRight.addEventListener('click', () => handleCompareClick('right'));
 }
 
+// ============================================================
+// === Phase 3: 简笔画 + 连线画 ===
+// ============================================================
+
+// --- 简笔画 templates (emoji-based, ~100) ---
+const SKETCH_TEMPLATES = [
+  // Animals (30)
+  {e:'🐱',n:'小猫'},{e:'🐶',n:'小狗'},{e:'🐭',n:'老鼠'},{e:'🐹',n:'仓鼠'},{e:'🐰',n:'兔子'},
+  {e:'🦊',n:'狐狸'},{e:'🐻',n:'熊'},{e:'🐼',n:'熊猫'},{e:'🐨',n:'考拉'},{e:'🐯',n:'老虎'},
+  {e:'🦁',n:'狮子'},{e:'🐮',n:'奶牛'},{e:'🐷',n:'小猪'},{e:'🐸',n:'青蛙'},{e:'🐵',n:'猴子'},
+  {e:'🐔',n:'小鸡'},{e:'🐧',n:'企鹅'},{e:'🐦',n:'小鸟'},{e:'🦆',n:'鸭子'},{e:'🦉',n:'猫头鹰'},
+  {e:'🦋',n:'蝴蝶'},{e:'🐛',n:'毛毛虫'},{e:'🐝',n:'蜜蜂'},{e:'🐞',n:'瓢虫'},{e:'🐢',n:'乌龟'},
+  {e:'🐍',n:'小蛇'},{e:'🐠',n:'热带鱼'},{e:'🐬',n:'海豚'},{e:'🐳',n:'鲸鱼'},{e:'🦄',n:'独角兽'},
+  // Food (20)
+  {e:'🍎',n:'苹果'},{e:'🍌',n:'香蕉'},{e:'🍇',n:'葡萄'},{e:'🍓',n:'草莓'},{e:'🍉',n:'西瓜'},
+  {e:'🍊',n:'橙子'},{e:'🍑',n:'桃子'},{e:'🍒',n:'樱桃'},{e:'🥑',n:'牛油果'},{e:'🍕',n:'披萨'},
+  {e:'🍔',n:'汉堡'},{e:'🍟',n:'薯条'},{e:'🌭',n:'热狗'},{e:'🍩',n:'甜甜圈'},{e:'🍪',n:'饼干'},
+  {e:'🎂',n:'蛋糕'},{e:'🍦',n:'冰淇淋'},{e:'🍭',n:'棒棒糖'},{e:'🍿',n:'爆米花'},{e:'🥕',n:'胡萝卜'},
+  // Nature (15)
+  {e:'🌳',n:'大树'},{e:'🌲',n:'松树'},{e:'🌴',n:'椰子树'},{e:'🌵',n:'仙人掌'},{e:'🌸',n:'樱花'},
+  {e:'🌹',n:'玫瑰'},{e:'🌻',n:'向日葵'},{e:'🌼',n:'小花'},{e:'🌷',n:'郁金香'},{e:'🍄',n:'蘑菇'},
+  {e:'🌞',n:'太阳'},{e:'🌙',n:'月亮'},{e:'⭐',n:'星星'},{e:'☁️',n:'云朵'},{e:'🌈',n:'彩虹'},
+  // Vehicles (10)
+  {e:'🚗',n:'小汽车'},{e:'🚕',n:'出租车'},{e:'🚌',n:'巴士'},{e:'🚓',n:'警车'},{e:'🚑',n:'救护车'},
+  {e:'🚒',n:'消防车'},{e:'🚜',n:'拖拉机'},{e:'🚲',n:'自行车'},{e:'🚂',n:'火车'},{e:'✈️',n:'飞机'},
+  // Objects (15)
+  {e:'🏠',n:'房子'},{e:'🏰',n:'城堡'},{e:'⛵',n:'帆船'},{e:'🚀',n:'火箭'},{e:'🎈',n:'气球'},
+  {e:'🎁',n:'礼物'},{e:'🎩',n:'帽子'},{e:'👑',n:'皇冠'},{e:'⚽',n:'足球'},{e:'🏀',n:'篮球'},
+  {e:'🎸',n:'吉他'},{e:'🥁',n:'小鼓'},{e:'🪁',n:'风筝'},{e:'⚓',n:'锚'},{e:'❤️',n:'爱心'},
+];
+
+// --- 连线画 patterns: hand-defined dots in 0-100 normalized space ---
+// Each pattern: name, emoji shown on completion, dots [{x,y}]
+const CONNECT_PATTERNS = [
+  { name: '星星', emoji: '⭐', dots: [
+    {x:50,y:10},{x:62,y:38},{x:90,y:38},{x:68,y:58},{x:78,y:88},
+    {x:50,y:70},{x:22,y:88},{x:32,y:58},{x:10,y:38},{x:38,y:38},
+  ]},
+  { name: '房子', emoji: '🏠', dots: [
+    {x:50,y:10},{x:90,y:45},{x:80,y:45},{x:80,y:88},{x:20,y:88},{x:20,y:45},{x:10,y:45},
+  ]},
+  { name: '小鱼', emoji: '🐟', dots: [
+    {x:20,y:50},{x:50,y:25},{x:80,y:35},{x:90,y:50},{x:80,y:65},{x:50,y:75},{x:20,y:50},
+  ]},
+  { name: '爱心', emoji: '❤️', dots: [
+    {x:50,y:30},{x:35,y:18},{x:18,y:25},{x:15,y:45},{x:35,y:65},{x:50,y:85},
+    {x:65,y:65},{x:85,y:45},{x:82,y:25},{x:65,y:18},{x:50,y:30},
+  ]},
+  { name: '雨伞', emoji: '☂️', dots: [
+    {x:15,y:55},{x:50,y:15},{x:85,y:55},{x:70,y:50},{x:55,y:55},{x:55,y:90},{x:65,y:90},
+  ]},
+  { name: '帆船', emoji: '⛵', dots: [
+    {x:55,y:15},{x:55,y:65},{x:25,y:65},{x:55,y:65},{x:85,y:65},{x:75,y:85},{x:25,y:85},{x:15,y:65},{x:55,y:65},
+  ]},
+  { name: '小花', emoji: '🌸', dots: [
+    {x:50,y:20},{x:70,y:30},{x:75,y:50},{x:65,y:68},{x:50,y:75},{x:35,y:68},{x:25,y:50},{x:30,y:30},{x:50,y:20},
+  ]},
+  { name: '苹果', emoji: '🍎', dots: [
+    {x:50,y:20},{x:35,y:25},{x:20,y:45},{x:25,y:75},{x:50,y:88},{x:75,y:75},{x:80,y:45},{x:65,y:25},{x:50,y:20},
+  ]},
+  { name: '风筝', emoji: '🪁', dots: [
+    {x:50,y:10},{x:80,y:45},{x:50,y:80},{x:20,y:45},{x:50,y:10},
+  ]},
+  { name: '太阳', emoji: '🌞', dots: [
+    {x:50,y:25},{x:65,y:30},{x:75,y:50},{x:65,y:70},{x:50,y:75},{x:35,y:70},{x:25,y:50},{x:35,y:30},{x:50,y:25},
+  ]},
+];
+
+// --- Sketch screens ---
+const sketchGridScreen = document.getElementById('sketch-grid-screen');
+const sketchGrid = document.getElementById('sketch-grid');
+const sketchGridBackBtn = document.getElementById('sketch-grid-back-btn');
+const sketchTraceScreen = document.getElementById('sketch-trace-screen');
+const sketchTraceBackBtn = document.getElementById('sketch-trace-back-btn');
+const sketchTraceTitle = document.getElementById('sketch-trace-title');
+const sketchClearBtn = document.getElementById('sketch-clear-btn');
+const sketchColors = document.getElementById('sketch-colors');
+const sketchSizes = document.getElementById('sketch-sizes');
+const sketchGuideCanvas = document.getElementById('sketch-guide-canvas');
+const sketchDrawCanvas = document.getElementById('sketch-draw-canvas');
+
+let sketchCurrentTpl = null;
+let sketchCurrentColor = '#ff3b30';
+let sketchCurrentSize = 8;
+let sketchDrawing = false, sketchLastX = 0, sketchLastY = 0;
+
+function openSketchGridScreen() {
+  navigateTo(sketchGridScreen, 'forward');
+  buildSketchGrid();
+}
+
+function buildSketchGrid() {
+  sketchGrid.innerHTML = '';
+  SKETCH_TEMPLATES.forEach(t => {
+    const tile = document.createElement('div');
+    tile.className = 'sketch-tile';
+    tile.innerHTML = `<div class="sketch-tile-emoji">${t.e}</div><div class="sketch-tile-name">${t.n}</div>`;
+    tile.addEventListener('click', () => {
+      sketchCurrentTpl = t;
+      openSketchTraceScreen();
+    });
+    sketchGrid.appendChild(tile);
+  });
+}
+
+function openSketchTraceScreen() {
+  navigateTo(sketchTraceScreen, 'forward');
+  sketchTraceTitle.textContent = sketchCurrentTpl.e + ' ' + sketchCurrentTpl.n;
+  setTimeout(setupSketchCanvas, 50);
+  speakChinese('画一个 ' + sketchCurrentTpl.n);
+}
+
+function setupSketchCanvas() {
+  const headerH = sketchTraceScreen.querySelector('.paint-header').offsetHeight;
+  const toolbarH = sketchTraceScreen.querySelector('.paint-toolbar').offsetHeight;
+  const size = Math.min(window.innerWidth - 24, window.innerHeight - headerH - toolbarH - 40, 600);
+  [sketchGuideCanvas, sketchDrawCanvas].forEach(c => {
+    c.width = size; c.height = size;
+    c.style.width = size + 'px'; c.style.height = size + 'px';
+  });
+  drawSketchGuide();
+}
+
+function drawSketchGuide() {
+  const ctx = sketchGuideCanvas.getContext('2d');
+  const w = sketchGuideCanvas.width, h = sketchGuideCanvas.height;
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = 'white';
+  ctx.fillRect(0, 0, w, h);
+  // Draw emoji big and faint as a tracing guide
+  ctx.save();
+  ctx.globalAlpha = 0.18;
+  ctx.font = `${h * 0.78}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  // Try grayscale via filter — falls back to colored if unsupported
+  ctx.filter = 'grayscale(100%) contrast(0.8)';
+  ctx.fillText(sketchCurrentTpl.e, w / 2, h / 2);
+  ctx.restore();
+  // Clear draw layer
+  const dctx = sketchDrawCanvas.getContext('2d');
+  dctx.clearRect(0, 0, w, h);
+}
+
+function buildSketchToolbar() {
+  sketchColors.innerHTML = '';
+  PAINT_COLORS.forEach(c => {
+    if (c === '#ffffff') return; // skip white in sketch context
+    const sw = document.createElement('div');
+    sw.className = 'paint-color-swatch' + (c === sketchCurrentColor ? ' active' : '');
+    sw.style.background = c;
+    sw.dataset.color = c;
+    sw.addEventListener('click', () => {
+      sketchCurrentColor = c;
+      sketchColors.querySelectorAll('.paint-color-swatch').forEach(el => el.classList.toggle('active', el.dataset.color === c));
+      playDing();
+    });
+    sketchColors.appendChild(sw);
+  });
+  sketchSizes.innerHTML = '';
+  [4, 8, 14].forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'paint-size-btn' + (s === sketchCurrentSize ? ' active' : '');
+    btn.dataset.size = s;
+    const dot = document.createElement('div');
+    dot.className = 'paint-size-dot';
+    dot.style.width = s + 'px'; dot.style.height = s + 'px';
+    btn.appendChild(dot);
+    btn.addEventListener('click', () => {
+      sketchCurrentSize = s;
+      sketchSizes.querySelectorAll('.paint-size-btn').forEach(el => el.classList.toggle('active', +el.dataset.size === s));
+      playDing();
+    });
+    sketchSizes.appendChild(btn);
+  });
+}
+
+function getSketchPos(e) {
+  const rect = sketchDrawCanvas.getBoundingClientRect();
+  const touch = e.touches ? e.touches[0] : e;
+  const sx = sketchDrawCanvas.width / rect.width;
+  const sy = sketchDrawCanvas.height / rect.height;
+  return { x: (touch.clientX - rect.left) * sx, y: (touch.clientY - rect.top) * sy };
+}
+function sketchStart(e) { e.preventDefault(); sketchDrawing = true; const p = getSketchPos(e); sketchLastX = p.x; sketchLastY = p.y; }
+function sketchMove(e) {
+  if (!sketchDrawing) return;
+  e.preventDefault();
+  const p = getSketchPos(e);
+  const ctx = sketchDrawCanvas.getContext('2d');
+  ctx.strokeStyle = sketchCurrentColor;
+  ctx.lineWidth = sketchCurrentSize;
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(sketchLastX, sketchLastY);
+  ctx.lineTo(p.x, p.y);
+  ctx.stroke();
+  sketchLastX = p.x; sketchLastY = p.y;
+}
+function sketchEnd() { sketchDrawing = false; }
+
+function clearSketchDraw() {
+  const ctx = sketchDrawCanvas.getContext('2d');
+  ctx.clearRect(0, 0, sketchDrawCanvas.width, sketchDrawCanvas.height);
+  playDing();
+}
+
+// --- 连线画 ---
+const connectGridScreen = document.getElementById('connect-grid-screen');
+const connectGrid = document.getElementById('connect-grid');
+const connectGridBackBtn = document.getElementById('connect-grid-back-btn');
+const connectPlayScreen = document.getElementById('connect-play-screen');
+const connectPlayBackBtn = document.getElementById('connect-play-back-btn');
+const connectPlayTitle = document.getElementById('connect-play-title');
+const connectPlayProgress = document.getElementById('connect-play-progress');
+const connectCanvas = document.getElementById('connect-canvas');
+
+let connectCurrentPattern = null;
+let connectCurrentDot = 0; // index of next dot to tap
+let connectCompleted = false;
+
+function openConnectGridScreen() {
+  navigateTo(connectGridScreen, 'forward');
+  buildConnectGrid();
+}
+function buildConnectGrid() {
+  connectGrid.innerHTML = '';
+  CONNECT_PATTERNS.forEach((p, idx) => {
+    const tile = document.createElement('div');
+    tile.className = 'sketch-tile';
+    tile.innerHTML = `<div class="sketch-tile-emoji">${p.emoji}</div><div class="sketch-tile-name">${p.name}</div>`;
+    tile.addEventListener('click', () => {
+      connectCurrentPattern = p;
+      openConnectPlayScreen();
+    });
+    connectGrid.appendChild(tile);
+  });
+}
+
+function openConnectPlayScreen() {
+  navigateTo(connectPlayScreen, 'forward');
+  connectPlayTitle.textContent = connectCurrentPattern.emoji + ' ' + connectCurrentPattern.name;
+  connectCurrentDot = 0;
+  connectCompleted = false;
+  setTimeout(setupConnectCanvas, 50);
+  speakChinese('按数字顺序连一连');
+}
+
+function setupConnectCanvas() {
+  const headerH = connectPlayScreen.querySelector('.count-header').offsetHeight;
+  const size = Math.min(window.innerWidth - 24, window.innerHeight - headerH - 60, 600);
+  connectCanvas.width = size; connectCanvas.height = size;
+  connectCanvas.style.width = size + 'px';
+  connectCanvas.style.height = size + 'px';
+  drawConnect();
+}
+
+function drawConnect() {
+  const ctx = connectCanvas.getContext('2d');
+  const w = connectCanvas.width, h = connectCanvas.height;
+  ctx.clearRect(0, 0, w, h);
+  ctx.fillStyle = 'white';
+  ctx.fillRect(0, 0, w, h);
+
+  const dots = connectCurrentPattern.dots;
+  // Draw lines connecting completed dots
+  ctx.strokeStyle = '#ff6b9d';
+  ctx.lineWidth = 5;
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.beginPath();
+  for (let i = 0; i < connectCurrentDot; i++) {
+    const d = dots[i];
+    const x = d.x * w / 100, y = d.y * h / 100;
+    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // Draw dots
+  dots.forEach((d, i) => {
+    const x = d.x * w / 100, y = d.y * h / 100;
+    const isNext = i === connectCurrentDot && !connectCompleted;
+    const isDone = i < connectCurrentDot;
+    ctx.beginPath();
+    ctx.arc(x, y, isNext ? 22 : 18, 0, Math.PI * 2);
+    ctx.fillStyle = isDone ? '#84fab0' : (isNext ? '#ff6b9d' : 'white');
+    ctx.fill();
+    ctx.strokeStyle = isNext ? '#ff3b30' : '#888';
+    ctx.lineWidth = isNext ? 3 : 2;
+    ctx.stroke();
+    ctx.fillStyle = isDone || isNext ? 'white' : '#555';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(String(i + 1), x, y);
+  });
+
+  connectPlayProgress.textContent = `${Math.min(connectCurrentDot + 1, dots.length)} / ${dots.length}`;
+
+  if (connectCompleted) {
+    // Draw big emoji in center
+    ctx.save();
+    ctx.globalAlpha = 0.85;
+    ctx.font = `${h * 0.45}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(connectCurrentPattern.emoji, w / 2, h / 2);
+    ctx.restore();
+  }
+}
+
+function getConnectPos(e) {
+  const rect = connectCanvas.getBoundingClientRect();
+  const touch = e.touches ? e.touches[0] : e;
+  const sx = connectCanvas.width / rect.width;
+  const sy = connectCanvas.height / rect.height;
+  return { x: (touch.clientX - rect.left) * sx, y: (touch.clientY - rect.top) * sy };
+}
+
+function onConnectTap(e) {
+  if (connectCompleted) return;
+  e.preventDefault();
+  const p = getConnectPos(e);
+  const dots = connectCurrentPattern.dots;
+  const target = dots[connectCurrentDot];
+  const w = connectCanvas.width, h = connectCanvas.height;
+  const tx = target.x * w / 100, ty = target.y * h / 100;
+  if (Math.hypot(p.x - tx, p.y - ty) < 35) {
+    connectCurrentDot++;
+    playDing();
+    if (connectCurrentDot >= dots.length) {
+      connectCompleted = true;
+      drawConnect();
+      playSuccess();
+      speakChinese('画好啦，是 ' + connectCurrentPattern.name);
+      showParticleCelebration();
+    } else {
+      drawConnect();
+    }
+  } else {
+    playWrong();
+  }
+}
+
+function setupPhase3Listeners() {
+  btnSketch.addEventListener('click', openSketchGridScreen);
+  document.getElementById('btn-connect').addEventListener('click', openConnectGridScreen);
+
+  sketchGridBackBtn.addEventListener('click', () => goBack());
+  sketchTraceBackBtn.addEventListener('click', () => goBack());
+  sketchClearBtn.addEventListener('click', clearSketchDraw);
+  sketchDrawCanvas.addEventListener('mousedown', sketchStart);
+  sketchDrawCanvas.addEventListener('mousemove', sketchMove);
+  sketchDrawCanvas.addEventListener('mouseup', sketchEnd);
+  sketchDrawCanvas.addEventListener('mouseleave', sketchEnd);
+  sketchDrawCanvas.addEventListener('touchstart', sketchStart, { passive: false });
+  sketchDrawCanvas.addEventListener('touchmove', sketchMove, { passive: false });
+  sketchDrawCanvas.addEventListener('touchend', sketchEnd);
+
+  connectGridBackBtn.addEventListener('click', () => goBack());
+  connectPlayBackBtn.addEventListener('click', () => goBack());
+  connectCanvas.addEventListener('mousedown', onConnectTap);
+  connectCanvas.addEventListener('touchstart', onConnectTap, { passive: false });
+
+  buildSketchToolbar();
+}
+
 setupPhase1Listeners();
 setupPhase2Listeners();
+setupPhase3Listeners();
 
 window.addEventListener('resize', () => {
   if (currentScreen === paintScreen) {
