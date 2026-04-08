@@ -1794,6 +1794,67 @@ body {
     box-shadow: 0 8px 20px rgba(255, 215, 0, 0.4);
 }
 
+/* === Trace words strip === */
+.trace-words-strip {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 12px 16px 16px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+.trace-words-strip::-webkit-scrollbar { height: 6px; }
+.trace-words-strip::-webkit-scrollbar-thumb { background: rgba(255,107,157,0.3); border-radius: 3px; }
+.trace-word-card {
+    flex: 0 0 auto;
+    width: 110px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 8px 10px;
+}
+.trace-word-card:active {
+    transform: scale(0.93);
+}
+.trace-word-img-wrap {
+    width: 94px;
+    height: 94px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #ffeef5 0%, #fff5e6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+.trace-word-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.trace-word-img-wrap .trace-word-emoji {
+    font-size: 3rem;
+}
+.trace-word-en {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #333;
+    margin-top: 6px;
+    text-align: center;
+    line-height: 1.1;
+}
+.trace-word-zh {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 2px;
+}
+
 /* === Vision tip === */
 .vision-tip {
     text-align: center;

@@ -3,135 +3,212 @@
 // 字母数据 — 每个字母对应 3-4 个常见单词
 const ALPHABET_DATA = [
   { letter: 'A', lower: 'a', words: [
-    { word: 'apple', chinese: '苹果', imgQuery: 'red apple fruit', emoji: '🍎' },
-    { word: 'ant', chinese: '蚂蚁', imgQuery: 'ant insect close', emoji: '🐜' },
-    { word: 'airplane', chinese: '飞机', imgQuery: 'airplane blue sky', emoji: '✈️' },
+    { word: 'apple', chinese: '苹果', imgQuery: 'red apple', emoji: '🍎' },
+    { word: 'ant', chinese: '蚂蚁', imgQuery: 'ant insect', emoji: '🐜' },
+    { word: 'airplane', chinese: '飞机', imgQuery: 'airplane sky', emoji: '✈️' },
+    { word: 'alligator', chinese: '短吻鳄', imgQuery: 'alligator', emoji: '🐊' },
+    { word: 'apricot', chinese: '杏', imgQuery: 'apricot fruit', emoji: '🍑' },
+    { word: 'arrow', chinese: '箭', imgQuery: 'arrow target', emoji: '🏹' },
   ]},
   { letter: 'B', lower: 'b', words: [
     { word: 'ball', chinese: '球', imgQuery: 'colorful ball toy', emoji: '⚽' },
-    { word: 'banana', chinese: '香蕉', imgQuery: 'banana fruit yellow', emoji: '🍌' },
-    { word: 'bear', chinese: '熊', imgQuery: 'cute bear animal', emoji: '🐻' },
-    { word: 'butterfly', chinese: '蝴蝶', imgQuery: 'butterfly colorful wings', emoji: '🦋' },
+    { word: 'banana', chinese: '香蕉', imgQuery: 'banana yellow', emoji: '🍌' },
+    { word: 'bear', chinese: '熊', imgQuery: 'cute bear', emoji: '🐻' },
+    { word: 'butterfly', chinese: '蝴蝶', imgQuery: 'butterfly wings', emoji: '🦋' },
+    { word: 'bee', chinese: '蜜蜂', imgQuery: 'bee honey', emoji: '🐝' },
+    { word: 'book', chinese: '书', imgQuery: 'book children', emoji: '📕' },
   ]},
   { letter: 'C', lower: 'c', words: [
-    { word: 'cat', chinese: '猫', imgQuery: 'cute cat kitten', emoji: '🐱' },
-    { word: 'cake', chinese: '蛋糕', imgQuery: 'birthday cake colorful', emoji: '🎂' },
-    { word: 'car', chinese: '汽车', imgQuery: 'toy car colorful', emoji: '🚗' },
+    { word: 'cat', chinese: '猫', imgQuery: 'cute kitten', emoji: '🐱' },
+    { word: 'cake', chinese: '蛋糕', imgQuery: 'birthday cake', emoji: '🎂' },
+    { word: 'car', chinese: '汽车', imgQuery: 'toy car', emoji: '🚗' },
+    { word: 'cookie', chinese: '饼干', imgQuery: 'cookie chocolate', emoji: '🍪' },
+    { word: 'cow', chinese: '奶牛', imgQuery: 'cow farm', emoji: '🐮' },
+    { word: 'cloud', chinese: '云', imgQuery: 'cloud sky', emoji: '☁️' },
   ]},
   { letter: 'D', lower: 'd', words: [
-    { word: 'dog', chinese: '狗', imgQuery: 'cute puppy dog', emoji: '🐶' },
-    { word: 'duck', chinese: '鸭子', imgQuery: 'yellow duck bird', emoji: '🦆' },
-    { word: 'dolphin', chinese: '海豚', imgQuery: 'dolphin ocean jumping', emoji: '🐬' },
+    { word: 'dog', chinese: '狗', imgQuery: 'cute puppy', emoji: '🐶' },
+    { word: 'duck', chinese: '鸭子', imgQuery: 'yellow duck', emoji: '🦆' },
+    { word: 'dolphin', chinese: '海豚', imgQuery: 'dolphin ocean', emoji: '🐬' },
+    { word: 'dinosaur', chinese: '恐龙', imgQuery: 'dinosaur', emoji: '🦖' },
+    { word: 'donut', chinese: '甜甜圈', imgQuery: 'donut sweet', emoji: '🍩' },
+    { word: 'drum', chinese: '鼓', imgQuery: 'drum music', emoji: '🥁' },
   ]},
   { letter: 'E', lower: 'e', words: [
-    { word: 'elephant', chinese: '大象', imgQuery: 'elephant animal safari', emoji: '🐘' },
-    { word: 'egg', chinese: '鸡蛋', imgQuery: 'egg breakfast food', emoji: '🥚' },
-    { word: 'eagle', chinese: '鹰', imgQuery: 'eagle bird flying', emoji: '🦅' },
+    { word: 'elephant', chinese: '大象', imgQuery: 'elephant', emoji: '🐘' },
+    { word: 'egg', chinese: '鸡蛋', imgQuery: 'egg breakfast', emoji: '🥚' },
+    { word: 'eagle', chinese: '鹰', imgQuery: 'eagle bird', emoji: '🦅' },
+    { word: 'eye', chinese: '眼睛', imgQuery: 'eye closeup', emoji: '👁️' },
+    { word: 'ear', chinese: '耳朵', imgQuery: 'ear', emoji: '👂' },
+    { word: 'eggplant', chinese: '茄子', imgQuery: 'eggplant', emoji: '🍆' },
   ]},
   { letter: 'F', lower: 'f', words: [
-    { word: 'fish', chinese: '鱼', imgQuery: 'colorful fish underwater', emoji: '🐟' },
-    { word: 'flower', chinese: '花', imgQuery: 'beautiful flower garden', emoji: '🌸' },
-    { word: 'frog', chinese: '青蛙', imgQuery: 'green frog cute', emoji: '🐸' },
+    { word: 'fish', chinese: '鱼', imgQuery: 'colorful fish', emoji: '🐟' },
+    { word: 'flower', chinese: '花', imgQuery: 'beautiful flower', emoji: '🌸' },
+    { word: 'frog', chinese: '青蛙', imgQuery: 'green frog', emoji: '🐸' },
+    { word: 'fox', chinese: '狐狸', imgQuery: 'fox animal', emoji: '🦊' },
+    { word: 'fire', chinese: '火', imgQuery: 'fire flame', emoji: '🔥' },
+    { word: 'foot', chinese: '脚', imgQuery: 'foot baby', emoji: '🦶' },
   ]},
   { letter: 'G', lower: 'g', words: [
-    { word: 'grape', chinese: '葡萄', imgQuery: 'purple grape fruit', emoji: '🍇' },
-    { word: 'giraffe', chinese: '长颈鹿', imgQuery: 'giraffe tall animal', emoji: '🦒' },
-    { word: 'guitar', chinese: '吉他', imgQuery: 'guitar musical instrument', emoji: '🎸' },
+    { word: 'grape', chinese: '葡萄', imgQuery: 'purple grape', emoji: '🍇' },
+    { word: 'giraffe', chinese: '长颈鹿', imgQuery: 'giraffe', emoji: '🦒' },
+    { word: 'guitar', chinese: '吉他', imgQuery: 'guitar', emoji: '🎸' },
+    { word: 'goat', chinese: '山羊', imgQuery: 'goat farm', emoji: '🐐' },
+    { word: 'grass', chinese: '草', imgQuery: 'green grass', emoji: '🌱' },
+    { word: 'gift', chinese: '礼物', imgQuery: 'gift box', emoji: '🎁' },
   ]},
   { letter: 'H', lower: 'h', words: [
-    { word: 'house', chinese: '房子', imgQuery: 'cute house home', emoji: '🏠' },
-    { word: 'horse', chinese: '马', imgQuery: 'horse running field', emoji: '🐴' },
-    { word: 'hat', chinese: '帽子', imgQuery: 'colorful hat cap', emoji: '🎩' },
+    { word: 'house', chinese: '房子', imgQuery: 'cute house', emoji: '🏠' },
+    { word: 'horse', chinese: '马', imgQuery: 'horse field', emoji: '🐴' },
+    { word: 'hat', chinese: '帽子', imgQuery: 'hat', emoji: '🎩' },
+    { word: 'hen', chinese: '母鸡', imgQuery: 'hen chicken', emoji: '🐔' },
+    { word: 'heart', chinese: '心', imgQuery: 'red heart', emoji: '❤️' },
+    { word: 'hand', chinese: '手', imgQuery: 'hand', emoji: '✋' },
   ]},
   { letter: 'I', lower: 'i', words: [
-    { word: 'ice cream', chinese: '冰淇淋', imgQuery: 'ice cream colorful cone', emoji: '🍦' },
-    { word: 'island', chinese: '岛屿', imgQuery: 'tropical island beach', emoji: '🏝️' },
-    { word: 'igloo', chinese: '冰屋', imgQuery: 'igloo snow winter', emoji: '🏔️' },
+    { word: 'ice cream', chinese: '冰淇淋', imgQuery: 'ice cream cone', emoji: '🍦' },
+    { word: 'island', chinese: '岛屿', imgQuery: 'tropical island', emoji: '🏝️' },
+    { word: 'igloo', chinese: '冰屋', imgQuery: 'igloo snow', emoji: '🏔️' },
+    { word: 'ink', chinese: '墨水', imgQuery: 'ink bottle', emoji: '🖋️' },
+    { word: 'iguana', chinese: '鬣蜥', imgQuery: 'iguana lizard', emoji: '🦎' },
+    { word: 'insect', chinese: '昆虫', imgQuery: 'insect bug', emoji: '🐛' },
   ]},
   { letter: 'J', lower: 'j', words: [
-    { word: 'juice', chinese: '果汁', imgQuery: 'orange juice glass', emoji: '🧃' },
-    { word: 'jellyfish', chinese: '水母', imgQuery: 'jellyfish ocean glowing', emoji: '🪼' },
-    { word: 'jungle', chinese: '丛林', imgQuery: 'jungle tropical forest', emoji: '🌴' },
+    { word: 'juice', chinese: '果汁', imgQuery: 'orange juice', emoji: '🧃' },
+    { word: 'jellyfish', chinese: '水母', imgQuery: 'jellyfish', emoji: '🪼' },
+    { word: 'jungle', chinese: '丛林', imgQuery: 'jungle forest', emoji: '🌴' },
+    { word: 'jam', chinese: '果酱', imgQuery: 'strawberry jam', emoji: '🍓' },
+    { word: 'jacket', chinese: '夹克', imgQuery: 'jacket clothes', emoji: '🧥' },
+    { word: 'jeep', chinese: '吉普车', imgQuery: 'jeep car', emoji: '🚙' },
   ]},
   { letter: 'K', lower: 'k', words: [
-    { word: 'kite', chinese: '风筝', imgQuery: 'kite flying sky colorful', emoji: '🪁' },
-    { word: 'koala', chinese: '考拉', imgQuery: 'koala cute animal tree', emoji: '🐨' },
-    { word: 'key', chinese: '钥匙', imgQuery: 'golden key vintage', emoji: '🔑' },
+    { word: 'kite', chinese: '风筝', imgQuery: 'kite flying', emoji: '🪁' },
+    { word: 'koala', chinese: '考拉', imgQuery: 'koala', emoji: '🐨' },
+    { word: 'key', chinese: '钥匙', imgQuery: 'golden key', emoji: '🔑' },
+    { word: 'kangaroo', chinese: '袋鼠', imgQuery: 'kangaroo', emoji: '🦘' },
+    { word: 'king', chinese: '国王', imgQuery: 'king crown', emoji: '🤴' },
+    { word: 'kiwi', chinese: '猕猴桃', imgQuery: 'kiwi fruit', emoji: '🥝' },
   ]},
   { letter: 'L', lower: 'l', words: [
-    { word: 'lion', chinese: '狮子', imgQuery: 'lion animal safari', emoji: '🦁' },
-    { word: 'lemon', chinese: '柠檬', imgQuery: 'lemon yellow fruit', emoji: '🍋' },
-    { word: 'ladybug', chinese: '瓢虫', imgQuery: 'ladybug insect red', emoji: '🐞' },
+    { word: 'lion', chinese: '狮子', imgQuery: 'lion', emoji: '🦁' },
+    { word: 'lemon', chinese: '柠檬', imgQuery: 'lemon yellow', emoji: '🍋' },
+    { word: 'ladybug', chinese: '瓢虫', imgQuery: 'ladybug', emoji: '🐞' },
+    { word: 'leaf', chinese: '叶子', imgQuery: 'green leaf', emoji: '🍃' },
+    { word: 'lamp', chinese: '台灯', imgQuery: 'lamp light', emoji: '💡' },
+    { word: 'lollipop', chinese: '棒棒糖', imgQuery: 'lollipop candy', emoji: '🍭' },
   ]},
   { letter: 'M', lower: 'm', words: [
-    { word: 'moon', chinese: '月亮', imgQuery: 'full moon night sky', emoji: '🌙' },
-    { word: 'monkey', chinese: '猴子', imgQuery: 'monkey cute animal', emoji: '🐵' },
-    { word: 'mushroom', chinese: '蘑菇', imgQuery: 'mushroom forest colorful', emoji: '🍄' },
+    { word: 'moon', chinese: '月亮', imgQuery: 'full moon', emoji: '🌙' },
+    { word: 'monkey', chinese: '猴子', imgQuery: 'monkey', emoji: '🐵' },
+    { word: 'mushroom', chinese: '蘑菇', imgQuery: 'mushroom', emoji: '🍄' },
+    { word: 'milk', chinese: '牛奶', imgQuery: 'milk glass', emoji: '🥛' },
+    { word: 'mouse', chinese: '老鼠', imgQuery: 'mouse', emoji: '🐭' },
+    { word: 'mango', chinese: '芒果', imgQuery: 'mango fruit', emoji: '🥭' },
   ]},
   { letter: 'N', lower: 'n', words: [
-    { word: 'nest', chinese: '鸟巢', imgQuery: 'bird nest eggs tree', emoji: '🪹' },
-    { word: 'nose', chinese: '鼻子', imgQuery: 'cute nose face', emoji: '👃' },
-    { word: 'nut', chinese: '坚果', imgQuery: 'nuts walnut almond', emoji: '🥜' },
+    { word: 'nest', chinese: '鸟巢', imgQuery: 'bird nest', emoji: '🪹' },
+    { word: 'nose', chinese: '鼻子', imgQuery: 'nose', emoji: '👃' },
+    { word: 'nut', chinese: '坚果', imgQuery: 'walnut nut', emoji: '🥜' },
+    { word: 'noodle', chinese: '面条', imgQuery: 'noodles', emoji: '🍜' },
+    { word: 'newspaper', chinese: '报纸', imgQuery: 'newspaper', emoji: '📰' },
+    { word: 'night', chinese: '夜晚', imgQuery: 'night sky', emoji: '🌃' },
   ]},
   { letter: 'O', lower: 'o', words: [
-    { word: 'orange', chinese: '橙子', imgQuery: 'orange fruit citrus', emoji: '🍊' },
-    { word: 'owl', chinese: '猫头鹰', imgQuery: 'owl bird night cute', emoji: '🦉' },
-    { word: 'octopus', chinese: '章鱼', imgQuery: 'octopus ocean cute', emoji: '🐙' },
+    { word: 'orange', chinese: '橙子', imgQuery: 'orange fruit', emoji: '🍊' },
+    { word: 'owl', chinese: '猫头鹰', imgQuery: 'owl', emoji: '🦉' },
+    { word: 'octopus', chinese: '章鱼', imgQuery: 'octopus', emoji: '🐙' },
+    { word: 'ocean', chinese: '海洋', imgQuery: 'ocean wave', emoji: '🌊' },
+    { word: 'onion', chinese: '洋葱', imgQuery: 'onion', emoji: '🧅' },
+    { word: 'orange juice', chinese: '橙汁', imgQuery: 'orange juice', emoji: '🥤' },
   ]},
   { letter: 'P', lower: 'p', words: [
-    { word: 'panda', chinese: '熊猫', imgQuery: 'panda cute animal bamboo', emoji: '🐼' },
-    { word: 'penguin', chinese: '企鹅', imgQuery: 'penguin cute ice', emoji: '🐧' },
-    { word: 'pizza', chinese: '披萨', imgQuery: 'pizza cheese delicious', emoji: '🍕' },
+    { word: 'panda', chinese: '熊猫', imgQuery: 'panda bamboo', emoji: '🐼' },
+    { word: 'penguin', chinese: '企鹅', imgQuery: 'penguin', emoji: '🐧' },
+    { word: 'pizza', chinese: '披萨', imgQuery: 'pizza', emoji: '🍕' },
+    { word: 'pig', chinese: '猪', imgQuery: 'pig farm', emoji: '🐷' },
+    { word: 'peach', chinese: '桃子', imgQuery: 'peach fruit', emoji: '🍑' },
+    { word: 'pencil', chinese: '铅笔', imgQuery: 'pencil', emoji: '✏️' },
   ]},
   { letter: 'Q', lower: 'q', words: [
-    { word: 'queen', chinese: '女王', imgQuery: 'queen crown royal', emoji: '👸' },
-    { word: 'quail', chinese: '鹌鹑', imgQuery: 'quail bird cute', emoji: '🐦' },
-    { word: 'quilt', chinese: '被子', imgQuery: 'colorful quilt blanket', emoji: '🛏️' },
+    { word: 'queen', chinese: '女王', imgQuery: 'queen crown', emoji: '👸' },
+    { word: 'quail', chinese: '鹌鹑', imgQuery: 'quail bird', emoji: '🐦' },
+    { word: 'quilt', chinese: '被子', imgQuery: 'quilt blanket', emoji: '🛏️' },
+    { word: 'question', chinese: '问题', imgQuery: 'question mark', emoji: '❓' },
+    { word: 'quokka', chinese: '短尾矮袋鼠', imgQuery: 'quokka', emoji: '🐹' },
+    { word: 'queue', chinese: '排队', imgQuery: 'queue line', emoji: '🚶' },
   ]},
   { letter: 'R', lower: 'r', words: [
-    { word: 'rabbit', chinese: '兔子', imgQuery: 'rabbit bunny cute', emoji: '🐰' },
-    { word: 'rainbow', chinese: '彩虹', imgQuery: 'rainbow sky colorful', emoji: '🌈' },
-    { word: 'rocket', chinese: '火箭', imgQuery: 'rocket space launch', emoji: '🚀' },
+    { word: 'rabbit', chinese: '兔子', imgQuery: 'rabbit bunny', emoji: '🐰' },
+    { word: 'rainbow', chinese: '彩虹', imgQuery: 'rainbow', emoji: '🌈' },
+    { word: 'rocket', chinese: '火箭', imgQuery: 'rocket space', emoji: '🚀' },
+    { word: 'rose', chinese: '玫瑰', imgQuery: 'red rose', emoji: '🌹' },
+    { word: 'rain', chinese: '雨', imgQuery: 'rain drops', emoji: '🌧️' },
+    { word: 'rice', chinese: '米饭', imgQuery: 'rice bowl', emoji: '🍚' },
   ]},
   { letter: 'S', lower: 's', words: [
-    { word: 'star', chinese: '星星', imgQuery: 'star night sky shiny', emoji: '⭐' },
-    { word: 'sun', chinese: '太阳', imgQuery: 'sun sunshine bright', emoji: '☀️' },
-    { word: 'snake', chinese: '蛇', imgQuery: 'snake colorful reptile', emoji: '🐍' },
+    { word: 'star', chinese: '星星', imgQuery: 'star sky', emoji: '⭐' },
+    { word: 'sun', chinese: '太阳', imgQuery: 'sun', emoji: '☀️' },
+    { word: 'snake', chinese: '蛇', imgQuery: 'snake', emoji: '🐍' },
+    { word: 'strawberry', chinese: '草莓', imgQuery: 'strawberry', emoji: '🍓' },
+    { word: 'snow', chinese: '雪', imgQuery: 'snow winter', emoji: '❄️' },
+    { word: 'shoe', chinese: '鞋子', imgQuery: 'shoe', emoji: '👟' },
   ]},
   { letter: 'T', lower: 't', words: [
-    { word: 'tree', chinese: '树', imgQuery: 'big green tree nature', emoji: '🌳' },
-    { word: 'tiger', chinese: '老虎', imgQuery: 'tiger animal stripes', emoji: '🐯' },
-    { word: 'turtle', chinese: '乌龟', imgQuery: 'turtle cute green', emoji: '🐢' },
+    { word: 'tree', chinese: '树', imgQuery: 'green tree', emoji: '🌳' },
+    { word: 'tiger', chinese: '老虎', imgQuery: 'tiger', emoji: '🐯' },
+    { word: 'turtle', chinese: '乌龟', imgQuery: 'turtle', emoji: '🐢' },
+    { word: 'train', chinese: '火车', imgQuery: 'train', emoji: '🚂' },
+    { word: 'tomato', chinese: '番茄', imgQuery: 'tomato', emoji: '🍅' },
+    { word: 'tooth', chinese: '牙齿', imgQuery: 'tooth', emoji: '🦷' },
   ]},
   { letter: 'U', lower: 'u', words: [
-    { word: 'umbrella', chinese: '雨伞', imgQuery: 'colorful umbrella rain', emoji: '☂️' },
-    { word: 'unicorn', chinese: '独角兽', imgQuery: 'unicorn magical fantasy', emoji: '🦄' },
-    { word: 'ukulele', chinese: '尤克里里', imgQuery: 'ukulele instrument music', emoji: '🎵' },
+    { word: 'umbrella', chinese: '雨伞', imgQuery: 'umbrella rain', emoji: '☂️' },
+    { word: 'unicorn', chinese: '独角兽', imgQuery: 'unicorn', emoji: '🦄' },
+    { word: 'ukulele', chinese: '尤克里里', imgQuery: 'ukulele', emoji: '🎵' },
+    { word: 'uncle', chinese: '叔叔', imgQuery: 'uncle man', emoji: '👨' },
+    { word: 'underwear', chinese: '内衣', imgQuery: 'underwear', emoji: '🩲' },
+    { word: 'up', chinese: '向上', imgQuery: 'up arrow', emoji: '⬆️' },
   ]},
   { letter: 'V', lower: 'v', words: [
-    { word: 'violin', chinese: '小提琴', imgQuery: 'violin musical instrument', emoji: '🎻' },
-    { word: 'volcano', chinese: '火山', imgQuery: 'volcano eruption nature', emoji: '🌋' },
-    { word: 'vase', chinese: '花瓶', imgQuery: 'vase flowers beautiful', emoji: '🏺' },
+    { word: 'violin', chinese: '小提琴', imgQuery: 'violin', emoji: '🎻' },
+    { word: 'volcano', chinese: '火山', imgQuery: 'volcano', emoji: '🌋' },
+    { word: 'vase', chinese: '花瓶', imgQuery: 'vase flowers', emoji: '🏺' },
+    { word: 'van', chinese: '面包车', imgQuery: 'van vehicle', emoji: '🚐' },
+    { word: 'vegetable', chinese: '蔬菜', imgQuery: 'vegetables', emoji: '🥦' },
+    { word: 'violet', chinese: '紫罗兰', imgQuery: 'violet flower', emoji: '🌷' },
   ]},
   { letter: 'W', lower: 'w', words: [
-    { word: 'whale', chinese: '鲸鱼', imgQuery: 'whale ocean jumping', emoji: '🐳' },
-    { word: 'watermelon', chinese: '西瓜', imgQuery: 'watermelon slice fruit', emoji: '🍉' },
-    { word: 'wolf', chinese: '狼', imgQuery: 'wolf animal wild', emoji: '🐺' },
+    { word: 'whale', chinese: '鲸鱼', imgQuery: 'whale ocean', emoji: '🐳' },
+    { word: 'watermelon', chinese: '西瓜', imgQuery: 'watermelon', emoji: '🍉' },
+    { word: 'wolf', chinese: '狼', imgQuery: 'wolf', emoji: '🐺' },
+    { word: 'water', chinese: '水', imgQuery: 'water glass', emoji: '💧' },
+    { word: 'window', chinese: '窗户', imgQuery: 'window', emoji: '🪟' },
+    { word: 'watch', chinese: '手表', imgQuery: 'watch wrist', emoji: '⌚' },
   ]},
   { letter: 'X', lower: 'x', words: [
-    { word: 'xylophone', chinese: '木琴', imgQuery: 'xylophone colorful instrument', emoji: '🎵' },
-    { word: 'x-ray', chinese: 'X光', imgQuery: 'xray medical skeleton', emoji: '🩻' },
-    { word: 'fox', chinese: '狐狸', imgQuery: 'fox cute animal red', emoji: '🦊' },
+    { word: 'xylophone', chinese: '木琴', imgQuery: 'xylophone', emoji: '🎵' },
+    { word: 'x-ray', chinese: 'X光', imgQuery: 'xray', emoji: '🩻' },
+    { word: 'fox', chinese: '狐狸', imgQuery: 'fox', emoji: '🦊' },
+    { word: 'box', chinese: '盒子', imgQuery: 'box', emoji: '📦' },
+    { word: 'six', chinese: '六', imgQuery: 'number six', emoji: '6️⃣' },
+    { word: 'mix', chinese: '混合', imgQuery: 'mix bowl', emoji: '🥣' },
   ]},
   { letter: 'Y', lower: 'y', words: [
-    { word: 'yak', chinese: '牦牛', imgQuery: 'yak animal mountain', emoji: '🐂' },
-    { word: 'yacht', chinese: '游艇', imgQuery: 'yacht boat ocean', emoji: '🛥️' },
-    { word: 'yogurt', chinese: '酸奶', imgQuery: 'yogurt food breakfast', emoji: '🥛' },
+    { word: 'yak', chinese: '牦牛', imgQuery: 'yak', emoji: '🐂' },
+    { word: 'yacht', chinese: '游艇', imgQuery: 'yacht boat', emoji: '🛥️' },
+    { word: 'yogurt', chinese: '酸奶', imgQuery: 'yogurt', emoji: '🥛' },
+    { word: 'yellow', chinese: '黄色', imgQuery: 'yellow color', emoji: '💛' },
+    { word: 'yo-yo', chinese: '溜溜球', imgQuery: 'yoyo toy', emoji: '🪀' },
+    { word: 'yarn', chinese: '毛线', imgQuery: 'yarn ball', emoji: '🧶' },
   ]},
   { letter: 'Z', lower: 'z', words: [
-    { word: 'zebra', chinese: '斑马', imgQuery: 'zebra stripes animal', emoji: '🦓' },
-    { word: 'zoo', chinese: '动物园', imgQuery: 'zoo animals children', emoji: '🦁' },
-    { word: 'zipper', chinese: '拉链', imgQuery: 'zipper close colorful', emoji: '🧥' },
+    { word: 'zebra', chinese: '斑马', imgQuery: 'zebra', emoji: '🦓' },
+    { word: 'zoo', chinese: '动物园', imgQuery: 'zoo', emoji: '🦁' },
+    { word: 'zipper', chinese: '拉链', imgQuery: 'zipper', emoji: '🧥' },
+    { word: 'zero', chinese: '零', imgQuery: 'number zero', emoji: '0️⃣' },
+    { word: 'zigzag', chinese: '锯齿形', imgQuery: 'zigzag pattern', emoji: '⚡' },
+    { word: 'zucchini', chinese: '西葫芦', imgQuery: 'zucchini', emoji: '🥒' },
   ]},
 ];
 
@@ -1302,6 +1379,7 @@ const traceCompleteText = document.getElementById('trace-complete-text');
 const traceNextBtn = document.getElementById('trace-next-btn');
 const traceBackToGridBtn = document.getElementById('trace-back-to-grid-btn');
 const celebrationCanvas = document.getElementById('celebration-canvas');
+const traceWordsStrip = document.getElementById('trace-words-strip');
 
 // 视力表相关 DOM 元素
 const homeScreen = document.getElementById('home-screen');
@@ -1573,6 +1651,28 @@ function speakEnglish(text) {
 
 // === 字母描红（动画演示 + 自由书写）===
 
+function renderTraceWordsStrip() {
+  if (!currentLetter) return;
+  traceWordsStrip.innerHTML = '';
+  currentLetter.words.forEach(w => {
+    const card = document.createElement('div');
+    card.className = 'trace-word-card';
+    const query = encodeURIComponent(w.imgQuery || w.word);
+    card.innerHTML = `
+      <div class="trace-word-img-wrap">
+        <span class="trace-word-emoji">${w.emoji || '🌟'}</span>
+        <img src="https://source.unsplash.com/120x120/?${query}" alt="${w.word}"
+             onload="this.previousElementSibling.style.display='none'"
+             onerror="this.style.display='none'">
+      </div>
+      <div class="trace-word-en">${w.word}</div>
+      <div class="trace-word-zh">${w.chinese}</div>
+    `;
+    card.addEventListener('click', () => speakEnglish(w.word));
+    traceWordsStrip.appendChild(card);
+  });
+}
+
 function openLetterTraceScreen() {
   if (!currentLetter) return;
 
@@ -1580,6 +1680,7 @@ function openLetterTraceScreen() {
   navigateTo(traceScreen, 'forward');
   traceLetterLabel.textContent = currentLetter.letter;
 
+  renderTraceWordsStrip();
   resizeLetterTraceCanvas();
 
   // Initialize cat state
@@ -1606,7 +1707,9 @@ function resizeLetterTraceCanvas() {
   const controlsEl = document.querySelector('.hanzi-trace-controls');
   const headerH = headerEl ? headerEl.offsetHeight : 80;
   const controlsH = controlsEl ? controlsEl.offsetHeight : 80;
-  const availableH = window.innerHeight - headerH - controlsH - 40;
+  const stripEl = document.querySelector('.trace-words-strip');
+  const stripH = stripEl ? stripEl.offsetHeight : 0;
+  const availableH = window.innerHeight - headerH - controlsH - stripH - 40;
   const availableW = window.innerWidth - 40;
   const size = Math.min(availableW, availableH, 500);
 
@@ -2310,6 +2413,7 @@ function setupEventListeners() {
     currentLetter = ALPHABET_DATA[nextIdx];
     // Re-run the open flow without pushing a new screen
     traceLetterLabel.textContent = currentLetter.letter;
+    renderTraceWordsStrip();
     resizeLetterTraceCanvas();
     catX = traceGuideCanvas.width / 2;
     catY = traceGuideCanvas.height * 0.3;
