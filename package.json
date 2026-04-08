@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "hanzi-writer": "3.5",
+    "hanzi-writer-data": "2.0"
+  }
+}
