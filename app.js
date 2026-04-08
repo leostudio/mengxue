@@ -1375,6 +1375,20 @@ let visionTraceIsDrawing = false;
 let visionTraceCurrentPath = [];
 let visionTraceCompleted = false;
 
+const VISION_E_DIRECTIONS = [
+  { name: 'up',    chinese: '上', arrow: '↑', rotation: 270, color: '#ff6b9d', hint: '开口朝上就是上' },
+  { name: 'down',  chinese: '下', arrow: '↓', rotation: 90,  color: '#4facfe', hint: '开口朝下就是下' },
+  { name: 'left',  chinese: '左', arrow: '←', rotation: 180, color: '#43e97b', hint: '开口朝左就是左' },
+  { name: 'right', chinese: '右', arrow: '→', rotation: 0,   color: '#ff9a56', hint: '开口朝右就是右' },
+];
+
+const VISION_DIRECTION_GUIDES = {
+  up:    [{x:50, y:75}, {x:50, y:25}],
+  down:  [{x:50, y:25}, {x:50, y:75}],
+  left:  [{x:75, y:50}, {x:25, y:50}],
+  right: [{x:25, y:50}, {x:75, y:50}],
+};
+
 function init() {
   createAlphabetGrid();
   createVisionEGrid();
