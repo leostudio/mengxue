@@ -14,16 +14,40 @@ body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    position: relative;
+    overflow: hidden;
 }
 
+/* Slide transition system */
 .screen {
     display: none;
     padding: 20px;
     min-height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transform: translateX(100%);
+    transition: transform 300ms ease-out, opacity 300ms ease-out;
+    opacity: 0;
 }
 
 .screen.active {
     display: block;
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.screen.slide-out-left {
+    display: block;
+    transform: translateX(-30%);
+    opacity: 0;
+}
+
+.screen.slide-out-right {
+    display: block;
+    transform: translateX(100%);
+    opacity: 0;
 }
 
 /* 头部样式 */

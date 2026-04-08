@@ -1404,12 +1404,11 @@ function createAlphabetGrid() {
 }
 
 function openAlphabetScreen() {
-  hideAllScreens();
-  gridScreen.classList.add('active');
+  navigateTo(gridScreen, 'forward');
 }
 
 function goBackFromGrid() {
-  goToHome();
+  goBack();
 }
 
 // === 字母详情 ===
@@ -1417,8 +1416,7 @@ function goBackFromGrid() {
 function openLetterDetail(item) {
   currentLetter = item;
 
-  hideAllScreens();
-  detailScreen.classList.add('active');
+  navigateTo(detailScreen, 'forward');
 
   bigLetter.textContent = item.letter;
   bigLetterLower.textContent = item.lower;
@@ -1489,8 +1487,7 @@ function speakEnglish(text) {
 function openLetterTraceScreen() {
   if (!currentLetter) return;
 
-  hideAllScreens();
-  traceScreen.classList.add('active');
+  navigateTo(traceScreen, 'forward');
   traceLetterLabel.textContent = currentLetter.letter;
 
   resizeLetterTraceCanvas();
@@ -1501,8 +1498,7 @@ function openLetterTraceScreen() {
 
 function exitLetterTraceScreen() {
   letterTraceAnimating = false;
-  hideAllScreens();
-  detailScreen.classList.add('active');
+  goBack();
 }
 
 function resizeLetterTraceCanvas() {
@@ -1686,27 +1682,88 @@ function lightenColor(color, percent) {
 }
 
 // === 主页导航 ===
+
+// Screen navigation with slide transitions
+let currentScreen = homeScreen;
+const screenHistory = []; // stack for back navigation
+
+function navigateTo(targetScreen, direction = 'forward') {
+  if (targetScreen === currentScreen) return;
+
+  const outgoing = currentScreen;
+
+  // Show target off-screen
+  targetScreen.style.display = 'block';
+  targetScreen.classList.remove('active', 'slide-out-left', 'slide-out-right');
+
+  if (direction === 'forward') {
+    targetScreen.style.transform = 'translateX(100%)';
+    targetScreen.style.opacity = '0';
+  } else {
+    targetScreen.style.transform = 'translateX(-30%)';
+    targetScreen.style.opacity = '0';
+  }
+
+  // Force reflow
+  targetScreen.offsetHeight;
+
+  // Animate in
+  targetScreen.style.transform = 'translateX(0)';
+  targetScreen.style.opacity = '1';
+  targetScreen.classList.add('active');
+  // Clear inline display so CSS .screen.active or screen-specific active rules take effect
+  targetScreen.style.display = '';
+
+  // Animate out
+  if (direction === 'forward') {
+    outgoing.classList.add('slide-out-left');
+    outgoing.classList.remove('active');
+  } else {
+    outgoing.classList.add('slide-out-right');
+    outgoing.classList.remove('active');
+  }
+
+  setTimeout(() => {
+    outgoing.style.display = 'none';
+    outgoing.classList.remove('slide-out-left', 'slide-out-right');
+    outgoing.style.transform = '';
+    outgoing.style.opacity = '';
+  }, 310);
+
+  if (direction === 'forward') {
+    screenHistory.push(outgoing);
+  }
+  currentScreen = targetScreen;
+}
+
+function goBack() {
+  const prev = screenHistory.pop();
+  if (prev) {
+    navigateTo(prev, 'back');
+  }
+}
+
 function goToHome() {
-  hideAllScreens();
-  homeScreen.classList.add('active');
+  screenHistory.length = 0;
+  navigateTo(homeScreen, 'back');
 }
 
 function openVisionScreen() {
-  hideAllScreens();
-  visionScreen.classList.add('active');
+  navigateTo(visionScreen, 'forward');
 }
 
 function hideAllScreens() {
-  homeScreen.classList.remove('active');
-  gridScreen.classList.remove('active');
-  detailScreen.classList.remove('active');
-  traceScreen.classList.remove('active');
-  visionScreen.classList.remove('active');
-  visionDetailScreen.classList.remove('active');
-  hanziGridScreen.classList.remove('active');
-  hanziDetailScreen.classList.remove('active');
-  hanziTraceScreen.classList.remove('active');
-  songScreen.classList.remove('active');
+  // Legacy fallback — used during init only
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active', 'slide-out-left', 'slide-out-right');
+    s.style.display = 'none';
+    s.style.transform = '';
+    s.style.opacity = '';
+  });
+  homeScreen.classList.add('active');
+  homeScreen.style.display = 'block';
+  currentScreen = homeScreen;
+  screenHistory.length = 0;
 }
 
 // === 视力表学习 ===
@@ -1739,8 +1796,7 @@ function openVisionDetail(directionName) {
   if (!dir) return;
   currentVisionDirection = dir;
 
-  hideAllScreens();
-  visionDetailScreen.classList.add('active');
+  navigateTo(visionDetailScreen, 'forward');
 
   visionDetailTitle.textContent = `向${dir.chinese} ${dir.arrow}`;
   visionDetailE.style.transform = `rotate(${dir.rotation}deg)`;
@@ -1785,8 +1841,7 @@ function nextRandomDirection() {
 }
 
 function exitVisionDetail() {
-  hideAllScreens();
-  visionScreen.classList.add('active');
+  goBack();
 }
 
 function exitVisionScreen() {
@@ -1991,10 +2046,7 @@ function setupEventListeners() {
   btnHanzi.addEventListener('click', openHanziGridScreen);
   // 萌学字母事件
   gridBackBtn.addEventListener('click', goBackFromGrid);
-  detailBackBtn.addEventListener('click', () => {
-    hideAllScreens();
-    gridScreen.classList.add('active');
-  });
+  detailBackBtn.addEventListener('click', () => goBack());
   letterAudioBtn.addEventListener('click', () => {
     if (currentLetter) speakEnglish(currentLetter.letter);
   });
@@ -2094,10 +2146,7 @@ function setupEventListeners() {
     });
   });
 
-  hanziDetailBackBtn.addEventListener('click', () => {
-    hideAllScreens();
-    hanziGridScreen.classList.add('active');
-  });
+  hanziDetailBackBtn.addEventListener('click', () => goBack());
   hanziAudioBtn.addEventListener('click', () => {
     if (currentHanzi) speakHanzi(currentHanzi.char);
   });
@@ -2144,8 +2193,7 @@ function setupEventListeners() {
 // === 萌学汉字 ===
 
 function openHanziGridScreen() {
-  hideAllScreens();
-  hanziGridScreen.classList.add('active');
+  navigateTo(hanziGridScreen, 'forward');
   hanziSearchInput.value = '';
   hanziCurrentLevel = 'all';
   document.querySelectorAll('.hanzi-tab').forEach(t => t.classList.remove('active'));
@@ -2191,8 +2239,7 @@ function filterHanziList() {
 function openHanziDetail(hanziItem) {
   currentHanzi = hanziItem;
 
-  hideAllScreens();
-  hanziDetailScreen.classList.add('active');
+  navigateTo(hanziDetailScreen, 'forward');
 
   hanziPinyin.textContent = hanziItem.pinyin;
   hanziBigChar.textContent = hanziItem.char;
@@ -2261,8 +2308,7 @@ function speakHanzi(text) {
 function openHanziTraceScreen() {
   if (!currentHanzi) return;
 
-  hideAllScreens();
-  hanziTraceScreen.classList.add('active');
+  navigateTo(hanziTraceScreen, 'forward');
 
   // Clear previous writer
   const target = document.getElementById('hanzi-writer-target');
@@ -2363,15 +2409,13 @@ function exitHanziTraceScreen() {
   const target = document.getElementById('hanzi-writer-target');
   target.innerHTML = '';
 
-  hideAllScreens();
-  hanziDetailScreen.classList.add('active');
+  goBack();
 }
 
 // === 萌学儿歌 ===
 
 function openSongScreen() {
-  hideAllScreens();
-  songScreen.classList.add('active');
+  navigateTo(songScreen, 'forward');
   songCurrentLang = 'all';
   document.querySelectorAll('.song-tab').forEach(t => t.classList.remove('active'));
   document.querySelector('.song-tab[data-lang="all"]').classList.add('active');
