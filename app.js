@@ -2947,4 +2947,381 @@ window.onYouTubeIframeAPIReady = function() {
   ytReady = true;
 };
 
+// ============================================================
+// === 萌学画画 + 萌学数字（Phase 1） ===
+// ============================================================
+
+// --- WebAudio sound effects ---
+let _audioCtx = null;
+function getAudioCtx() {
+  if (!_audioCtx) {
+    try { _audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch {}
+  }
+  if (_audioCtx && _audioCtx.state === 'suspended') _audioCtx.resume();
+  return _audioCtx;
+}
+
+function playDing() {
+  const ctx = getAudioCtx(); if (!ctx) return;
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(880, t);
+  osc.frequency.exponentialRampToValueAtTime(1320, t + 0.1);
+  gain.gain.setValueAtTime(0.0001, t);
+  gain.gain.exponentialRampToValueAtTime(0.3, t + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.4);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + 0.45);
+}
+
+function playWrong() {
+  const ctx = getAudioCtx(); if (!ctx) return;
+  const t = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(220, t);
+  osc.frequency.exponentialRampToValueAtTime(110, t + 0.25);
+  gain.gain.setValueAtTime(0.0001, t);
+  gain.gain.exponentialRampToValueAtTime(0.18, t + 0.01);
+  gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.3);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(t);
+  osc.stop(t + 0.35);
+}
+
+function playClap() {
+  const ctx = getAudioCtx(); if (!ctx) return;
+  // Burst of filtered noise three times
+  const bufferSize = ctx.sampleRate * 0.08;
+  for (let i = 0; i < 4; i++) {
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let j = 0; j < bufferSize; j++) data[j] = (Math.random() * 2 - 1) * (1 - j / bufferSize);
+    const src = ctx.createBufferSource();
+    src.buffer = buffer;
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'highpass';
+    filter.frequency.value = 1500;
+    const gain = ctx.createGain();
+    gain.gain.value = 0.25;
+    src.connect(filter).connect(gain).connect(ctx.destination);
+    const start = ctx.currentTime + i * 0.07;
+    src.start(start);
+    src.stop(start + 0.08);
+  }
+}
+
+function playSuccess() {
+  const ctx = getAudioCtx(); if (!ctx) return;
+  const notes = [523.25, 659.25, 783.99, 1046.5]; // C E G C
+  notes.forEach((freq, i) => {
+    const t = ctx.currentTime + i * 0.1;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.25, t + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.25);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.3);
+  });
+  setTimeout(playClap, 450);
+}
+
+// --- Number data ---
+const NUMBER_ICONS = ['🐻','🍎','⭐','🌸','🐱','🐶','🦋','🐰','🌟','🍓'];
+const NUMBER_NAMES = ['零','一','二','三','四','五','六','七','八','九','十'];
+
+// --- DOM refs ---
+const btnDraw = document.getElementById('btn-draw');
+const btnNumbers = document.getElementById('btn-numbers');
+
+const drawEntryScreen = document.getElementById('draw-entry-screen');
+const drawEntryBackBtn = document.getElementById('draw-entry-back-btn');
+const btnPaint = document.getElementById('btn-paint');
+const btnSketch = document.getElementById('btn-sketch');
+
+const paintScreen = document.getElementById('paint-screen');
+const paintBackBtn = document.getElementById('paint-back-btn');
+const paintClearBtn = document.getElementById('paint-clear-btn');
+const paintColors = document.getElementById('paint-colors');
+const paintSizes = document.getElementById('paint-sizes');
+const paintEraserBtn = document.getElementById('paint-eraser-btn');
+const paintCanvas = document.getElementById('paint-canvas');
+
+const numbersEntryScreen = document.getElementById('numbers-entry-screen');
+const numbersEntryBackBtn = document.getElementById('numbers-entry-back-btn');
+const btnNumberCard = document.getElementById('btn-number-card');
+const btnCount = document.getElementById('btn-count');
+
+const numberCardScreen = document.getElementById('number-card-screen');
+const numberCardBackBtn = document.getElementById('number-card-back-btn');
+const numberCardSpeakBtn = document.getElementById('number-card-speak-btn');
+const numberCardDigit = document.getElementById('number-card-digit');
+const numberCardIcons = document.getElementById('number-card-icons');
+const numberCardProgress = document.getElementById('number-card-progress');
+const numberCardPrevBtn = document.getElementById('number-card-prev-btn');
+const numberCardNextBtn = document.getElementById('number-card-next-btn');
+
+const countScreen = document.getElementById('count-screen');
+const countBackBtn = document.getElementById('count-back-btn');
+const countStage = document.getElementById('count-stage');
+const countChoices = document.getElementById('count-choices');
+const countScoreEl = document.getElementById('count-score');
+const countPrompt = document.getElementById('count-prompt');
+
+// === Paint board ===
+const PAINT_COLORS = ['#000000','#ff3b30','#ff9500','#ffcc00','#34c759','#00c7be','#007aff','#af52de','#ff2d55','#a2845e','#8e8e93','#ffffff'];
+const PAINT_SIZES = [4, 10, 20];
+let paintCurrentColor = '#ff3b30';
+let paintCurrentSize = 10;
+let paintIsErasing = false;
+let paintDrawing = false;
+let paintLastX = 0, paintLastY = 0;
+
+function openPaintScreen() {
+  navigateTo(paintScreen, 'forward');
+  setTimeout(setupPaintCanvas, 50);
+}
+
+function setupPaintCanvas() {
+  const headerH = paintScreen.querySelector('.paint-header').offsetHeight;
+  const toolbarH = paintScreen.querySelector('.paint-toolbar').offsetHeight;
+  const w = Math.min(window.innerWidth - 24, 900);
+  const h = Math.max(window.innerHeight - headerH - toolbarH - 40, 320);
+  paintCanvas.width = w;
+  paintCanvas.height = h;
+  paintCanvas.style.width = w + 'px';
+  paintCanvas.style.height = h + 'px';
+  const ctx = paintCanvas.getContext('2d');
+  ctx.fillStyle = 'white';
+  ctx.fillRect(0, 0, w, h);
+}
+
+function buildPaintToolbar() {
+  paintColors.innerHTML = '';
+  PAINT_COLORS.forEach(c => {
+    const sw = document.createElement('div');
+    sw.className = 'paint-color-swatch' + (c === paintCurrentColor ? ' active' : '');
+    sw.style.background = c;
+    sw.dataset.color = c;
+    sw.addEventListener('click', () => {
+      paintCurrentColor = c;
+      paintIsErasing = false;
+      paintEraserBtn.classList.remove('active');
+      paintColors.querySelectorAll('.paint-color-swatch').forEach(el => el.classList.toggle('active', el.dataset.color === c));
+      playDing();
+    });
+    paintColors.appendChild(sw);
+  });
+  paintSizes.innerHTML = '';
+  PAINT_SIZES.forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'paint-size-btn' + (s === paintCurrentSize ? ' active' : '');
+    btn.dataset.size = s;
+    const dot = document.createElement('div');
+    dot.className = 'paint-size-dot';
+    dot.style.width = s + 'px';
+    dot.style.height = s + 'px';
+    btn.appendChild(dot);
+    btn.addEventListener('click', () => {
+      paintCurrentSize = s;
+      paintSizes.querySelectorAll('.paint-size-btn').forEach(el => el.classList.toggle('active', +el.dataset.size === s));
+      playDing();
+    });
+    paintSizes.appendChild(btn);
+  });
+}
+
+function getPaintPos(e) {
+  const rect = paintCanvas.getBoundingClientRect();
+  const touch = e.touches ? e.touches[0] : e;
+  const sx = paintCanvas.width / rect.width;
+  const sy = paintCanvas.height / rect.height;
+  return { x: (touch.clientX - rect.left) * sx, y: (touch.clientY - rect.top) * sy };
+}
+
+function paintStart(e) {
+  e.preventDefault();
+  paintDrawing = true;
+  const p = getPaintPos(e);
+  paintLastX = p.x; paintLastY = p.y;
+}
+function paintMove(e) {
+  if (!paintDrawing) return;
+  e.preventDefault();
+  const p = getPaintPos(e);
+  const ctx = paintCanvas.getContext('2d');
+  ctx.strokeStyle = paintIsErasing ? 'white' : paintCurrentColor;
+  ctx.lineWidth = paintIsErasing ? paintCurrentSize * 2.5 : paintCurrentSize;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(paintLastX, paintLastY);
+  ctx.lineTo(p.x, p.y);
+  ctx.stroke();
+  paintLastX = p.x; paintLastY = p.y;
+}
+function paintEnd() { paintDrawing = false; }
+
+function clearPaintCanvas() {
+  const ctx = paintCanvas.getContext('2d');
+  ctx.fillStyle = 'white';
+  ctx.fillRect(0, 0, paintCanvas.width, paintCanvas.height);
+  playDing();
+}
+
+// === Number card ===
+let currentNumberCard = 1;
+
+function openNumberCardScreen() {
+  currentNumberCard = 1;
+  navigateTo(numberCardScreen, 'forward');
+  renderNumberCard();
+}
+
+function renderNumberCard() {
+  numberCardDigit.textContent = currentNumberCard;
+  numberCardProgress.textContent = `${currentNumberCard} / 10`;
+  numberCardIcons.innerHTML = '';
+  const icon = NUMBER_ICONS[(currentNumberCard - 1) % NUMBER_ICONS.length];
+  for (let i = 0; i < currentNumberCard; i++) {
+    const span = document.createElement('span');
+    span.textContent = icon;
+    span.style.animationDelay = (i * 0.08) + 's';
+    numberCardIcons.appendChild(span);
+  }
+  numberCardPrevBtn.disabled = currentNumberCard <= 1;
+  numberCardNextBtn.disabled = currentNumberCard >= 10;
+  speakChinese(NUMBER_NAMES[currentNumberCard]);
+  playDing();
+}
+
+// === Count game ===
+const COUNT_ANIMALS = ['🐻','🐱','🐶','🐰','🐼','🐯','🐵','🦊','🐸','🐷'];
+let countScore = 0;
+let countAnswer = 0;
+
+function openCountScreen() {
+  countScore = 0;
+  countScoreEl.textContent = '⭐ 0';
+  navigateTo(countScreen, 'forward');
+  newCountRound();
+}
+
+function newCountRound() {
+  countAnswer = 1 + Math.floor(Math.random() * 9); // 1..9
+  const animal = COUNT_ANIMALS[Math.floor(Math.random() * COUNT_ANIMALS.length)];
+  countStage.innerHTML = '';
+  // Random non-overlapping-ish positions
+  const placed = [];
+  for (let i = 0; i < countAnswer; i++) {
+    let x, y, tries = 0;
+    do {
+      x = 5 + Math.random() * 85;
+      y = 5 + Math.random() * 80;
+      tries++;
+    } while (tries < 20 && placed.some(p => Math.hypot(p.x - x, p.y - y) < 18));
+    placed.push({ x, y });
+    const span = document.createElement('span');
+    span.textContent = animal;
+    span.style.left = x + '%';
+    span.style.top = y + '%';
+    span.style.animationDelay = (i * 0.05) + 's';
+    countStage.appendChild(span);
+  }
+  countPrompt.textContent = '数一数有几个？';
+  speakChinese('数一数有几个');
+
+  // Build choices: correct + 3 distractors
+  const choices = new Set([countAnswer]);
+  while (choices.size < 4) {
+    const d = 1 + Math.floor(Math.random() * 9);
+    choices.add(d);
+  }
+  const arr = Array.from(choices).sort(() => Math.random() - 0.5);
+  countChoices.innerHTML = '';
+  arr.forEach(n => {
+    const btn = document.createElement('button');
+    btn.className = 'count-choice-btn';
+    btn.textContent = n;
+    btn.addEventListener('click', () => handleCountChoice(n, btn));
+    countChoices.appendChild(btn);
+  });
+}
+
+function handleCountChoice(n, btn) {
+  if (n === countAnswer) {
+    btn.classList.add('correct');
+    countScore++;
+    countScoreEl.textContent = '⭐ ' + countScore;
+    playSuccess();
+    speakChinese('答对啦，' + NUMBER_NAMES[countAnswer] + '个');
+    showParticleCelebration();
+    setTimeout(newCountRound, 1800);
+  } else {
+    btn.classList.add('wrong');
+    playWrong();
+    speakChinese('再数一数');
+    setTimeout(() => btn.classList.remove('wrong'), 500);
+  }
+}
+
+// === Wire up ===
+function setupPhase1Listeners() {
+  btnDraw.addEventListener('click', () => { navigateTo(drawEntryScreen, 'forward'); });
+  btnNumbers.addEventListener('click', () => { navigateTo(numbersEntryScreen, 'forward'); });
+
+  drawEntryBackBtn.addEventListener('click', () => goToHome());
+  btnPaint.addEventListener('click', openPaintScreen);
+  btnSketch.addEventListener('click', () => speakChinese('简笔画功能即将上线'));
+
+  paintBackBtn.addEventListener('click', () => goBack());
+  paintClearBtn.addEventListener('click', clearPaintCanvas);
+  paintEraserBtn.addEventListener('click', () => {
+    paintIsErasing = !paintIsErasing;
+    paintEraserBtn.classList.toggle('active', paintIsErasing);
+    playDing();
+  });
+  paintCanvas.addEventListener('mousedown', paintStart);
+  paintCanvas.addEventListener('mousemove', paintMove);
+  paintCanvas.addEventListener('mouseup', paintEnd);
+  paintCanvas.addEventListener('mouseleave', paintEnd);
+  paintCanvas.addEventListener('touchstart', paintStart, { passive: false });
+  paintCanvas.addEventListener('touchmove', paintMove, { passive: false });
+  paintCanvas.addEventListener('touchend', paintEnd);
+
+  numbersEntryBackBtn.addEventListener('click', () => goToHome());
+  btnNumberCard.addEventListener('click', openNumberCardScreen);
+  btnCount.addEventListener('click', openCountScreen);
+
+  numberCardBackBtn.addEventListener('click', () => goBack());
+  numberCardSpeakBtn.addEventListener('click', () => speakChinese(NUMBER_NAMES[currentNumberCard]));
+  numberCardPrevBtn.addEventListener('click', () => { if (currentNumberCard > 1) { currentNumberCard--; renderNumberCard(); } });
+  numberCardNextBtn.addEventListener('click', () => { if (currentNumberCard < 10) { currentNumberCard++; renderNumberCard(); } });
+
+  countBackBtn.addEventListener('click', () => goBack());
+
+  buildPaintToolbar();
+}
+
+setupPhase1Listeners();
+
+window.addEventListener('resize', () => {
+  if (currentScreen === paintScreen) {
+    // Save current image, resize, restore
+    const dataUrl = paintCanvas.toDataURL();
+    setupPaintCanvas();
+    const img = new Image();
+    img.onload = () => paintCanvas.getContext('2d').drawImage(img, 0, 0);
+    img.src = dataUrl;
+  }
+});
+
 init();

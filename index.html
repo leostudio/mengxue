@@ -34,7 +34,117 @@
                 <div class="home-title">萌学儿歌</div>
                 <div class="home-desc">听儿歌学语言</div>
             </div>
+            <div id="btn-draw" class="home-card draw-card">
+                <div class="home-icon">🎨</div>
+                <div class="home-title">萌学画画</div>
+                <div class="home-desc">画板和简笔画</div>
+            </div>
+            <div id="btn-numbers" class="home-card numbers-card">
+                <div class="home-icon">🔢</div>
+                <div class="home-title">萌学数字</div>
+                <div class="home-desc">认数字玩游戏</div>
+            </div>
         </div>
+    </div>
+
+    <!-- 萌学画画入口 -->
+    <div id="draw-entry-screen" class="screen">
+        <header class="detail-header">
+            <button id="draw-entry-back-btn" class="back-btn">← 返回</button>
+            <h1 class="page-title">🎨 萌学画画 🎨</h1>
+        </header>
+        <div class="sub-entry-grid">
+            <div id="btn-paint" class="sub-entry-card paint-entry">
+                <div class="sub-entry-icon">🖌️</div>
+                <div class="sub-entry-title">萌学画板</div>
+                <div class="sub-entry-desc">自由画画</div>
+            </div>
+            <div id="btn-sketch" class="sub-entry-card sketch-entry">
+                <div class="sub-entry-icon">📐</div>
+                <div class="sub-entry-title">简笔画</div>
+                <div class="sub-entry-desc">敬请期待</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 萌学画板 -->
+    <div id="paint-screen" class="screen">
+        <div class="paint-header">
+            <button id="paint-back-btn" class="back-btn">← 返回</button>
+            <div class="paint-title">🖌️ 萌学画板</div>
+            <button id="paint-clear-btn" class="paint-clear-btn">🗑️ 清空</button>
+        </div>
+        <div class="paint-toolbar">
+            <div class="paint-colors" id="paint-colors"></div>
+            <div class="paint-sizes" id="paint-sizes"></div>
+            <button id="paint-eraser-btn" class="paint-tool-btn" title="橡皮">🩹</button>
+        </div>
+        <div class="paint-canvas-wrap">
+            <canvas id="paint-canvas" class="paint-canvas"></canvas>
+        </div>
+    </div>
+
+    <!-- 萌学数字入口 -->
+    <div id="numbers-entry-screen" class="screen">
+        <header class="detail-header">
+            <button id="numbers-entry-back-btn" class="back-btn">← 返回</button>
+            <h1 class="page-title">🔢 萌学数字 🔢</h1>
+        </header>
+        <div class="numbers-section-title">🌱 基础认知</div>
+        <div class="sub-entry-grid">
+            <div id="btn-number-card" class="sub-entry-card number-card-entry">
+                <div class="sub-entry-icon">🔢</div>
+                <div class="sub-entry-title">数字卡片</div>
+                <div class="sub-entry-desc">1 到 10</div>
+            </div>
+            <div id="btn-count" class="sub-entry-card count-entry">
+                <div class="sub-entry-icon">🧸</div>
+                <div class="sub-entry-title">数一数</div>
+                <div class="sub-entry-desc">数小动物</div>
+            </div>
+        </div>
+        <div class="numbers-section-title">🎮 互动游戏</div>
+        <div class="sub-entry-grid">
+            <div class="sub-entry-card disabled">
+                <div class="sub-entry-icon">🔗</div>
+                <div class="sub-entry-title">连线画</div>
+                <div class="sub-entry-desc">敬请期待</div>
+            </div>
+            <div class="sub-entry-card disabled">
+                <div class="sub-entry-icon">🔍</div>
+                <div class="sub-entry-title">找数字</div>
+                <div class="sub-entry-desc">敬请期待</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 数字卡片 -->
+    <div id="number-card-screen" class="screen">
+        <div class="number-card-header">
+            <button id="number-card-back-btn" class="back-btn">← 返回</button>
+            <div class="number-card-progress" id="number-card-progress">1 / 10</div>
+            <button id="number-card-speak-btn" class="paint-tool-btn" title="听发音">🔊</button>
+        </div>
+        <div class="number-card-body">
+            <div id="number-card-digit" class="number-card-digit">1</div>
+            <div id="number-card-icons" class="number-card-icons"></div>
+        </div>
+        <div class="number-card-controls">
+            <button id="number-card-prev-btn" class="number-nav-btn">◀ 上一个</button>
+            <button id="number-card-next-btn" class="number-nav-btn">下一个 ▶</button>
+        </div>
+    </div>
+
+    <!-- 数一数 -->
+    <div id="count-screen" class="screen">
+        <div class="count-header">
+            <button id="count-back-btn" class="back-btn">← 返回</button>
+            <div class="count-title">数一数</div>
+            <div class="count-score" id="count-score">⭐ 0</div>
+        </div>
+        <div class="count-prompt" id="count-prompt">数一数有几个？</div>
+        <div class="count-stage" id="count-stage"></div>
+        <div class="count-choices" id="count-choices"></div>
     </div>
 
     <!-- 字母网格页面 -->
