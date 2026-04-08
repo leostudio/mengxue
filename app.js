@@ -1285,17 +1285,12 @@ const SONG_LIST = [
 ];
 
 const gridScreen = document.getElementById('grid-screen');
-const detailScreen = document.getElementById('detail-screen');
 const traceScreen = document.getElementById('trace-screen');
 const alphabetGrid = document.getElementById('alphabet-grid');
 const gridBackBtn = document.getElementById('grid-back-btn');
-const detailBackBtn = document.getElementById('detail-back-btn');
-const bigLetter = document.getElementById('big-letter');
-const bigLetterLower = document.getElementById('big-letter-lower');
-const letterAudioBtn = document.getElementById('letter-audio-btn');
-const letterTraceBtn = document.getElementById('letter-trace-btn');
-const letterWordsList = document.getElementById('letter-words-list');
 const traceBackBtn = document.getElementById('trace-back-btn');
+const traceAudioBtn = document.getElementById('trace-audio-btn');
+const traceBookBtn = document.getElementById('trace-book-btn');
 const traceReplayBtn = document.getElementById('trace-replay-btn');
 const traceClearBtn = document.getElementById('trace-clear-btn');
 const traceDoneBtn = document.getElementById('trace-done-btn');
@@ -1398,7 +1393,10 @@ function createAlphabetGrid() {
       <div class="letter-card-upper">${item.letter}</div>
       <div class="letter-card-lower">${item.lower}</div>
     `;
-    card.addEventListener('click', () => openLetterDetail(item));
+    card.addEventListener('click', () => {
+      currentLetter = item;
+      openLetterTraceScreen();
+    });
     alphabetGrid.appendChild(card);
   });
 }
@@ -1409,64 +1407,6 @@ function openAlphabetScreen() {
 
 function goBackFromGrid() {
   goBack();
-}
-
-// === 字母详情 ===
-
-function openLetterDetail(item) {
-  currentLetter = item;
-
-  navigateTo(detailScreen, 'forward');
-
-  bigLetter.textContent = item.letter;
-  bigLetterLower.textContent = item.lower;
-
-  // Render word cards (same pattern as hanzi)
-  letterWordsList.innerHTML = '';
-  const gradients = [
-    'linear-gradient(135deg, #74b9ff, #0984e3)',
-    'linear-gradient(135deg, #a29bfe, #6c5ce7)',
-    'linear-gradient(135deg, #55efc4, #00b894)',
-    'linear-gradient(135deg, #fd79a8, #e84393)',
-    'linear-gradient(135deg, #fdcb6e, #f39c12)'
-  ];
-
-  item.words.forEach((w, i) => {
-    const card = document.createElement('div');
-    card.className = 'hanzi-word-card';
-
-    const imgDiv = document.createElement('div');
-    imgDiv.className = 'hanzi-word-img';
-    imgDiv.style.background = gradients[i % gradients.length];
-
-    const img = document.createElement('img');
-    img.src = `https://source.unsplash.com/200x200/?${encodeURIComponent(w.imgQuery)}`;
-    img.alt = w.word;
-    img.onerror = function() {
-      this.style.display = 'none';
-      const fallback = document.createElement('div');
-      fallback.className = 'emoji-fallback';
-      fallback.textContent = w.emoji;
-      imgDiv.appendChild(fallback);
-    };
-    imgDiv.appendChild(img);
-
-    const info = document.createElement('div');
-    info.className = 'hanzi-word-info';
-    info.innerHTML = `
-      <div class="hanzi-word-text">${w.word}</div>
-      <div class="hanzi-word-pinyin">${w.chinese}</div>
-    `;
-
-    card.appendChild(imgDiv);
-    card.appendChild(info);
-    card.style.cursor = 'pointer';
-    card.addEventListener('click', () => speakEnglish(w.word));
-    letterWordsList.appendChild(card);
-  });
-
-  // Auto-play letter pronunciation
-  setTimeout(() => speakEnglish(item.letter), 300);
 }
 
 function speakEnglish(text) {
@@ -2046,12 +1986,13 @@ function setupEventListeners() {
   btnHanzi.addEventListener('click', openHanziGridScreen);
   // 萌学字母事件
   gridBackBtn.addEventListener('click', goBackFromGrid);
-  detailBackBtn.addEventListener('click', () => goBack());
-  letterAudioBtn.addEventListener('click', () => {
+  traceBackBtn.addEventListener('click', exitLetterTraceScreen);
+  traceAudioBtn.addEventListener('click', () => {
     if (currentLetter) speakEnglish(currentLetter.letter);
   });
-  letterTraceBtn.addEventListener('click', openLetterTraceScreen);
-  traceBackBtn.addEventListener('click', exitLetterTraceScreen);
+  traceBookBtn.addEventListener('click', () => {
+    if (currentLetter) speakEnglish(currentLetter.words[0].word);
+  });
   traceReplayBtn.addEventListener('click', () => {
     clearLetterTrace();
     animateLetterWriting();

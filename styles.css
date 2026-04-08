@@ -1180,6 +1180,30 @@ body {
     min-width: 60px;
 }
 
+.trace-header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.trace-action-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    font-size: 1.3rem;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.trace-action-btn:active {
+    transform: scale(0.9);
+}
+
 .hanzi-writer-container {
     flex: 1;
     display: flex;

@@ -46,32 +46,6 @@
         <div id="alphabet-grid" class="alphabet-grid"></div>
     </div>
 
-    <!-- 字母详情页面 -->
-    <div id="detail-screen" class="screen">
-        <header class="detail-header">
-            <button id="detail-back-btn" class="back-btn">← 返回</button>
-        </header>
-        <div class="letter-display">
-            <div id="big-letter" class="big-letter">A</div>
-            <div id="big-letter-lower" class="big-letter-lower">a</div>
-        </div>
-        <div class="letter-detail-controls">
-            <button id="letter-audio-btn" class="hanzi-audio-btn">
-                <span class="audio-icon">🔊</span>
-                <span class="audio-text">听发音</span>
-            </button>
-            <button id="letter-trace-btn" class="hanzi-trace-btn">
-                <span class="trace-icon">✏️</span>
-                <span class="trace-text">开始描红</span>
-            </button>
-        </div>
-        <div class="hanzi-words-section">
-            <div class="hanzi-words-title">📝 相关单词</div>
-            <div id="letter-words-list" class="hanzi-words-list"></div>
-            <div class="hanzi-words-hint">← 左右滑动查看更多 →</div>
-        </div>
-    </div>
-
     <!-- 字母描红页面 -->
     <div id="trace-screen" class="screen">
         <div class="hanzi-trace-header">
@@ -79,7 +53,10 @@
             <div class="hanzi-trace-progress">
                 <span id="trace-letter-label" class="stroke-indicator">A</span>
             </div>
-            <div class="hanzi-trace-spacer"></div>
+            <div class="trace-header-actions">
+                <button id="trace-audio-btn" class="trace-action-btn" title="听发音">🔊</button>
+                <button id="trace-book-btn" class="trace-action-btn" title="小绘本">📖</button>
+            </div>
         </div>
         <div class="trace-canvas-container">
             <canvas id="trace-guide-canvas" class="trace-canvas guide"></canvas>
