@@ -1509,16 +1509,31 @@ function goBackFromGrid() {
   goBack();
 }
 
+function pickCuteGirlVoice() {
+  const voices = speechSynthesis.getVoices();
+  const zh = voices.filter(v => v.lang && (v.lang.startsWith('zh') || v.lang === 'cmn-Hans-CN'));
+  if (!zh.length) return null;
+  // Prefer voices that are typically cute/female on common OSes
+  const preferOrder = [
+    /tingting/i, /mei[-\s]?jia/i, /sin[-\s]?ji/i, /yating/i, /xiaoxiao/i,
+    /xiaoyi/i, /xiaomeng/i, /child/i, /kid/i, /female/i, /女/i, /婷婷/i, /小/i,
+  ];
+  for (const re of preferOrder) {
+    const v = zh.find(v => re.test(v.name));
+    if (v) return v;
+  }
+  return zh[0];
+}
+
 function speakChinese(text) {
   if (!('speechSynthesis' in window)) return;
   speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'zh-CN';
-  utterance.rate = 0.8;
-  utterance.pitch = 1.2;
-  const voices = speechSynthesis.getVoices();
-  const zhVoice = voices.find(v => v.lang && v.lang.startsWith('zh'));
-  if (zhVoice) utterance.voice = zhVoice;
+  utterance.rate = 0.95;
+  utterance.pitch = 1.8;  // higher pitch for cute girl effect
+  const v = pickCuteGirlVoice();
+  if (v) utterance.voice = v;
   speechSynthesis.speak(utterance);
 }
 
@@ -2175,16 +2190,7 @@ function openVisionDetail(directionName) {
 }
 
 function speakDirection(text) {
-  if (!('speechSynthesis' in window)) return;
-  speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'zh-CN';
-  utterance.rate = 0.8;
-  utterance.pitch = 1.1;
-  const voices = speechSynthesis.getVoices();
-  const zhVoice = voices.find(v => v.lang.startsWith('zh'));
-  if (zhVoice) utterance.voice = zhVoice;
-  speechSynthesis.speak(utterance);
+  speakChinese(text);
 }
 
 function nextRandomDirection() {
@@ -3621,6 +3627,47 @@ const CONNECT_PATTERNS = [
   { name: '太阳', emoji: '🌞', dots: [
     {x:50,y:25},{x:65,y:30},{x:75,y:50},{x:65,y:70},{x:50,y:75},{x:35,y:70},{x:25,y:50},{x:35,y:30},{x:50,y:25},
   ]},
+  { name: '小猫', emoji: '🐱', dots: [
+    {x:30,y:25},{x:25,y:15},{x:40,y:25},{x:60,y:25},{x:75,y:15},{x:70,y:25},
+    {x:80,y:45},{x:80,y:70},{x:65,y:85},{x:35,y:85},{x:20,y:70},{x:20,y:45},{x:30,y:25},
+  ]},
+  { name: '汽车', emoji: '🚗', dots: [
+    {x:15,y:65},{x:20,y:50},{x:35,y:35},{x:65,y:35},{x:80,y:50},{x:85,y:65},
+    {x:80,y:80},{x:70,y:80},{x:65,y:65},{x:35,y:65},{x:30,y:80},{x:20,y:80},{x:15,y:65},
+  ]},
+  { name: '小鸟', emoji: '🐦', dots: [
+    {x:20,y:50},{x:30,y:35},{x:50,y:25},{x:70,y:30},{x:85,y:45},{x:80,y:60},
+    {x:65,y:70},{x:50,y:75},{x:35,y:70},{x:20,y:50},
+  ]},
+  { name: '热气球', emoji: '🎈', dots: [
+    {x:50,y:15},{x:70,y:25},{x:80,y:45},{x:70,y:60},{x:55,y:65},
+    {x:45,y:65},{x:30,y:60},{x:20,y:45},{x:30,y:25},{x:50,y:15},{x:50,y:90},
+  ]},
+  { name: '蘑菇', emoji: '🍄', dots: [
+    {x:20,y:45},{x:30,y:25},{x:50,y:18},{x:70,y:25},{x:80,y:45},
+    {x:65,y:50},{x:60,y:85},{x:40,y:85},{x:35,y:50},{x:20,y:45},
+  ]},
+  { name: '冰淇淋', emoji: '🍦', dots: [
+    {x:30,y:30},{x:50,y:15},{x:70,y:30},{x:65,y:45},{x:55,y:50},{x:50,y:90},{x:45,y:50},{x:35,y:45},{x:30,y:30},
+  ]},
+  { name: '月亮', emoji: '🌙', dots: [
+    {x:55,y:15},{x:35,y:25},{x:25,y:45},{x:25,y:65},{x:35,y:80},{x:55,y:88},
+    {x:45,y:75},{x:40,y:55},{x:48,y:35},{x:55,y:15},
+  ]},
+  { name: '蝴蝶', emoji: '🦋', dots: [
+    {x:50,y:30},{x:30,y:15},{x:15,y:30},{x:15,y:55},{x:35,y:65},{x:50,y:55},
+    {x:65,y:65},{x:85,y:55},{x:85,y:30},{x:70,y:15},{x:50,y:30},{x:50,y:80},
+  ]},
+  { name: '钻石', emoji: '💎', dots: [
+    {x:30,y:25},{x:70,y:25},{x:88,y:45},{x:50,y:90},{x:12,y:45},{x:30,y:25},{x:50,y:90},{x:50,y:25},
+  ]},
+  { name: '皇冠', emoji: '👑', dots: [
+    {x:15,y:75},{x:20,y:30},{x:35,y:55},{x:50,y:20},{x:65,y:55},{x:80,y:30},{x:85,y:75},{x:15,y:75},
+  ]},
+  { name: '气球', emoji: '🎈', dots: [
+    {x:50,y:18},{x:65,y:25},{x:72,y:40},{x:65,y:55},{x:55,y:60},{x:50,y:62},
+    {x:45,y:60},{x:35,y:55},{x:28,y:40},{x:35,y:25},{x:50,y:18},{x:50,y:90},
+  ]},
 ];
 
 // --- Sketch screens ---
@@ -3905,6 +3952,12 @@ function setupPhase3Listeners() {
   sketchGridBackBtn.addEventListener('click', () => goBack());
   sketchTraceBackBtn.addEventListener('click', () => goBack());
   sketchClearBtn.addEventListener('click', clearSketchDraw);
+  document.getElementById('sketch-submit-btn').addEventListener('click', () => {
+    showFlowerCelebration();
+    showParticleCelebration();
+    playSuccess();
+    speakChinese('太棒了，送你一朵小红花');
+  });
   sketchDrawCanvas.addEventListener('mousedown', sketchStart);
   sketchDrawCanvas.addEventListener('mousemove', sketchMove);
   sketchDrawCanvas.addEventListener('mouseup', sketchEnd);
