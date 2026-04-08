@@ -1297,6 +1297,11 @@ const traceDoneBtn = document.getElementById('trace-done-btn');
 const traceLetterLabel = document.getElementById('trace-letter-label');
 const traceGuideCanvas = document.getElementById('trace-guide-canvas');
 const traceDrawCanvas = document.getElementById('trace-draw-canvas');
+const traceCompleteOverlay = document.getElementById('trace-complete-overlay');
+const traceCompleteText = document.getElementById('trace-complete-text');
+const traceNextBtn = document.getElementById('trace-next-btn');
+const traceBackToGridBtn = document.getElementById('trace-back-to-grid-btn');
+const celebrationCanvas = document.getElementById('celebration-canvas');
 
 // 视力表相关 DOM 元素
 const homeScreen = document.getElementById('home-screen');
@@ -1385,13 +1390,16 @@ function init() {
 
 function createAlphabetGrid() {
   alphabetGrid.innerHTML = '';
+  const completed = getCompletedLetters();
   ALPHABET_DATA.forEach(item => {
     const card = document.createElement('div');
     card.className = 'letter-card';
     card.dataset.letter = item.letter;
+    if (completed.includes(item.letter)) card.classList.add('letter-completed');
     card.innerHTML = `
       <div class="letter-card-upper">${item.letter}</div>
       <div class="letter-card-lower">${item.lower}</div>
+      ${completed.includes(item.letter) ? '<div class="letter-badge">⭐</div>' : ''}
     `;
     card.addEventListener('click', () => {
       currentLetter = item;
@@ -1407,6 +1415,133 @@ function openAlphabetScreen() {
 
 function goBackFromGrid() {
   goBack();
+}
+
+function speakChinese(text) {
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = 'zh-CN';
+  utterance.rate = 0.8;
+  utterance.pitch = 1.2;
+  const voices = speechSynthesis.getVoices();
+  const zhVoice = voices.find(v => v.lang && v.lang.startsWith('zh'));
+  if (zhVoice) utterance.voice = zhVoice;
+  speechSynthesis.speak(utterance);
+}
+
+const ENCOURAGEMENTS = ['太棒了！', '写得真漂亮！', '你真厉害！', '好棒好棒！', '越来越好了！', '真是小天才！', '完美！'];
+function getRandomEncouragement() {
+  return ENCOURAGEMENTS[Math.floor(Math.random() * ENCOURAGEMENTS.length)];
+}
+
+// === Progress tracking ===
+const PROGRESS_KEY = 'mengxue_completed_letters';
+function getCompletedLetters() {
+  try {
+    const data = localStorage.getItem(PROGRESS_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch {
+    return [];
+  }
+}
+function saveLetterProgress(letter) {
+  const completed = getCompletedLetters();
+  if (!completed.includes(letter)) {
+    completed.push(letter);
+    localStorage.setItem(PROGRESS_KEY, JSON.stringify(completed));
+  }
+}
+
+// === Particle celebration ===
+function showParticleCelebration() {
+  const canvas = celebrationCanvas;
+  if (!canvas) return;
+  canvas.style.display = 'block';
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+
+  const particles = [];
+  const colors = ['#ff6b9d', '#ff8a80', '#a18cd1', '#ffd166', '#06d6a0', '#118ab2', '#ef476f'];
+  const shapes = ['circle', 'star', 'ribbon'];
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
+
+  for (let i = 0; i < 80; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 2 + Math.random() * 6;
+    particles.push({
+      x: cx, y: cy,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 2,
+      size: 4 + Math.random() * 8,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      shape: shapes[Math.floor(Math.random() * shapes.length)],
+      rotation: Math.random() * Math.PI * 2,
+      rotationSpeed: (Math.random() - 0.5) * 0.2,
+      gravity: 0.08 + Math.random() * 0.04,
+      life: 1,
+      decay: 0.008 + Math.random() * 0.008,
+    });
+  }
+
+  let animId;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    particles.forEach(p => {
+      if (p.life <= 0) return;
+      alive = true;
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += p.gravity;
+      p.vx *= 0.99;
+      p.rotation += p.rotationSpeed;
+      p.life -= p.decay;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation);
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.fillStyle = p.color;
+      if (p.shape === 'circle') {
+        ctx.beginPath();
+        ctx.arc(0, 0, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (p.shape === 'star') {
+        drawStar(ctx, 0, 0, 5, p.size, p.size * 0.5);
+      } else {
+        ctx.fillRect(-p.size * 1.5, -p.size * 0.3, p.size * 3, p.size * 0.6);
+      }
+      ctx.restore();
+    });
+    if (alive) {
+      animId = requestAnimationFrame(animate);
+    } else {
+      canvas.style.display = 'none';
+    }
+  }
+  animate();
+  setTimeout(() => {
+    cancelAnimationFrame(animId);
+    canvas.style.display = 'none';
+  }, 3000);
+}
+
+function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
+  let rot = Math.PI / 2 * 3;
+  const step = Math.PI / spikes;
+  ctx.beginPath();
+  ctx.moveTo(cx, cy - outerRadius);
+  for (let i = 0; i < spikes; i++) {
+    ctx.lineTo(cx + Math.cos(rot) * outerRadius, cy + Math.sin(rot) * outerRadius);
+    rot += step;
+    ctx.lineTo(cx + Math.cos(rot) * innerRadius, cy + Math.sin(rot) * innerRadius);
+    rot += step;
+  }
+  ctx.lineTo(cx, cy - outerRadius);
+  ctx.closePath();
+  ctx.fill();
 }
 
 function speakEnglish(text) {
@@ -1427,10 +1562,19 @@ function speakEnglish(text) {
 function openLetterTraceScreen() {
   if (!currentLetter) return;
 
+  traceCompleteOverlay.classList.add('hidden');
   navigateTo(traceScreen, 'forward');
   traceLetterLabel.textContent = currentLetter.letter;
 
   resizeLetterTraceCanvas();
+
+  // Initialize cat state
+  catX = traceGuideCanvas.width / 2;
+  catY = traceGuideCanvas.height * 0.3;
+  catAngle = 0;
+  catExpression = 'normal';
+  lastDeviationFeedback = 0;
+
   drawLetterTraceGuide();
 
   setTimeout(() => animateLetterWriting(), 400);
@@ -1438,6 +1582,7 @@ function openLetterTraceScreen() {
 
 function exitLetterTraceScreen() {
   letterTraceAnimating = false;
+  createAlphabetGrid();
   goBack();
 }
 
@@ -1498,6 +1643,9 @@ function drawLetterTraceGuide() {
   ctx.lineTo(w * 0.5, h * 0.95);
   ctx.stroke();
   ctx.setLineDash([]);
+
+  // Draw cat
+  drawCat(ctx, catX, catY, catAngle, catExpression);
 }
 
 function animateLetterWriting() {
@@ -1509,7 +1657,6 @@ function animateLetterWriting() {
   const h = traceDrawCanvas.height;
   ctx.clearRect(0, 0, w, h);
 
-  // Use a clipping approach: draw the letter by revealing it from top to bottom
   const fontSize = h * 0.78;
   const totalFrames = 60;
   let frame = 0;
@@ -1519,14 +1666,11 @@ function animateLetterWriting() {
 
     ctx.clearRect(0, 0, w, h);
     ctx.save();
-
-    // Clip to reveal portion of the letter
     const revealHeight = (frame / totalFrames) * h;
     ctx.beginPath();
     ctx.rect(0, 0, w, revealHeight);
     ctx.clip();
 
-    // Draw the solid letter
     ctx.font = `bold ${fontSize}px sans-serif`;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -1536,17 +1680,29 @@ function animateLetterWriting() {
     ctx.fillStyle = grad;
     ctx.globalAlpha = 0.6;
     ctx.fillText(currentLetter.letter, w / 2, h / 2);
-
     ctx.restore();
+
+    // Move cat along the reveal line
+    catX = w / 2;
+    catY = revealHeight;
+    catAngle = Math.PI / 2;
+    catExpression = 'normal';
+    drawLetterTraceGuide();
 
     frame++;
     if (frame <= totalFrames) {
       requestAnimationFrame(drawFrame);
     } else {
-      // Animation done — clear for user drawing
       letterTraceAnimating = false;
+      catX = w / 2;
+      catY = h * 0.3;
+      catAngle = 0;
+      catExpression = 'happy';
+      drawLetterTraceGuide();
       setTimeout(() => {
         ctx.clearRect(0, 0, w, h);
+        catExpression = 'normal';
+        drawLetterTraceGuide();
       }, 800);
     }
   }
@@ -1560,10 +1716,12 @@ function clearLetterTrace() {
 }
 
 function completeLetterTrace() {
-  showFlowerCelebration();
-  setTimeout(() => {
-    exitLetterTraceScreen();
-  }, 2500);
+  const msg = getRandomEncouragement();
+  saveLetterProgress(currentLetter.letter);
+  showParticleCelebration();
+  speakChinese(msg);
+  traceCompleteText.textContent = msg;
+  traceCompleteOverlay.classList.remove('hidden');
 }
 
 // Letter trace drawing handlers
@@ -1591,6 +1749,10 @@ function doLetterDraw(e) {
   ctx.stroke();
   letterTraceLastX = pos.x;
   letterTraceLastY = pos.y;
+
+  if (!isPointOnLetter(pos.x, pos.y)) {
+    triggerDeviationFeedback();
+  }
 }
 
 function stopLetterDraw(e) {
@@ -1606,6 +1768,140 @@ function getLetterTracePos(e) {
     x: (touch.clientX - rect.left) * scaleX,
     y: (touch.clientY - rect.top) * scaleY
   };
+}
+
+// === Guide Cat ===
+const CAT_SIZE = 28;
+let catX = 0, catY = 0, catAngle = 0, catExpression = 'normal';
+
+// === Deviation feedback ===
+let lastDeviationFeedback = 0;
+const DEVIATION_COOLDOWN = 500;
+
+function isPointOnLetter(x, y) {
+  const ctx = traceGuideCanvas.getContext('2d');
+  if (x < 0 || y < 0 || x >= traceGuideCanvas.width || y >= traceGuideCanvas.height) return false;
+  try {
+    const pixel = ctx.getImageData(Math.round(x), Math.round(y), 1, 1).data;
+    return pixel[3] > 20;
+  } catch {
+    return true;
+  }
+}
+
+function triggerDeviationFeedback() {
+  const now = Date.now();
+  if (now - lastDeviationFeedback < DEVIATION_COOLDOWN) return;
+  lastDeviationFeedback = now;
+  if (navigator.vibrate) navigator.vibrate(50);
+  catExpression = 'lookback';
+  drawLetterTraceGuide();
+  setTimeout(() => {
+    if (catExpression === 'lookback') {
+      catExpression = 'normal';
+      drawLetterTraceGuide();
+    }
+  }, DEVIATION_COOLDOWN);
+}
+
+function drawCat(ctx, x, y, angle, expression) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(angle);
+
+  // Body
+  ctx.beginPath();
+  ctx.ellipse(-CAT_SIZE * 0.4, 0, CAT_SIZE * 0.5, CAT_SIZE * 0.35, 0, 0, Math.PI * 2);
+  ctx.fillStyle = '#FFD166';
+  ctx.fill();
+
+  // Head
+  ctx.beginPath();
+  ctx.arc(CAT_SIZE * 0.3, 0, CAT_SIZE * 0.55, 0, Math.PI * 2);
+  ctx.fillStyle = '#FFD166';
+  ctx.fill();
+
+  // Ears
+  ctx.beginPath();
+  ctx.moveTo(CAT_SIZE * 0.05, -CAT_SIZE * 0.45);
+  ctx.lineTo(CAT_SIZE * -0.05, -CAT_SIZE * 0.85);
+  ctx.lineTo(CAT_SIZE * 0.3, -CAT_SIZE * 0.55);
+  ctx.fillStyle = '#FFD166';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(CAT_SIZE * 0.05, -CAT_SIZE * 0.5);
+  ctx.lineTo(CAT_SIZE * 0.02, -CAT_SIZE * 0.75);
+  ctx.lineTo(CAT_SIZE * 0.25, -CAT_SIZE * 0.55);
+  ctx.fillStyle = '#FFB088';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(CAT_SIZE * 0.05, CAT_SIZE * 0.45);
+  ctx.lineTo(CAT_SIZE * -0.05, CAT_SIZE * 0.85);
+  ctx.lineTo(CAT_SIZE * 0.3, CAT_SIZE * 0.55);
+  ctx.fillStyle = '#FFD166';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(CAT_SIZE * 0.05, CAT_SIZE * 0.5);
+  ctx.lineTo(CAT_SIZE * 0.02, CAT_SIZE * 0.75);
+  ctx.lineTo(CAT_SIZE * 0.25, CAT_SIZE * 0.55);
+  ctx.fillStyle = '#FFB088';
+  ctx.fill();
+
+  // Eyes
+  const eyeY = -CAT_SIZE * 0.12;
+  const eyeY2 = CAT_SIZE * 0.12;
+  const eyeX = CAT_SIZE * 0.45;
+  if (expression === 'happy') {
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(eyeX, eyeY, 4, Math.PI * 0.1, Math.PI * 0.9);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(eyeX, eyeY2, 4, Math.PI * 0.1, Math.PI * 0.9);
+    ctx.stroke();
+  } else {
+    ctx.beginPath();
+    ctx.arc(eyeX, eyeY, 3, 0, Math.PI * 2);
+    ctx.fillStyle = '#333';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(eyeX, eyeY2, 3, 0, Math.PI * 2);
+    ctx.fillStyle = '#333';
+    ctx.fill();
+  }
+
+  // Mouth / nose
+  if (expression === 'happy') {
+    ctx.beginPath();
+    ctx.arc(CAT_SIZE * 0.4, 0, 5, 0, Math.PI);
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+  } else {
+    ctx.beginPath();
+    ctx.moveTo(CAT_SIZE * 0.58, -2);
+    ctx.lineTo(CAT_SIZE * 0.58, 2);
+    ctx.lineTo(CAT_SIZE * 0.63, 0);
+    ctx.fillStyle = '#FFB088';
+    ctx.fill();
+  }
+
+  // Whiskers
+  ctx.strokeStyle = '#ccc';
+  ctx.lineWidth = 1;
+  [-1, 1].forEach(side => {
+    ctx.beginPath();
+    ctx.moveTo(CAT_SIZE * 0.5, side * CAT_SIZE * 0.05);
+    ctx.lineTo(CAT_SIZE * 0.85, side * CAT_SIZE * 0.2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(CAT_SIZE * 0.5, side * CAT_SIZE * 0.15);
+    ctx.lineTo(CAT_SIZE * 0.85, side * CAT_SIZE * 0.35);
+    ctx.stroke();
+  });
+
+  ctx.restore();
 }
 
 function lightenColor(color, percent) {
@@ -1933,7 +2229,7 @@ function stopVisionTrace() {
   if (checkVisionDirection()) {
     // 成功
     visionTraceCompleted = true;
-    showCelebration();
+    showParticleCelebration();
     speakChinese('太棒了');
   } else {
     // 失败 - shake + 再试一次
@@ -1992,6 +2288,27 @@ function setupEventListeners() {
   });
   traceBookBtn.addEventListener('click', () => {
     if (currentLetter) speakEnglish(currentLetter.words[0].word);
+  });
+  traceNextBtn.addEventListener('click', () => {
+    traceCompleteOverlay.classList.add('hidden');
+    const idx = ALPHABET_DATA.findIndex(a => a.letter === currentLetter.letter);
+    const nextIdx = (idx + 1) % ALPHABET_DATA.length;
+    currentLetter = ALPHABET_DATA[nextIdx];
+    // Re-run the open flow without pushing a new screen
+    traceLetterLabel.textContent = currentLetter.letter;
+    resizeLetterTraceCanvas();
+    catX = traceGuideCanvas.width / 2;
+    catY = traceGuideCanvas.height * 0.3;
+    catAngle = 0;
+    catExpression = 'normal';
+    lastDeviationFeedback = 0;
+    clearLetterTrace();
+    drawLetterTraceGuide();
+    setTimeout(() => animateLetterWriting(), 400);
+  });
+  traceBackToGridBtn.addEventListener('click', () => {
+    traceCompleteOverlay.classList.add('hidden');
+    exitLetterTraceScreen();
   });
   traceReplayBtn.addEventListener('click', () => {
     clearLetterTrace();

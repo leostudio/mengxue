@@ -73,6 +73,19 @@
                 <span>✅</span> 完成
             </button>
         </div>
+        <div id="trace-complete-overlay" class="trace-complete-overlay hidden">
+            <div class="trace-complete-content">
+                <div class="trace-complete-text" id="trace-complete-text">太棒了！</div>
+                <div class="trace-complete-buttons">
+                    <button id="trace-next-btn" class="trace-complete-btn trace-next-btn">
+                        下一个字母 ➡️
+                    </button>
+                    <button id="trace-back-to-grid-btn" class="trace-complete-btn trace-back-btn-small">
+                        回到列表 📋
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- 视力表主页 -->
@@ -86,6 +99,9 @@
             <p class="vision-intro-text">点击卡片，学习 E 字的方向吧！</p>
         </div>
         <div class="vision-e-grid" id="vision-e-grid"></div>
+        <div class="vision-tip">
+            <p>👆 点击方向卡片开始练习</p>
+        </div>
     </div>
 
     <!-- 视力表方向详情页 -->
@@ -241,6 +257,8 @@
             <p class="flower-text">太棒了！送你一朵小红花！</p>
         </div>
     </div>
+
+    <canvas id="celebration-canvas" class="celebration-canvas"></canvas>
 
     <script src="lib/hanzi-writer.min.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script>
