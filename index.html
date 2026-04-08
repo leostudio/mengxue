@@ -105,17 +105,87 @@
         </div>
         <div class="numbers-section-title">🎮 互动游戏</div>
         <div class="sub-entry-grid">
+            <div id="btn-find-num" class="sub-entry-card find-num-entry">
+                <div class="sub-entry-icon">🔍</div>
+                <div class="sub-entry-title">找数字</div>
+                <div class="sub-entry-desc">找出指定数字</div>
+            </div>
+            <div id="btn-feed" class="sub-entry-card feed-entry">
+                <div class="sub-entry-icon">👹</div>
+                <div class="sub-entry-title">喂食游戏</div>
+                <div class="sub-entry-desc">喂小怪兽吃东西</div>
+            </div>
             <div class="sub-entry-card disabled">
                 <div class="sub-entry-icon">🔗</div>
                 <div class="sub-entry-title">连线画</div>
                 <div class="sub-entry-desc">敬请期待</div>
             </div>
-            <div class="sub-entry-card disabled">
-                <div class="sub-entry-icon">🔍</div>
-                <div class="sub-entry-title">找数字</div>
-                <div class="sub-entry-desc">敬请期待</div>
+        </div>
+        <div class="numbers-section-title">📈 进阶练习</div>
+        <div class="sub-entry-grid">
+            <div id="btn-compare" class="sub-entry-card compare-entry">
+                <div class="sub-entry-icon">⚖️</div>
+                <div class="sub-entry-title">大小比较</div>
+                <div class="sub-entry-desc">哪边多</div>
+            </div>
+            <div id="btn-add" class="sub-entry-card add-entry">
+                <div class="sub-entry-icon">➕</div>
+                <div class="sub-entry-title">简单加法</div>
+                <div class="sub-entry-desc">学加法</div>
             </div>
         </div>
+    </div>
+
+    <!-- 找数字 -->
+    <div id="findnum-screen" class="screen">
+        <div class="count-header">
+            <button id="findnum-back-btn" class="back-btn">← 返回</button>
+            <div class="count-title" id="findnum-title">找数字</div>
+            <div class="count-score" id="findnum-score">⭐ 0</div>
+        </div>
+        <div class="count-prompt" id="findnum-prompt">找出 5</div>
+        <div class="findnum-stage" id="findnum-stage"></div>
+    </div>
+
+    <!-- 大小比较 -->
+    <div id="compare-screen" class="screen">
+        <div class="count-header">
+            <button id="compare-back-btn" class="back-btn">← 返回</button>
+            <div class="count-title">大小比较</div>
+            <div class="count-score" id="compare-score">⭐ 0</div>
+        </div>
+        <div class="count-prompt">点击比较多的那一边</div>
+        <div class="compare-wrap">
+            <div class="compare-side" id="compare-left" data-side="left"></div>
+            <div class="compare-vs">VS</div>
+            <div class="compare-side" id="compare-right" data-side="right"></div>
+        </div>
+    </div>
+
+    <!-- 简单加法 -->
+    <div id="add-screen" class="screen">
+        <div class="count-header">
+            <button id="add-back-btn" class="back-btn">← 返回</button>
+            <div class="count-title">简单加法</div>
+            <div class="count-score" id="add-score">⭐ 0</div>
+        </div>
+        <div class="add-equation" id="add-equation"></div>
+        <div class="count-choices" id="add-choices"></div>
+    </div>
+
+    <!-- 喂食游戏 -->
+    <div id="feed-screen" class="screen">
+        <div class="count-header">
+            <button id="feed-back-btn" class="back-btn">← 返回</button>
+            <div class="count-title">喂食游戏</div>
+            <div class="count-score" id="feed-score">⭐ 0</div>
+        </div>
+        <div class="feed-monster-area">
+            <div class="feed-monster" id="feed-monster">👹</div>
+            <div class="feed-bubble" id="feed-bubble">我要吃 3 个 🍎</div>
+            <div class="feed-counter" id="feed-counter">已吃: 0</div>
+        </div>
+        <div class="feed-pool" id="feed-pool"></div>
     </div>
 
     <!-- 数字卡片 -->

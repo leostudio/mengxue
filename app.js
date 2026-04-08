@@ -3311,7 +3311,252 @@ function setupPhase1Listeners() {
   buildPaintToolbar();
 }
 
+// ============================================================
+// === Phase 2: 互动游戏 + 进阶 ===
+// ============================================================
+
+// --- 找数字 ---
+const findnumScreen = document.getElementById('findnum-screen');
+const findnumStage = document.getElementById('findnum-stage');
+const findnumPrompt = document.getElementById('findnum-prompt');
+const findnumScoreEl = document.getElementById('findnum-score');
+const findnumBackBtn = document.getElementById('findnum-back-btn');
+let findnumScore = 0, findnumTarget = 0;
+
+function openFindnumScreen() {
+  findnumScore = 0;
+  findnumScoreEl.textContent = '⭐ 0';
+  navigateTo(findnumScreen, 'forward');
+  newFindnumRound();
+}
+function newFindnumRound() {
+  findnumTarget = Math.floor(Math.random() * 10);
+  findnumPrompt.textContent = '找出 ' + findnumTarget;
+  speakChinese('找出 ' + NUMBER_NAMES[findnumTarget]);
+  // 16 cells, ensure target appears 1-3 times
+  const cells = [];
+  const targetCount = 1 + Math.floor(Math.random() * 2);
+  for (let i = 0; i < targetCount; i++) cells.push(findnumTarget);
+  while (cells.length < 16) {
+    const n = Math.floor(Math.random() * 10);
+    if (n !== findnumTarget) cells.push(n);
+  }
+  cells.sort(() => Math.random() - 0.5);
+  findnumStage.innerHTML = '';
+  cells.forEach(n => {
+    const cell = document.createElement('div');
+    cell.className = 'findnum-cell';
+    cell.textContent = n;
+    cell.addEventListener('click', () => {
+      if (n === findnumTarget) {
+        cell.classList.add('correct');
+        findnumScore++;
+        findnumScoreEl.textContent = '⭐ ' + findnumScore;
+        playSuccess();
+        showParticleCelebration();
+        setTimeout(newFindnumRound, 1500);
+      } else {
+        cell.classList.add('wrong');
+        playWrong();
+        setTimeout(() => cell.classList.remove('wrong'), 500);
+      }
+    });
+    findnumStage.appendChild(cell);
+  });
+}
+
+// --- 大小比较 ---
+const compareScreen = document.getElementById('compare-screen');
+const compareLeft = document.getElementById('compare-left');
+const compareRight = document.getElementById('compare-right');
+const compareScoreEl = document.getElementById('compare-score');
+const compareBackBtn = document.getElementById('compare-back-btn');
+const COMPARE_ICONS = ['🍬','🍭','🍫','🍩','🧁','🍪'];
+let compareScore = 0, compareWinner = 'left';
+
+function openCompareScreen() {
+  compareScore = 0;
+  compareScoreEl.textContent = '⭐ 0';
+  navigateTo(compareScreen, 'forward');
+  newCompareRound();
+}
+function newCompareRound() {
+  let a = 1 + Math.floor(Math.random() * 9);
+  let b = 1 + Math.floor(Math.random() * 9);
+  while (a === b) b = 1 + Math.floor(Math.random() * 9);
+  compareWinner = a > b ? 'left' : 'right';
+  const icon = COMPARE_ICONS[Math.floor(Math.random() * COMPARE_ICONS.length)];
+  fillCompareSide(compareLeft, a, icon);
+  fillCompareSide(compareRight, b, icon);
+  compareLeft.classList.remove('correct', 'wrong');
+  compareRight.classList.remove('correct', 'wrong');
+  speakChinese('哪边更多');
+}
+function fillCompareSide(el, n, icon) {
+  el.innerHTML = '';
+  for (let i = 0; i < n; i++) {
+    const s = document.createElement('span');
+    s.textContent = icon;
+    s.style.animationDelay = (i * 0.04) + 's';
+    el.appendChild(s);
+  }
+}
+function handleCompareClick(side) {
+  const el = side === 'left' ? compareLeft : compareRight;
+  if (side === compareWinner) {
+    el.classList.add('correct');
+    compareScore++;
+    compareScoreEl.textContent = '⭐ ' + compareScore;
+    playSuccess();
+    speakChinese('答对啦');
+    showParticleCelebration();
+    setTimeout(newCompareRound, 1500);
+  } else {
+    el.classList.add('wrong');
+    playWrong();
+    setTimeout(() => el.classList.remove('wrong'), 500);
+  }
+}
+
+// --- 简单加法 ---
+const addScreen = document.getElementById('add-screen');
+const addEquation = document.getElementById('add-equation');
+const addChoices = document.getElementById('add-choices');
+const addScoreEl = document.getElementById('add-score');
+const addBackBtn = document.getElementById('add-back-btn');
+let addScore = 0, addAnswer = 0;
+
+function openAddScreen() {
+  addScore = 0;
+  addScoreEl.textContent = '⭐ 0';
+  navigateTo(addScreen, 'forward');
+  newAddRound();
+}
+function newAddRound() {
+  const a = 1 + Math.floor(Math.random() * 5);
+  const b = 1 + Math.floor(Math.random() * 5);
+  addAnswer = a + b;
+  const icon = ['🍎','🍊','🍓','🍇','⭐'][Math.floor(Math.random() * 5)];
+  addEquation.innerHTML = `
+    <div class="add-group">${icon.repeat(a)}<br><span>${a}</span></div>
+    <div class="add-op">+</div>
+    <div class="add-group">${icon.repeat(b)}<br><span>${b}</span></div>
+    <div class="add-op">=</div>
+    <div class="add-group"><span>?</span></div>
+  `;
+  speakChinese(NUMBER_NAMES[a] + ' 加 ' + NUMBER_NAMES[b] + ' 等于几');
+  // Choices: correct + 3 distractors in [1..10]
+  const choices = new Set([addAnswer]);
+  while (choices.size < 4) {
+    const d = 1 + Math.floor(Math.random() * 10);
+    choices.add(d);
+  }
+  const arr = Array.from(choices).sort(() => Math.random() - 0.5);
+  addChoices.innerHTML = '';
+  arr.forEach(n => {
+    const btn = document.createElement('button');
+    btn.className = 'count-choice-btn';
+    btn.textContent = n;
+    btn.addEventListener('click', () => {
+      if (n === addAnswer) {
+        btn.classList.add('correct');
+        addScore++;
+        addScoreEl.textContent = '⭐ ' + addScore;
+        playSuccess();
+        speakChinese('答对啦，等于 ' + NUMBER_NAMES[addAnswer]);
+        showParticleCelebration();
+        setTimeout(newAddRound, 1800);
+      } else {
+        btn.classList.add('wrong');
+        playWrong();
+        setTimeout(() => btn.classList.remove('wrong'), 500);
+      }
+    });
+    addChoices.appendChild(btn);
+  });
+}
+
+// --- 喂食游戏 (tap to feed) ---
+const feedScreen = document.getElementById('feed-screen');
+const feedMonster = document.getElementById('feed-monster');
+const feedBubble = document.getElementById('feed-bubble');
+const feedCounterEl = document.getElementById('feed-counter');
+const feedPool = document.getElementById('feed-pool');
+const feedScoreEl = document.getElementById('feed-score');
+const feedBackBtn = document.getElementById('feed-back-btn');
+const FEED_ITEMS = ['🍎','🍌','🍓','🍪','🍩','🥕'];
+let feedScore = 0, feedTarget = 0, feedEaten = 0, feedItem = '🍎';
+
+function openFeedScreen() {
+  feedScore = 0;
+  feedScoreEl.textContent = '⭐ 0';
+  navigateTo(feedScreen, 'forward');
+  newFeedRound();
+}
+function newFeedRound() {
+  feedTarget = 1 + Math.floor(Math.random() * 5); // 1..5
+  feedEaten = 0;
+  feedItem = FEED_ITEMS[Math.floor(Math.random() * FEED_ITEMS.length)];
+  feedBubble.textContent = `我要吃 ${feedTarget} 个 ${feedItem}`;
+  feedCounterEl.textContent = `已吃: 0 / ${feedTarget}`;
+  speakChinese(`我要吃 ${NUMBER_NAMES[feedTarget]} 个`);
+  // Pool: feedTarget+2 to feedTarget+4 items (always more than needed)
+  const total = feedTarget + 2 + Math.floor(Math.random() * 3);
+  feedPool.innerHTML = '';
+  for (let i = 0; i < total; i++) {
+    const el = document.createElement('div');
+    el.className = 'feed-item';
+    el.textContent = feedItem;
+    el.style.animationDelay = (i * 0.05) + 's';
+    el.addEventListener('click', () => onFeedTap(el));
+    feedPool.appendChild(el);
+  }
+}
+function onFeedTap(el) {
+  if (el.classList.contains('eaten')) return;
+  if (feedEaten >= feedTarget) {
+    // Already done — too many
+    playWrong();
+    speakChinese('够啦');
+    return;
+  }
+  el.classList.add('eaten');
+  feedEaten++;
+  feedCounterEl.textContent = `已吃: ${feedEaten} / ${feedTarget}`;
+  feedMonster.classList.remove('eating');
+  void feedMonster.offsetWidth; // restart animation
+  feedMonster.classList.add('eating');
+  playDing();
+  if (feedEaten === feedTarget) {
+    setTimeout(() => {
+      playSuccess();
+      speakChinese('谢谢你！');
+      showParticleCelebration();
+      feedScore++;
+      feedScoreEl.textContent = '⭐ ' + feedScore;
+      setTimeout(newFeedRound, 1800);
+    }, 300);
+  }
+}
+
+// --- Wire up Phase 2 ---
+function setupPhase2Listeners() {
+  document.getElementById('btn-find-num').addEventListener('click', openFindnumScreen);
+  document.getElementById('btn-feed').addEventListener('click', openFeedScreen);
+  document.getElementById('btn-compare').addEventListener('click', openCompareScreen);
+  document.getElementById('btn-add').addEventListener('click', openAddScreen);
+
+  findnumBackBtn.addEventListener('click', () => goBack());
+  compareBackBtn.addEventListener('click', () => goBack());
+  addBackBtn.addEventListener('click', () => goBack());
+  feedBackBtn.addEventListener('click', () => goBack());
+
+  compareLeft.addEventListener('click', () => handleCompareClick('left'));
+  compareRight.addEventListener('click', () => handleCompareClick('right'));
+}
+
 setupPhase1Listeners();
+setupPhase2Listeners();
 
 window.addEventListener('resize', () => {
   if (currentScreen === paintScreen) {
