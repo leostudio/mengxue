@@ -212,6 +212,88 @@ const ALPHABET_DATA = [
   ]},
 ];
 
+// === 字母形状联想 — memory metaphor per letter ===
+// Pairs each letter with a short shape-based mnemonic + a shape emoji.
+const LETTER_SHAPES = {
+  A: { metaphor: '像一座小山',       emoji: '⛰️' },
+  B: { metaphor: '像两个小肚子',     emoji: '🐻' },
+  C: { metaphor: '像弯弯的月亮',     emoji: '🌙' },
+  D: { metaphor: '像一张弓',         emoji: '🏹' },
+  E: { metaphor: '像一把梳子',       emoji: '🪮' },
+  F: { metaphor: '像一面小旗子',     emoji: '🚩' },
+  G: { metaphor: '像个小耳朵',       emoji: '👂' },
+  H: { metaphor: '像一架梯子',       emoji: '🪜' },
+  I: { metaphor: '像一根棒棒',       emoji: '🍡' },
+  J: { metaphor: '像个小钩子',       emoji: '🪝' },
+  K: { metaphor: '像一只小鸟在飞',   emoji: '🐦' },
+  L: { metaphor: '像一个直角尺',     emoji: '📐' },
+  M: { metaphor: '像两座山',         emoji: '⛰️' },
+  N: { metaphor: '像一张小桌子',     emoji: '🛋️' },
+  O: { metaphor: '像甜甜圈',         emoji: '🍩' },
+  P: { metaphor: '像吹起的小气球',   emoji: '🎈' },
+  Q: { metaphor: '像小猪的尾巴',     emoji: '🐷' },
+  R: { metaphor: '像跑步的小人',     emoji: '🏃' },
+  S: { metaphor: '像一条小蛇',       emoji: '🐍' },
+  T: { metaphor: '像一棵小树',       emoji: '🌳' },
+  U: { metaphor: '像一只小碗',       emoji: '🥣' },
+  V: { metaphor: '像一只花瓶',       emoji: '🏺' },
+  W: { metaphor: '像两个小山谷',     emoji: '🏔️' },
+  X: { metaphor: '像交叉的剪刀',     emoji: '✂️' },
+  Y: { metaphor: '像一颗树杈',       emoji: '🌿' },
+  Z: { metaphor: '像一道闪电',       emoji: '⚡' },
+};
+
+// === 字母拼单词 — 3-letter phonics words with emoji ===
+// Chosen for visual clarity and classic phonics progression (CVC words).
+const WORD_BANK = [
+  { word: 'CAT', chinese: '猫', emoji: '🐱' },
+  { word: 'DOG', chinese: '狗', emoji: '🐶' },
+  { word: 'SUN', chinese: '太阳', emoji: '☀️' },
+  { word: 'PIG', chinese: '猪', emoji: '🐷' },
+  { word: 'BUS', chinese: '公交', emoji: '🚌' },
+  { word: 'FOX', chinese: '狐狸', emoji: '🦊' },
+  { word: 'HAT', chinese: '帽子', emoji: '👒' },
+  { word: 'BED', chinese: '床', emoji: '🛏️' },
+  { word: 'CUP', chinese: '杯子', emoji: '🥤' },
+  { word: 'BAG', chinese: '包', emoji: '👜' },
+  { word: 'MAP', chinese: '地图', emoji: '🗺️' },
+  { word: 'NET', chinese: '网', emoji: '🕸️' },
+  { word: 'OWL', chinese: '猫头鹰', emoji: '🦉' },
+  { word: 'PEN', chinese: '笔', emoji: '✒️' },
+  { word: 'ZOO', chinese: '动物园', emoji: '🦁' },
+];
+
+// === 字母动物园 — A for Alligator, B for Bear... ===
+// Each letter maps to an animal with the word, emoji, and a phonics sound.
+const LETTER_ANIMALS = {
+  A: { animal: 'Alligator', emoji: '🐊', phonics: 'ah' },
+  B: { animal: 'Bear',      emoji: '🐻', phonics: 'buh' },
+  C: { animal: 'Cat',       emoji: '🐱', phonics: 'kuh' },
+  D: { animal: 'Dog',       emoji: '🐶', phonics: 'duh' },
+  E: { animal: 'Elephant',  emoji: '🐘', phonics: 'eh' },
+  F: { animal: 'Fox',       emoji: '🦊', phonics: 'fuh' },
+  G: { animal: 'Goat',      emoji: '🐐', phonics: 'guh' },
+  H: { animal: 'Horse',     emoji: '🐴', phonics: 'huh' },
+  I: { animal: 'Iguana',    emoji: '🦎', phonics: 'ih' },
+  J: { animal: 'Jellyfish', emoji: '🪼', phonics: 'juh' },
+  K: { animal: 'Kangaroo',  emoji: '🦘', phonics: 'kuh' },
+  L: { animal: 'Lion',      emoji: '🦁', phonics: 'luh' },
+  M: { animal: 'Monkey',    emoji: '🐵', phonics: 'muh' },
+  N: { animal: 'Narwhal',   emoji: '🐋', phonics: 'nuh' },
+  O: { animal: 'Octopus',   emoji: '🐙', phonics: 'ah' },
+  P: { animal: 'Panda',     emoji: '🐼', phonics: 'puh' },
+  Q: { animal: 'Quail',     emoji: '🐦', phonics: 'kw' },
+  R: { animal: 'Rabbit',    emoji: '🐰', phonics: 'ruh' },
+  S: { animal: 'Snake',     emoji: '🐍', phonics: 'sss' },
+  T: { animal: 'Tiger',     emoji: '🐯', phonics: 'tuh' },
+  U: { animal: 'Unicorn',   emoji: '🦄', phonics: 'uh' },
+  V: { animal: 'Vulture',   emoji: '🦅', phonics: 'vuh' },
+  W: { animal: 'Whale',     emoji: '🐳', phonics: 'wuh' },
+  X: { animal: 'X-ray fish',emoji: '🐟', phonics: 'ks' },
+  Y: { animal: 'Yak',       emoji: '🐃', phonics: 'yuh' },
+  Z: { animal: 'Zebra',     emoji: '🦓', phonics: 'zzz' },
+};
+
 
 let currentLetter = null; // current ALPHABET_DATA item
 let letterTraceAnimating = false;
@@ -1467,6 +1549,55 @@ const VISION_DIRECTION_GUIDES = {
   right: [{x:25, y:50}, {x:75, y:50}],
 };
 
+// === 象形字数据 (pictographs) — char ↔ picture with a kid-friendly memory story ===
+const HANZI_PICTOGRAPHS = [
+  { char: '日', pinyin: 'rì', emoji: '☀️', meaning: '太阳', story: '太阳圆圆的，中间一点是它发出的光。'},
+  { char: '月', pinyin: 'yuè', emoji: '🌙', meaning: '月亮', story: '弯弯的月亮挂在天上。' },
+  { char: '山', pinyin: 'shān', emoji: '⛰️', meaning: '山', story: '三座山峰连在一起，就是山。' },
+  { char: '水', pinyin: 'shuǐ', emoji: '💧', meaning: '水', story: '一条小河流呀流，两边溅起小水花。' },
+  { char: '火', pinyin: 'huǒ', emoji: '🔥', meaning: '火', story: '火苗向上窜，两边冒着小火星。' },
+  { char: '木', pinyin: 'mù', emoji: '🌳', meaning: '树', story: '一棵大树，有树干、有树枝、有树根。' },
+  { char: '人', pinyin: 'rén', emoji: '🚶', meaning: '人', story: '两条腿的小人在走路。' },
+  { char: '口', pinyin: 'kǒu', emoji: '👄', meaning: '嘴巴', story: '张开的嘴巴，方方正正的。' },
+  { char: '目', pinyin: 'mù', emoji: '👁️', meaning: '眼睛', story: '眼睛里有瞳孔，横过来就是目。' },
+  { char: '手', pinyin: 'shǒu', emoji: '✋', meaning: '手', story: '五个手指的手掌，摊开像朵花。' },
+  { char: '田', pinyin: 'tián', emoji: '🌾', meaning: '田地', story: '田字格里种满了庄稼。' },
+  { char: '雨', pinyin: 'yǔ', emoji: '🌧️', meaning: '雨', story: '天上的云里掉下小水滴，就是雨。' },
+  { char: '鸟', pinyin: 'niǎo', emoji: '🐦', meaning: '鸟', story: '有翅膀、有小嘴、会唱歌的是鸟。' },
+  { char: '鱼', pinyin: 'yú', emoji: '🐟', meaning: '鱼', story: '鱼的头、身子和小尾巴，游来游去。' },
+  { char: '马', pinyin: 'mǎ', emoji: '🐎', meaning: '马', story: '四条腿、有鬃毛的是马。' },
+];
+
+// Quick lookup for stories by character
+const HANZI_STORIES = Object.fromEntries(HANZI_PICTOGRAPHS.map(p => [p.char, p]));
+
+// === Hanzi collection (字宝宝乐园) — tracks which characters the kid has mastered ===
+const HANZI_COLLECTION_KEY = 'mengxue_collected_hanzi';
+
+function getCollectedHanziSet() {
+  try {
+    const data = JSON.parse(localStorage.getItem(HANZI_COLLECTION_KEY) || '[]');
+    return new Set(Array.isArray(data) ? data : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function collectHanzi(char) {
+  if (!char) return false;
+  const set = getCollectedHanziSet();
+  if (set.has(char)) return false;
+  set.add(char);
+  try {
+    localStorage.setItem(HANZI_COLLECTION_KEY, JSON.stringify([...set]));
+  } catch (_) {}
+  return true;
+}
+
+function getHanziCollectionCount() {
+  return getCollectedHanziSet().size;
+}
+
 function init() {
   createAlphabetGrid();
   createVisionEGrid();
@@ -1503,6 +1634,410 @@ function createAlphabetGrid() {
 
 function openAlphabetScreen() {
   navigateTo(gridScreen, 'forward');
+  createAlphabetGrid();
+}
+
+// ============================================================
+// === 萌学字母 — Alphabet feature hub + new mini-games ===
+// ============================================================
+
+function openAlphabetHomeScreen() {
+  const screen = document.getElementById('alphabet-home-screen');
+  navigateTo(screen, 'forward');
+  updateAlphabetHomeProgress();
+}
+
+function updateAlphabetHomeProgress() {
+  const countEl = document.getElementById('alphabet-home-progress-count');
+  if (countEl) countEl.textContent = getCompletedLetters().length;
+}
+
+// --- 字母动物园 ---
+
+function openAlphabetZooScreen() {
+  const screen = document.getElementById('alphabet-zoo-screen');
+  navigateTo(screen, 'forward');
+  renderZooGrid();
+}
+
+function renderZooGrid() {
+  const grid = document.getElementById('alphabet-zoo-grid');
+  if (!grid) return;
+  const completed = new Set(getCompletedLetters());
+  grid.innerHTML = '';
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').forEach(letter => {
+    const data = LETTER_ANIMALS[letter];
+    if (!data) return;
+    const card = document.createElement('div');
+    const unlocked = completed.has(letter);
+    card.className = 'alphabet-zoo-card' + (unlocked ? '' : ' locked');
+    card.innerHTML = `
+      <div class="alphabet-zoo-card-lock">${unlocked ? '🌟' : '🔒'}</div>
+      <div class="alphabet-zoo-card-emoji">${data.emoji}</div>
+      <div class="alphabet-zoo-card-letter">${letter}</div>
+      <div class="alphabet-zoo-card-animal">${data.animal}</div>
+    `;
+    if (unlocked) {
+      card.addEventListener('click', () => playZooCard(letter));
+    }
+    grid.appendChild(card);
+  });
+}
+
+function playZooCard(letter) {
+  const data = LETTER_ANIMALS[letter];
+  if (!data) return;
+  // Chain: "B" → "B for Bear" → animal name
+  speakEnglish(letter, () => {
+    speakEnglish(`${letter} for ${data.animal}`);
+  });
+}
+
+// --- 听音找字母 ---
+
+let alphaListenScore = 0;
+let alphaListenAnswer = '';
+
+function openAlphabetListenScreen() {
+  const screen = document.getElementById('alphabet-listen-screen');
+  alphaListenScore = 0;
+  document.getElementById('alphabet-listen-score').textContent = '0';
+  navigateTo(screen, 'forward');
+  newAlphabetListenRound();
+}
+
+function newAlphabetListenRound() {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  const picks = [];
+  while (picks.length < 4) {
+    const c = letters[Math.floor(Math.random() * letters.length)];
+    if (!picks.includes(c)) picks.push(c);
+  }
+  alphaListenAnswer = picks[Math.floor(Math.random() * picks.length)];
+  const stage = document.getElementById('alphabet-listen-stage');
+  stage.innerHTML = '';
+  picks.forEach(c => {
+    const tile = document.createElement('div');
+    tile.className = 'alphabet-listen-tile';
+    tile.textContent = c;
+    tile.addEventListener('click', () => handleAlphaListenChoice(c, tile));
+    stage.appendChild(tile);
+  });
+  setTimeout(playAlphabetListenPrompt, 250);
+}
+
+function playAlphabetListenPrompt() {
+  if (alphaListenAnswer) speakEnglish('Find the letter ' + alphaListenAnswer);
+}
+
+function handleAlphaListenChoice(c, tile) {
+  if (c === alphaListenAnswer) {
+    tile.classList.add('correct');
+    alphaListenScore++;
+    document.getElementById('alphabet-listen-score').textContent = alphaListenScore;
+    playSuccess && playSuccess();
+    speakEnglish('Great job!');
+    setTimeout(newAlphabetListenRound, 1400);
+  } else {
+    tile.classList.add('wrong');
+    playWrong && playWrong();
+    speakEnglish('Try again');
+    setTimeout(() => tile.classList.remove('wrong'), 500);
+  }
+}
+
+// --- 大小写配对 ---
+
+let alphaCaseScore = 0;
+let alphaCaseAnswer = '';
+
+function openAlphabetCaseScreen() {
+  const screen = document.getElementById('alphabet-case-screen');
+  alphaCaseScore = 0;
+  document.getElementById('alphabet-case-score').textContent = '0';
+  navigateTo(screen, 'forward');
+  newAlphabetCaseRound();
+}
+
+function newAlphabetCaseRound() {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  const picks = [];
+  while (picks.length < 4) {
+    const c = letters[Math.floor(Math.random() * letters.length)];
+    if (!picks.includes(c)) picks.push(c);
+  }
+  const target = picks[Math.floor(Math.random() * picks.length)];
+  alphaCaseAnswer = target.toLowerCase();
+  document.getElementById('alphabet-case-target').textContent = target;
+  const choicesEl = document.getElementById('alphabet-case-choices');
+  choicesEl.innerHTML = '';
+  // Shuffle lowercase versions
+  const shuffled = picks.map(c => c.toLowerCase()).sort(() => Math.random() - 0.5);
+  shuffled.forEach(c => {
+    const btn = document.createElement('div');
+    btn.className = 'alphabet-case-choice';
+    btn.textContent = c;
+    btn.addEventListener('click', () => handleCaseChoice(c, btn));
+    choicesEl.appendChild(btn);
+  });
+  setTimeout(() => speakEnglish(target), 300);
+}
+
+function handleCaseChoice(c, btn) {
+  if (c === alphaCaseAnswer) {
+    btn.classList.add('correct');
+    alphaCaseScore++;
+    document.getElementById('alphabet-case-score').textContent = alphaCaseScore;
+    playSuccess && playSuccess();
+    speakEnglish('Amazing!');
+    setTimeout(newAlphabetCaseRound, 1400);
+  } else {
+    btn.classList.add('wrong');
+    playWrong && playWrong();
+    setTimeout(() => btn.classList.remove('wrong'), 500);
+  }
+}
+
+// --- 字母拼单词 ---
+// Tap-based (not drag) for simplicity on touch devices.
+// Tap a pool tile → fills next empty slot. Tap a filled slot → returns letter to pool.
+// Auto-checks when all slots are filled.
+
+let spellScore = 0;
+let spellCurrentWord = null;
+let spellSlotState = []; // array of {letter, tileIdx} or null per slot
+let spellPoolState = []; // array of {letter, used} — index matches DOM tile index
+
+function openAlphabetSpellScreen() {
+  const screen = document.getElementById('alphabet-spell-screen');
+  spellScore = 0;
+  document.getElementById('alphabet-spell-score').textContent = '0';
+  navigateTo(screen, 'forward');
+  newSpellRound();
+}
+
+function newSpellRound() {
+  // Pick a random word from the bank
+  spellCurrentWord = WORD_BANK[Math.floor(Math.random() * WORD_BANK.length)];
+  document.getElementById('alphabet-spell-emoji').textContent = spellCurrentWord.emoji;
+  document.getElementById('alphabet-spell-chinese').textContent = spellCurrentWord.chinese;
+
+  // Build slot state (empty)
+  spellSlotState = spellCurrentWord.word.split('').map(() => null);
+  renderSpellSlots();
+
+  // Build pool: correct letters + 3 random distractors, shuffled
+  const correct = spellCurrentWord.word.split('');
+  const distractors = [];
+  const candidateLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+    .filter(l => !correct.includes(l));
+  while (distractors.length < 3) {
+    const l = candidateLetters[Math.floor(Math.random() * candidateLetters.length)];
+    if (!distractors.includes(l)) distractors.push(l);
+  }
+  const poolLetters = [...correct, ...distractors].sort(() => Math.random() - 0.5);
+  spellPoolState = poolLetters.map(letter => ({ letter, used: false }));
+  renderSpellPool();
+
+  // Speak the word right after layout
+  setTimeout(playSpellPrompt, 300);
+}
+
+function renderSpellSlots() {
+  const slotsEl = document.getElementById('alphabet-spell-slots');
+  slotsEl.innerHTML = '';
+  spellSlotState.forEach((cell, i) => {
+    const slot = document.createElement('div');
+    slot.className = 'alphabet-spell-slot' + (cell ? ' filled' : '');
+    slot.textContent = cell ? cell.letter : '';
+    slot.addEventListener('click', () => {
+      // Return letter from this slot back to pool
+      if (spellSlotState[i]) {
+        spellPoolState[spellSlotState[i].tileIdx].used = false;
+        spellSlotState[i] = null;
+        renderSpellSlots();
+        renderSpellPool();
+      }
+    });
+    slotsEl.appendChild(slot);
+  });
+}
+
+function renderSpellPool() {
+  const poolEl = document.getElementById('alphabet-spell-pool');
+  poolEl.innerHTML = '';
+  spellPoolState.forEach((tile, idx) => {
+    const el = document.createElement('div');
+    el.className = 'alphabet-spell-tile' + (tile.used ? ' used' : '');
+    el.textContent = tile.letter;
+    el.addEventListener('click', () => {
+      if (tile.used) return;
+      const emptyIdx = spellSlotState.findIndex(s => !s);
+      if (emptyIdx === -1) return;
+      spellSlotState[emptyIdx] = { letter: tile.letter, tileIdx: idx };
+      tile.used = true;
+      renderSpellSlots();
+      renderSpellPool();
+      // Speak the letter name as feedback
+      speakEnglish(tile.letter);
+      // Auto-check when all slots filled
+      if (spellSlotState.every(s => s)) {
+        setTimeout(checkSpellAnswer, 400);
+      }
+    });
+    poolEl.appendChild(el);
+  });
+}
+
+function checkSpellAnswer() {
+  const attempt = spellSlotState.map(s => s.letter).join('');
+  const slots = document.querySelectorAll('.alphabet-spell-slot');
+  if (attempt === spellCurrentWord.word) {
+    slots.forEach(s => s.classList.add('correct'));
+    spellScore++;
+    document.getElementById('alphabet-spell-score').textContent = spellScore;
+    playSuccess && playSuccess();
+    // Chain: speak each letter one by one, then the whole word
+    const letters = spellCurrentWord.word.split('');
+    let i = 0;
+    const speakNext = () => {
+      if (i >= letters.length) {
+        speakEnglish(spellCurrentWord.word, () => {
+          setTimeout(newSpellRound, 900);
+        });
+        return;
+      }
+      speakEnglish(letters[i++], speakNext);
+    };
+    setTimeout(speakNext, 250);
+  } else {
+    slots.forEach(s => s.classList.add('wrong'));
+    playWrong && playWrong();
+    speakEnglish('Try again');
+    setTimeout(() => {
+      // Clear slots, return all letters to pool
+      spellSlotState = spellCurrentWord.word.split('').map(() => null);
+      spellPoolState.forEach(t => t.used = false);
+      renderSpellSlots();
+      renderSpellPool();
+    }, 700);
+  }
+}
+
+function playSpellPrompt() {
+  if (spellCurrentWord) speakEnglish(spellCurrentWord.word);
+}
+
+// --- 字母钓鱼 ---
+// Fish swim around the pond. TTS says "Catch the letter X". Kid taps the correct fish.
+
+let fishScore = 0;
+let fishTarget = '';
+let fishSpawnTimer = null;
+
+function openAlphabetFishScreen() {
+  const screen = document.getElementById('alphabet-fish-screen');
+  fishScore = 0;
+  document.getElementById('alphabet-fish-score').textContent = '0';
+  navigateTo(screen, 'forward');
+  // Wait for the screen to be laid out before positioning fish
+  setTimeout(newFishRound, 250);
+}
+
+function exitAlphabetFishScreen() {
+  clearTimeout(fishSpawnTimer);
+  fishSpawnTimer = null;
+  const pond = document.getElementById('alphabet-fish-pond');
+  if (pond) pond.innerHTML = '';
+}
+
+function newFishRound() {
+  const pond = document.getElementById('alphabet-fish-pond');
+  if (!pond || !document.getElementById('alphabet-fish-screen').classList.contains('active')) return;
+  pond.innerHTML = '';
+
+  // Pick 6 letters — target + 5 distractors
+  const all = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  const picks = [];
+  while (picks.length < 6) {
+    const l = all[Math.floor(Math.random() * all.length)];
+    if (!picks.includes(l)) picks.push(l);
+  }
+  fishTarget = picks[Math.floor(Math.random() * picks.length)];
+  document.getElementById('alphabet-fish-target').textContent = fishTarget;
+
+  // Spawn fish at random positions with random swim animation delays
+  const pondRect = pond.getBoundingClientRect();
+  const padX = 80;
+  const padY = 70;
+  picks.sort(() => Math.random() - 0.5).forEach((letter, i) => {
+    const fish = document.createElement('div');
+    const variant = ['','variant-b','variant-c','variant-d'][Math.floor(Math.random() * 4)];
+    const flipped = Math.random() > 0.5 ? 'flipped' : '';
+    fish.className = `alphabet-fish ${variant} ${flipped}`.trim();
+    fish.textContent = letter;
+    fish.dataset.letter = letter;
+    // Grid-ish positioning to avoid overlap, then jitter
+    const cols = 3;
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const cellW = (pondRect.width - padX * 2) / cols;
+    const cellH = (pondRect.height - padY * 2) / 2;
+    const x = padX + col * cellW + Math.random() * (cellW - 70);
+    const y = padY + row * cellH + Math.random() * (cellH - 54);
+    fish.style.left = x + 'px';
+    fish.style.top = y + 'px';
+    fish.style.animationDelay = (Math.random() * 2) + 's';
+    fish.addEventListener('click', () => handleFishTap(letter, fish));
+    pond.appendChild(fish);
+  });
+
+  setTimeout(playFishPrompt, 400);
+}
+
+function playFishPrompt() {
+  if (fishTarget) speakEnglish('Catch the letter ' + fishTarget);
+}
+
+function handleFishTap(letter, el) {
+  if (letter === fishTarget) {
+    el.classList.add('caught');
+    fishScore++;
+    document.getElementById('alphabet-fish-score').textContent = fishScore;
+    playSuccess && playSuccess();
+    speakEnglish('Great job!');
+    fishSpawnTimer = setTimeout(newFishRound, 1200);
+  } else {
+    el.classList.add('wrong');
+    playWrong && playWrong();
+    setTimeout(() => el.classList.remove('wrong'), 500);
+  }
+}
+
+// --- Wire up alphabet hub listeners (called from init) ---
+
+function setupAlphabetHubListeners() {
+  document.getElementById('alphabet-home-back-btn').addEventListener('click', () => goBack());
+  document.getElementById('alphabet-home-btn-grid').addEventListener('click', openAlphabetScreen);
+  document.getElementById('alphabet-home-btn-zoo').addEventListener('click', openAlphabetZooScreen);
+  document.getElementById('alphabet-home-btn-listen').addEventListener('click', openAlphabetListenScreen);
+  document.getElementById('alphabet-home-btn-case').addEventListener('click', openAlphabetCaseScreen);
+  document.getElementById('alphabet-home-btn-spell').addEventListener('click', openAlphabetSpellScreen);
+  document.getElementById('alphabet-home-btn-fish').addEventListener('click', openAlphabetFishScreen);
+
+  document.getElementById('alphabet-zoo-back-btn').addEventListener('click', () => goBack());
+  document.getElementById('alphabet-listen-back-btn').addEventListener('click', () => goBack());
+  document.getElementById('alphabet-listen-play-btn').addEventListener('click', playAlphabetListenPrompt);
+  document.getElementById('alphabet-case-back-btn').addEventListener('click', () => goBack());
+
+  document.getElementById('alphabet-spell-back-btn').addEventListener('click', () => goBack());
+  document.getElementById('alphabet-spell-play-btn').addEventListener('click', playSpellPrompt);
+
+  document.getElementById('alphabet-fish-back-btn').addEventListener('click', () => {
+    exitAlphabetFishScreen();
+    goBack();
+  });
+  document.getElementById('alphabet-fish-play-btn').addEventListener('click', playFishPrompt);
 }
 
 function goBackFromGrid() {
@@ -1525,16 +2060,75 @@ function pickCuteGirlVoice() {
   return zh[0];
 }
 
-function speakChinese(text) {
-  if (!('speechSynthesis' in window)) return;
+// === TTS: pre-generated Neural voice (zh-CN-XiaoyiNeural) with Web Speech fallback ===
+// Manifest is loaded once at startup from assets/audio/zh/manifest.json.
+// Any phrase present in the manifest plays the baked MP3 (much cuter than system TTS).
+// Phrases not in the manifest fall back to SpeechSynthesis.
+const ttsManifest = { phrases: {}, loaded: false };
+let ttsCurrentAudio = null;
+
+(async function loadTtsManifest() {
+  try {
+    const r = await fetch('assets/audio/zh/manifest.json', { cache: 'no-cache' });
+    if (r.ok) {
+      const data = await r.json();
+      ttsManifest.phrases = data.phrases || {};
+      ttsManifest.loaded = true;
+      console.log('[tts] manifest loaded:', Object.keys(ttsManifest.phrases).length, 'phrases');
+    }
+  } catch (e) {
+    console.warn('[tts] manifest not available, falling back to Web Speech API');
+  }
+})();
+
+function stopTtsAudio() {
+  if (ttsCurrentAudio) {
+    try { ttsCurrentAudio.pause(); } catch (_) {}
+    ttsCurrentAudio = null;
+  }
+  if ('speechSynthesis' in window) {
+    try { speechSynthesis.cancel(); } catch (_) {}
+  }
+}
+
+function speakFromManifest(text, onEnd) {
+  const file = ttsManifest.phrases[text];
+  if (!file) return false;
+  stopTtsAudio();
+  const audio = new Audio('assets/audio/zh/' + file);
+  audio.preload = 'auto';
+  ttsCurrentAudio = audio;
+  if (typeof onEnd === 'function') {
+    audio.addEventListener('ended', () => {
+      if (ttsCurrentAudio === audio) ttsCurrentAudio = null;
+      onEnd();
+    }, { once: true });
+  }
+  audio.play().catch(err => {
+    console.warn('[tts] audio play failed, falling back:', err.message);
+    ttsCurrentAudio = null;
+    speakWithWebSpeech(text, onEnd);
+  });
+  return true;
+}
+
+function speakWithWebSpeech(text, onEnd) {
+  if (!('speechSynthesis' in window)) { if (onEnd) onEnd(); return; }
   speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'zh-CN';
   utterance.rate = 0.95;
-  utterance.pitch = 1.8;  // higher pitch for cute girl effect
+  utterance.pitch = 1.8; // cute girl effect for system voices
   const v = pickCuteGirlVoice();
   if (v) utterance.voice = v;
+  if (typeof onEnd === 'function') utterance.onend = onEnd;
   speechSynthesis.speak(utterance);
+}
+
+function speakChinese(text, onEnd) {
+  if (!text) { if (onEnd) onEnd(); return; }
+  if (ttsManifest.loaded && speakFromManifest(text, onEnd)) return;
+  speakWithWebSpeech(text, onEnd);
 }
 
 const ENCOURAGEMENTS = ['太棒了！', '写得真漂亮！', '你真厉害！', '好棒好棒！', '越来越好了！', '真是小天才！', '完美！'];
@@ -1651,8 +2245,11 @@ function drawStar(ctx, cx, cy, spikes, outerRadius, innerRadius) {
   ctx.fill();
 }
 
-function speakEnglish(text) {
-  if (!('speechSynthesis' in window)) return;
+function speakEnglish(text, onEnd) {
+  if (!text) { if (onEnd) onEnd(); return; }
+  // Prefer baked Neural TTS (en-US-AnaNeural) if available
+  if (ttsManifest.loaded && speakFromManifest(text, onEnd)) return;
+  if (!('speechSynthesis' in window)) { if (onEnd) onEnd(); return; }
   speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'en-US';
@@ -1661,6 +2258,7 @@ function speakEnglish(text) {
   const voices = speechSynthesis.getVoices();
   const enVoice = voices.find(v => v.lang === 'en-US');
   if (enVoice) utterance.voice = enVoice;
+  if (typeof onEnd === 'function') utterance.onend = onEnd;
   speechSynthesis.speak(utterance);
 }
 
@@ -1694,6 +2292,16 @@ function openLetterTraceScreen() {
   traceCompleteOverlay.classList.add('hidden');
   navigateTo(traceScreen, 'forward');
   traceLetterLabel.textContent = currentLetter.letter;
+
+  // Shape metaphor strip ("A 像一座小山 ⛰️")
+  const shapeStrip = document.getElementById('trace-shape-strip');
+  const shape = LETTER_SHAPES[currentLetter.letter];
+  if (shapeStrip && shape) {
+    shapeStrip.innerHTML = `<strong>${currentLetter.letter}</strong> ${shape.metaphor} <span class="trace-shape-strip-emoji">${shape.emoji}</span> 🔊`;
+    shapeStrip.classList.remove('hidden');
+  } else if (shapeStrip) {
+    shapeStrip.classList.add('hidden');
+  }
 
   renderTraceWordsStrip();
   resizeLetterTraceCanvas();
@@ -1849,9 +2457,18 @@ function clearLetterTrace() {
 
 function completeLetterTrace() {
   const msg = getRandomEncouragement();
+  const wasNew = !getCompletedLetters().includes(currentLetter.letter);
   saveLetterProgress(currentLetter.letter);
   showParticleCelebration();
-  speakChinese(msg);
+  speakChinese(msg, () => {
+    // If this was the first time, announce the newly unlocked animal in the zoo
+    if (wasNew && currentLetter) {
+      const animal = LETTER_ANIMALS[currentLetter.letter];
+      if (animal) {
+        setTimeout(() => speakEnglish(`${currentLetter.letter} for ${animal.animal}`), 200);
+      }
+    }
+  });
   traceCompleteText.textContent = msg;
   traceCompleteOverlay.classList.remove('hidden');
 }
@@ -2401,14 +3018,32 @@ function clearVisionTraceDraw() {
 
 function setupEventListeners() {
   btnVision.addEventListener('click', openVisionScreen);
-  btnAlphabet.addEventListener('click', openAlphabetScreen);
-  btnHanzi.addEventListener('click', openHanziGridScreen);
+  btnAlphabet.addEventListener('click', openAlphabetHomeScreen);
+  btnHanzi.addEventListener('click', openHanziHomeScreen);
   // 萌学字母事件
   gridBackBtn.addEventListener('click', goBackFromGrid);
   traceBackBtn.addEventListener('click', exitLetterTraceScreen);
   traceAudioBtn.addEventListener('click', () => {
     if (currentLetter) speakEnglish(currentLetter.letter);
   });
+  // Phonics button (字母发音 /æ/ /b/ /k/)
+  const tracePhonicsBtn = document.getElementById('trace-phonics-btn');
+  if (tracePhonicsBtn) {
+    tracePhonicsBtn.addEventListener('click', () => {
+      if (!currentLetter) return;
+      const p = LETTER_ANIMALS[currentLetter.letter];
+      if (p) speakEnglish(p.phonics);
+    });
+  }
+  // Shape metaphor strip — click to hear "A 像一座小山"
+  const shapeStrip = document.getElementById('trace-shape-strip');
+  if (shapeStrip) {
+    shapeStrip.addEventListener('click', () => {
+      if (!currentLetter) return;
+      const shape = LETTER_SHAPES[currentLetter.letter];
+      if (shape) speakChinese(`${currentLetter.letter}${shape.metaphor}`);
+    });
+  }
   traceBookBtn.addEventListener('click', () => {
     if (currentLetter) speakEnglish(currentLetter.words[0].word);
   });
@@ -2536,28 +3171,27 @@ function setupEventListeners() {
 
   hanziTraceBackBtn.addEventListener('click', exitHanziTraceScreen);
   hanziAnimateBtn.addEventListener('click', () => {
-    if (hanziWriter) {
+    if (!hanziWriter || !hanziWriterReady) return;
+    try {
       hanziWriter.cancelQuiz();
-      hanziStrokeIndicator.textContent = '看笔顺...';
-      hanziWriter.animateCharacter({
-        onComplete: function() {
-          startHanziQuiz();
-        }
-      });
-    }
+    } catch (e) { /* library may throw if not in quiz */ }
+    hanziStrokeIndicator.textContent = '看笔顺...';
+    hanziWriter.animateCharacter({
+      onComplete: function() {
+        if (hanziWriter) startHanziQuiz();
+      }
+    });
   });
   hanziRewriteBtn.addEventListener('click', () => {
-    if (hanziWriter) {
-      hanziWriter.cancelQuiz();
-      const target = document.getElementById('hanzi-writer-target');
-      target.innerHTML = '';
-      openHanziTraceScreen();
-    }
+    // Re-render without re-navigating
+    renderHanziWriter();
   });
 
   // Prevent scroll on hanzi trace screen
   hanziTraceScreen.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
 
+  // Debounced resize re-render
+  let hanziResizeTimer = null;
   window.addEventListener('resize', () => {
     if (traceScreen.classList.contains('active')) {
       resizeLetterTraceCanvas();
@@ -2567,7 +3201,8 @@ function setupEventListeners() {
       initVisionTrace();
     }
     if (hanziTraceScreen.classList.contains('active') && currentHanzi) {
-      openHanziTraceScreen();
+      clearTimeout(hanziResizeTimer);
+      hanziResizeTimer = setTimeout(() => renderHanziWriter(), 150);
     }
   });
 }
@@ -2585,10 +3220,13 @@ function openHanziGridScreen() {
 
 function createHanziGrid(list) {
   hanziGrid.innerHTML = '';
+  const collected = getCollectedHanziSet();
   list.forEach(item => {
     const card = document.createElement('div');
     card.className = 'hanzi-card';
+    const star = collected.has(item.char) ? '<div class="hanzi-card-star">⭐</div>' : '';
     card.innerHTML = `
+      ${star}
       <div class="hanzi-card-char">${item.char}</div>
       <div class="hanzi-card-pinyin">${item.pinyin}</div>
     `;
@@ -2674,8 +3312,11 @@ function openHanziDetail(hanziItem) {
   setTimeout(() => speakHanzi(hanziItem.char), 300);
 }
 
-function speakHanzi(text) {
-  if (!('speechSynthesis' in window)) return;
+function speakHanzi(text, onEnd) {
+  if (!text) { if (onEnd) onEnd(); return; }
+  // Prefer baked Neural TTS if the phrase was pre-generated
+  if (ttsManifest.loaded && speakFromManifest(text, onEnd)) return;
+  if (!('speechSynthesis' in window)) { if (onEnd) onEnd(); return; }
   speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'zh-CN';
@@ -2684,81 +3325,207 @@ function speakHanzi(text) {
   const voices = speechSynthesis.getVoices();
   const zhVoice = voices.find(v => v.lang.startsWith('zh'));
   if (zhVoice) utterance.voice = zhVoice;
+  if (typeof onEnd === 'function') utterance.onend = onEnd;
   speechSynthesis.speak(utterance);
 }
 
-function openHanziTraceScreen() {
-  if (!currentHanzi) return;
+// === Hanzi tracing state ===
+// hanziWriter: the current HanziWriter instance (or null)
+// hanziWriterReady: true once char data is loaded AND the intro animation finished
+// hanziRenderToken: monotonically increments on every render; stale async callbacks are ignored
+// hanziCelebrationTimer: handle to the 2.5s auto-exit timer after success; cleared on manual exit
+let hanziWriterReady = false;
+let hanziRenderToken = 0;
+let hanziCelebrationTimer = null;
 
-  navigateTo(hanziTraceScreen, 'forward');
-
-  // Clear previous writer
+function destroyHanziWriter() {
+  // Fully tear down the current writer. Safe to call multiple times.
+  if (hanziWriter) {
+    try { hanziWriter.cancelQuiz(); } catch (_) {}
+    try { hanziWriter.hideCharacter(); } catch (_) {}
+    hanziWriter = null;
+  }
+  hanziWriterReady = false;
   const target = document.getElementById('hanzi-writer-target');
-  target.innerHTML = '';
-
-  // Wait for layout to complete
-  setTimeout(() => {
-    const containerWidth = target.clientWidth || 300;
-    const size = Math.min(containerWidth, 300);
-
-    hanziWriter = HanziWriter.create('hanzi-writer-target', currentHanzi.char, {
-      width: size,
-      height: size,
-      padding: 20,
-      showCharacter: false,
-      showOutline: true,
-      strokeColor: '#333',
-      outlineColor: '#ccc',
-      drawingColor: '#ff6b9d',
-      drawingWidth: 6,
-      strokeAnimationSpeed: 1,
-      delayBetweenStrokes: 300,
-      highlightColor: '#a18cd1',
-      showHintAfterMisses: 1,
-      highlightOnComplete: true,
-      charDataLoader: function(char, onComplete) {
-        fetch(`lib/hanzi-data/${encodeURIComponent(char)}.json`)
-          .then(r => r.json())
-          .then(onComplete);
-      }
-    });
-
-    hanziStrokeIndicator.textContent = '看笔顺...';
-
-    // Animate first, then start quiz
-    hanziWriter.animateCharacter({
-      onComplete: function() {
-        startHanziQuiz();
-      }
-    });
-  }, 200);
+  if (target) target.innerHTML = '';
 }
 
-function startHanziQuiz() {
-  hanziStrokeIndicator.textContent = '第 1 笔';
+function showHanziError(message) {
+  hanziWriterReady = false;
+  const target = document.getElementById('hanzi-writer-target');
+  if (target) {
+    target.innerHTML = `
+      <div class="hanzi-error">
+        <div class="hanzi-error-icon">😢</div>
+        <div class="hanzi-error-text">${message}</div>
+        <button class="hanzi-error-retry" onclick="renderHanziWriter()">再试一次</button>
+      </div>`;
+  }
+  if (hanziStrokeIndicator) hanziStrokeIndicator.textContent = '加载失败';
+}
 
-  hanziWriter.quiz({
-    leniency: 2.5,
-    showHintAfterMisses: 1,
-    highlightOnComplete: true,
+function waitForLayout(el, cb) {
+  // Resolve once the element has a non-zero size. Uses rAF + fallback timeout.
+  let tries = 0;
+  const maxTries = 30; // ~500ms at 60fps
+  const check = () => {
+    if (el.clientWidth > 0 && el.clientHeight > 0) { cb(); return; }
+    if (++tries >= maxTries) { cb(); return; }
+    requestAnimationFrame(check);
+  };
+  requestAnimationFrame(check);
+}
 
-    onCorrectStroke: function(data) {
-      const strokeNum = data.strokeNum + 1;
-      const remaining = data.strokesRemaining;
-      if (remaining > 0) {
-        hanziStrokeIndicator.textContent = `第 ${strokeNum + 1} 笔`;
-      } else {
-        hanziStrokeIndicator.textContent = '完成！';
-      }
-    },
+function renderHanziWriter() {
+  if (!currentHanzi) return;
 
-    onComplete: function(data) {
-      showFlowerCelebration();
+  // Invalidate any in-flight async work from a previous render
+  const token = ++hanziRenderToken;
+
+  // Clear any pending celebration auto-exit from a previous session
+  if (hanziCelebrationTimer) {
+    clearTimeout(hanziCelebrationTimer);
+    hanziCelebrationTimer = null;
+  }
+  if (flowerCelebration) flowerCelebration.classList.add('hidden');
+
+  // Tear down any previous writer and DOM
+  destroyHanziWriter();
+
+  const target = document.getElementById('hanzi-writer-target');
+  if (!target) return;
+
+  hanziStrokeIndicator.textContent = '加载中...';
+
+  waitForLayout(target, () => {
+    if (token !== hanziRenderToken) return; // stale
+
+    // clientWidth excludes borders — fits HanziWriter SVG cleanly inside the 田字格 frame
+    const inner = target.clientWidth || 294;
+    const size = Math.max(220, Math.min(inner, 360));
+
+    try {
+      hanziWriter = HanziWriter.create('hanzi-writer-target', currentHanzi.char, {
+        width: size,
+        height: size,
+        padding: 20,
+        showCharacter: false,
+        showOutline: true,
+        strokeColor: '#333',
+        outlineColor: '#ccc',
+        drawingColor: '#ff6b9d',
+        drawingWidth: 6,
+        strokeAnimationSpeed: 1,
+        delayBetweenStrokes: 300,
+        highlightColor: '#a18cd1',
+        showHintAfterMisses: 1,
+        highlightOnComplete: true,
+        charDataLoader: function(char, onComplete, onError) {
+          fetch(`lib/hanzi-data/${encodeURIComponent(char)}.json`)
+            .then(r => {
+              if (!r.ok) throw new Error('HTTP ' + r.status);
+              return r.json();
+            })
+            .then(data => {
+              if (token !== hanziRenderToken) return;
+              onComplete(data);
+            })
+            .catch(err => {
+              console.error('[hanzi] charDataLoader failed for', char, err);
+              if (token !== hanziRenderToken) return;
+              if (typeof onError === 'function') onError(err);
+              showHanziError('字体数据加载失败，请重试');
+            });
+        },
+        onLoadCharDataSuccess: function() {
+          if (token !== hanziRenderToken) return;
+          hanziStrokeIndicator.textContent = '看笔顺...';
+          // Kick off the intro animation
+          try {
+            hanziWriter.animateCharacter({
+              onComplete: function() {
+                if (token !== hanziRenderToken || !hanziWriter) return;
+                hanziWriterReady = true;
+                startHanziQuiz();
+              }
+            });
+          } catch (e) {
+            console.error('[hanzi] animateCharacter threw', e);
+            showHanziError('动画出错，请重试');
+          }
+        },
+        onLoadCharDataError: function(err) {
+          console.error('[hanzi] onLoadCharDataError', err);
+          if (token !== hanziRenderToken) return;
+          showHanziError('字体数据加载失败，请重试');
+        }
+      });
+    } catch (e) {
+      console.error('[hanzi] HanziWriter.create threw', e);
+      showHanziError('初始化失败，请重试');
     }
   });
 }
 
+function openHanziTraceScreen() {
+  if (!currentHanzi) return;
+  // Navigate only if we aren't already on the screen (navigateTo has its own guard)
+  if (currentScreen !== hanziTraceScreen) {
+    navigateTo(hanziTraceScreen, 'forward');
+  }
+  // Show memory story if this character has one
+  const storyEl = document.getElementById('hanzi-trace-story');
+  if (storyEl) {
+    const picto = HANZI_STORIES[currentHanzi.char];
+    if (picto && picto.story) {
+      storyEl.textContent = picto.story;
+      storyEl.classList.remove('hidden');
+    } else {
+      storyEl.classList.add('hidden');
+      storyEl.textContent = '';
+    }
+  }
+  renderHanziWriter();
+}
+
+function startHanziQuiz() {
+  if (!hanziWriter) return;
+  hanziStrokeIndicator.textContent = '第 1 笔';
+
+  const token = hanziRenderToken;
+
+  try {
+    hanziWriter.quiz({
+      leniency: 2.5,
+      showHintAfterMisses: 1,
+      highlightOnComplete: true,
+
+      onCorrectStroke: function(data) {
+        if (token !== hanziRenderToken) return;
+        const nextStroke = data.strokeNum + 2;
+        const remaining = data.strokesRemaining;
+        if (remaining > 0) {
+          hanziStrokeIndicator.textContent = `第 ${nextStroke} 笔`;
+        } else {
+          hanziStrokeIndicator.textContent = '完成！';
+        }
+      },
+
+      onComplete: function() {
+        if (token !== hanziRenderToken) return;
+        showFlowerCelebration();
+      }
+    });
+  } catch (e) {
+    console.error('[hanzi] quiz() threw', e);
+    showHanziError('进入练习模式失败，请重试');
+  }
+}
+
 function showFlowerCelebration() {
+  // Collect the character — adds to 字宝宝乐园 (idempotent)
+  if (currentHanzi) collectHanzi(currentHanzi.char);
+
   // Falling flowers
   for (let i = 0; i < 12; i++) {
     setTimeout(() => {
@@ -2773,25 +3540,305 @@ function showFlowerCelebration() {
     }, i * 150);
   }
 
-  // Show celebration popup
   flowerCelebration.classList.remove('hidden');
   speakHanzi('太棒了');
 
-  setTimeout(() => {
+  // Schedule auto-exit; clearable by manual exit to avoid double-goBack.
+  if (hanziCelebrationTimer) clearTimeout(hanziCelebrationTimer);
+  hanziCelebrationTimer = setTimeout(() => {
+    hanziCelebrationTimer = null;
     flowerCelebration.classList.add('hidden');
     exitHanziTraceScreen();
   }, 2500);
 }
 
 function exitHanziTraceScreen() {
-  if (hanziWriter) {
-    hanziWriter.cancelQuiz();
-    hanziWriter = null;
+  // Cancel any pending auto-exit so manual + auto don't double-pop
+  if (hanziCelebrationTimer) {
+    clearTimeout(hanziCelebrationTimer);
+    hanziCelebrationTimer = null;
   }
-  const target = document.getElementById('hanzi-writer-target');
-  target.innerHTML = '';
+  if (flowerCelebration) flowerCelebration.classList.add('hidden');
+  // Invalidate async callbacks still pending
+  hanziRenderToken++;
+  destroyHanziWriter();
+  // Hide story footer
+  const storyEl = document.getElementById('hanzi-trace-story');
+  if (storyEl) storyEl.classList.add('hidden');
+  // Only navigate back if we are currently showing the trace screen
+  if (currentScreen === hanziTraceScreen) {
+    goBack();
+  }
+}
 
-  goBack();
+// ============================================================
+// === 萌学汉字 — Hanzi feature hub + new mini-games ===
+// ============================================================
+
+const hanziHomeScreen = document.getElementById('hanzi-home-screen');
+const hanziPictoScreen = document.getElementById('hanzi-picto-screen');
+const hanziPictoDetailScreen = document.getElementById('hanzi-picto-detail-screen');
+const hanziListenScreen = document.getElementById('hanzi-listen-screen');
+const hanziShadowScreen = document.getElementById('hanzi-shadow-screen');
+const hanziCollectionScreen = document.getElementById('hanzi-collection-screen');
+
+function openHanziHomeScreen() {
+  navigateTo(hanziHomeScreen, 'forward');
+  updateHanziHomeProgress();
+}
+
+function updateHanziHomeProgress() {
+  const count = getHanziCollectionCount();
+  const total = HANZI_LIST.length;
+  const countEl = document.getElementById('hanzi-home-progress-count');
+  const totalEl = document.getElementById('hanzi-home-progress-total');
+  if (countEl) countEl.textContent = count;
+  if (totalEl) totalEl.textContent = total;
+}
+
+// --- 象形字画廊 ---
+
+function openHanziPictoScreen() {
+  navigateTo(hanziPictoScreen, 'forward');
+  renderPictoGrid();
+}
+
+function renderPictoGrid() {
+  const grid = document.getElementById('hanzi-picto-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  HANZI_PICTOGRAPHS.forEach(p => {
+    const card = document.createElement('div');
+    card.className = 'hanzi-picto-card';
+    card.innerHTML = `
+      <div class="hanzi-picto-card-emoji">${p.emoji}</div>
+      <div class="hanzi-picto-card-char">${p.char}</div>
+      <div class="hanzi-picto-card-pinyin">${p.pinyin}</div>
+    `;
+    card.addEventListener('click', () => openHanziPictoDetail(p));
+    grid.appendChild(card);
+  });
+}
+
+let currentPicto = null;
+
+function openHanziPictoDetail(picto) {
+  currentPicto = picto;
+  navigateTo(hanziPictoDetailScreen, 'forward');
+  document.getElementById('hanzi-picto-pinyin').textContent = picto.pinyin;
+  document.getElementById('hanzi-picto-char').textContent = picto.char;
+  document.getElementById('hanzi-picto-emoji').textContent = picto.emoji;
+  document.getElementById('hanzi-picto-story').textContent = picto.story;
+  const stage = document.querySelector('.hanzi-picto-stage');
+  if (stage) stage.classList.remove('show-emoji');
+  // Sequence: speak character → flip to picture → speak story.
+  setTimeout(() => {
+    if (currentPicto !== picto) return;
+    speakHanzi(picto.char, () => {
+      // After the character audio finishes, flip to the picture and read the story
+      if (currentPicto !== picto) return;
+      if (stage) stage.classList.add('show-emoji');
+      // Small pause so the flip animation (0.45s) lines up with the voice
+      setTimeout(() => {
+        if (currentPicto === picto) speakHanzi(picto.story);
+      }, 450);
+    });
+  }, 300);
+}
+
+function togglePictoView() {
+  const stage = document.querySelector('.hanzi-picto-stage');
+  if (!stage) return;
+  stage.classList.toggle('show-emoji');
+  if (currentPicto) speakHanzi(currentPicto.char);
+}
+
+// --- 听音找字 ---
+
+let listenScore = 0;
+let listenAnswer = '';
+// Pool of chars used in the listen-and-find game. Intersect with HANZI_LIST
+// so the player only sees chars they might already know.
+const LISTEN_POOL_CANDIDATES = [
+  '日','月','山','水','火','木','人','口','目','手','田','雨','鸟','鱼','马',
+  '大','小','上','下','左','右','中','天','地','子','女','父','母','牛','羊',
+  '一','二','三','四','五','六','七','八','九','十'
+];
+function getListenPool() {
+  const set = new Set(HANZI_LIST.map(h => h.char));
+  return LISTEN_POOL_CANDIDATES.filter(c => set.has(c));
+}
+
+function openHanziListenScreen() {
+  listenScore = 0;
+  document.getElementById('hanzi-listen-score').textContent = '0';
+  navigateTo(hanziListenScreen, 'forward');
+  newListenRound();
+}
+
+function newListenRound() {
+  const pool = getListenPool();
+  if (pool.length < 4) return;
+  // Choose 4 distinct tiles
+  const picks = [];
+  while (picks.length < 4) {
+    const c = pool[Math.floor(Math.random() * pool.length)];
+    if (!picks.includes(c)) picks.push(c);
+  }
+  listenAnswer = picks[Math.floor(Math.random() * picks.length)];
+  const stage = document.getElementById('hanzi-listen-stage');
+  stage.innerHTML = '';
+  picks.forEach(c => {
+    const tile = document.createElement('div');
+    tile.className = 'hanzi-listen-tile';
+    tile.textContent = c;
+    tile.addEventListener('click', () => handleListenChoice(c, tile));
+    stage.appendChild(tile);
+  });
+  // Play prompt after tiles render
+  setTimeout(playListenPrompt, 250);
+}
+
+function playListenPrompt() {
+  if (!listenAnswer) return;
+  speakHanzi('点一下 ' + listenAnswer);
+}
+
+function handleListenChoice(c, tile) {
+  if (c === listenAnswer) {
+    tile.classList.add('correct');
+    listenScore++;
+    document.getElementById('hanzi-listen-score').textContent = listenScore;
+    playSuccess && playSuccess();
+    speakHanzi('找对了');
+    setTimeout(newListenRound, 1400);
+  } else {
+    tile.classList.add('wrong');
+    playWrong && playWrong();
+    speakHanzi('再找找看');
+    setTimeout(() => tile.classList.remove('wrong'), 500);
+  }
+}
+
+// --- 影子配对 ---
+
+let shadowScore = 0;
+let shadowAnswer = '';
+
+function openHanziShadowScreen() {
+  shadowScore = 0;
+  document.getElementById('hanzi-shadow-score').textContent = '0';
+  navigateTo(hanziShadowScreen, 'forward');
+  newShadowRound();
+  // Read the prompt after layout settles
+  setTimeout(() => speakHanzi('哪个是左边影子里的字？'), 400);
+}
+
+function newShadowRound() {
+  const pool = getListenPool();
+  if (pool.length < 4) return;
+  const picks = [];
+  while (picks.length < 4) {
+    const c = pool[Math.floor(Math.random() * pool.length)];
+    if (!picks.includes(c)) picks.push(c);
+  }
+  shadowAnswer = picks[Math.floor(Math.random() * picks.length)];
+  document.getElementById('hanzi-shadow-target').textContent = shadowAnswer;
+  const choicesEl = document.getElementById('hanzi-shadow-choices');
+  choicesEl.innerHTML = '';
+  picks.forEach(c => {
+    const btn = document.createElement('div');
+    btn.className = 'hanzi-shadow-choice';
+    btn.textContent = c;
+    btn.addEventListener('click', () => handleShadowChoice(c, btn));
+    choicesEl.appendChild(btn);
+  });
+}
+
+function handleShadowChoice(c, btn) {
+  if (c === shadowAnswer) {
+    btn.classList.add('correct');
+    shadowScore++;
+    document.getElementById('hanzi-shadow-score').textContent = shadowScore;
+    playSuccess && playSuccess();
+    speakHanzi('找对了');
+    setTimeout(newShadowRound, 1400);
+  } else {
+    btn.classList.add('wrong');
+    playWrong && playWrong();
+    setTimeout(() => btn.classList.remove('wrong'), 500);
+  }
+}
+
+// --- 字宝宝乐园 ---
+
+function openHanziCollectionScreen() {
+  navigateTo(hanziCollectionScreen, 'forward');
+  renderCollectionGrid();
+}
+
+function renderCollectionGrid() {
+  const collected = getCollectedHanziSet();
+  const total = HANZI_LIST.length;
+  const count = collected.size;
+  document.getElementById('hanzi-collection-count').textContent = count;
+  document.getElementById('hanzi-collection-total').textContent = total;
+  document.getElementById('hanzi-collection-percent').textContent =
+    total > 0 ? Math.round((count / total) * 100) + '%' : '0%';
+
+  const grid = document.getElementById('hanzi-collection-grid');
+  const empty = document.getElementById('hanzi-collection-empty');
+  grid.innerHTML = '';
+  if (count === 0) {
+    grid.classList.add('hidden');
+    empty.classList.remove('hidden');
+    return;
+  }
+  grid.classList.remove('hidden');
+  empty.classList.add('hidden');
+  // Show collected chars in HANZI_LIST order (stable + grouped by level)
+  HANZI_LIST.filter(h => collected.has(h.char)).forEach(h => {
+    const item = document.createElement('div');
+    item.className = 'hanzi-collection-item';
+    item.innerHTML = `
+      <div class="hanzi-collection-item-char">${h.char}</div>
+      <div class="hanzi-collection-item-pinyin">${h.pinyin}</div>
+    `;
+    item.addEventListener('click', () => {
+      speakHanzi(h.char);
+      openHanziDetail(h);
+    });
+    grid.appendChild(item);
+  });
+}
+
+// --- Wire up hanzi hub event listeners (called from init) ---
+
+function setupHanziHubListeners() {
+  document.getElementById('hanzi-home-back-btn').addEventListener('click', () => goBack());
+  document.getElementById('hanzi-home-btn-grid').addEventListener('click', openHanziGridScreen);
+  document.getElementById('hanzi-home-btn-picto').addEventListener('click', openHanziPictoScreen);
+  document.getElementById('hanzi-home-btn-listen').addEventListener('click', openHanziListenScreen);
+  document.getElementById('hanzi-home-btn-shadow').addEventListener('click', openHanziShadowScreen);
+  document.getElementById('hanzi-home-btn-collection').addEventListener('click', openHanziCollectionScreen);
+
+  document.getElementById('hanzi-picto-back-btn').addEventListener('click', () => goBack());
+  document.getElementById('hanzi-picto-detail-back-btn').addEventListener('click', () => goBack());
+  document.getElementById('hanzi-picto-toggle-btn').addEventListener('click', togglePictoView);
+  document.getElementById('hanzi-picto-audio-btn').addEventListener('click', () => {
+    if (currentPicto) speakHanzi(currentPicto.char);
+  });
+  // Tap story text to replay its audio
+  document.getElementById('hanzi-picto-story').addEventListener('click', () => {
+    if (currentPicto) speakHanzi(currentPicto.story);
+  });
+
+  document.getElementById('hanzi-listen-back-btn').addEventListener('click', () => goBack());
+  document.getElementById('hanzi-listen-play-btn').addEventListener('click', playListenPrompt);
+
+  document.getElementById('hanzi-shadow-back-btn').addEventListener('click', () => goBack());
+
+  document.getElementById('hanzi-collection-back-btn').addEventListener('click', () => goBack());
 }
 
 // === 萌学儿歌 ===
@@ -3977,6 +5024,8 @@ function setupPhase3Listeners() {
 setupPhase1Listeners();
 setupPhase2Listeners();
 setupPhase3Listeners();
+setupHanziHubListeners();
+setupAlphabetHubListeners();
 
 window.addEventListener('resize', () => {
   if (currentScreen === paintScreen) {
@@ -3990,3 +5039,23 @@ window.addEventListener('resize', () => {
 });
 
 init();
+
+// === Android touch fix ===
+// Some Android browsers don't fire 'click' on non-interactive elements (div).
+// This polyfill converts touchend → click for all elements that have click listeners
+// attached via addEventListener. Works by making all .home-card, .back-btn, and
+// other tappable elements respond reliably to touch.
+(function androidTouchFix() {
+  if (!('ontouchstart' in window)) return; // desktop — not needed
+
+  // List of selectors that should be tappable
+  const tappable = '.home-card, .back-btn, .hanzi-home-card, .alphabet-home-card, .hanzi-picto-card, .hanzi-listen-tile, .hanzi-shadow-choice, .alphabet-zoo-card, .alphabet-listen-tile, .alphabet-case-choice, .alphabet-spell-tile, .alphabet-spell-slot, .alphabet-fish, .trace-control-btn, .hanzi-tab, .count-choice-btn, .findnum-cell, .feed-item, .trace-action-btn, button';
+
+  document.addEventListener('touchend', function(e) {
+    const el = e.target.closest(tappable);
+    if (el) {
+      e.preventDefault();
+      el.click();
+    }
+  }, { passive: false });
+})();

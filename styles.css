@@ -7,6 +7,11 @@
     -webkit-tap-highlight-color: transparent;
 }
 
+html, body {
+    width: 100%;
+    min-width: 100%;
+}
+
 body {
     font-family: 'Comic Sans MS', 'Chalkboard', 'Verdana', sans-serif;
     background: linear-gradient(135deg, #fff9e6 0%, #ffe6f0 50%, #e6f7ff 100%);
@@ -30,10 +35,12 @@ body {
     top: 0;
     left: 0;
     width: 100%;
+    min-width: 100vw;
     box-sizing: border-box;
     transform: translateX(100%);
     transition: transform 300ms ease-out, opacity 300ms ease-out;
     opacity: 0;
+    background: linear-gradient(135deg, #fff9e6 0%, #ffe6f0 50%, #e6f7ff 100%);
 }
 
 .screen.active {
@@ -186,24 +193,53 @@ body {
     transform: translateX(-50%);
 }
 
+/* Unified back button — pill with chevron, works on both light and colored headers */
 .back-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.96);
+    color: #5c6bc0;
     border: none;
-    padding: 12px 24px;
-    border-radius: 20px;
-    font-size: 1.1rem;
+    padding: 10px 20px 10px 16px;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(102,126,234,0.4);
-    transition: transform 0.2s;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08), inset 0 0 0 1px rgba(92, 107, 192, 0.08);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.back-btn::before {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-left: 2.5px solid currentColor;
+    border-bottom: 2.5px solid currentColor;
+    transform: rotate(45deg);
+    margin-left: 2px;
+    border-radius: 1px;
 }
 
 .back-btn:hover {
-    transform: scale(1.05);
+    background: #fff;
+    box-shadow: 0 4px 14px rgba(92, 107, 192, 0.22), inset 0 0 0 1px rgba(92, 107, 192, 0.12);
 }
 
 .back-btn:active {
-    transform: scale(0.95);
+    transform: scale(0.94);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Colored-header variant: same pill, better contrast over gradients */
+.back-btn--on-colored {
+    background: rgba(255, 255, 255, 0.95);
+    color: #5c6bc0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 
 .letter-display {
@@ -445,6 +481,19 @@ body {
     .app-title {
         font-size: 2rem;
     }
+    .home-grid {
+        gap: 20px;
+        padding: 24px 16px;
+    }
+    .home-card {
+        width: 200px;
+    }
+    .home-icon {
+        font-size: 3.5rem;
+    }
+    .home-title {
+        font-size: 1.4rem;
+    }
     .alphabet-grid {
         grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
         gap: 12px;
@@ -471,15 +520,16 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 40px;
-    padding: 60px 20px;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 40px 20px;
     max-width: 900px;
     margin: 0 auto;
     flex-wrap: wrap;
 }
 
 .home-card {
-    width: 280px;
+    width: 260px;
     aspect-ratio: 1;
     border-radius: 40px;
     display: flex;
@@ -487,8 +537,13 @@ body {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
     transition: transform 0.3s, box-shadow 0.3s;
     box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    position: relative;
+    z-index: 2;
 }
 
 .home-card:hover {
@@ -510,6 +565,11 @@ body {
 
 .hanzi-card.home-card {
     background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    /* Override the smaller .hanzi-card (grid) rule — keep the home-card look */
+    border-radius: 40px;
+    padding: 0;
+    border: none;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
 }
 
 .home-icon {
@@ -557,21 +617,7 @@ body {
     min-width: 80px;
 }
 
-.vision-back-btn {
-    background: linear-gradient(135deg, #888 0%, #666 100%);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 20px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    transition: transform 0.2s;
-}
-
-.vision-back-btn:hover {
-    transform: scale(1.05);
-}
+/* Deprecated — vision back button now uses unified .back-btn */
 
 .vision-title {
     font-size: 1.8rem;
@@ -897,10 +943,7 @@ body {
     text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
 }
 
-.hanzi-grid-header .back-btn {
-    background: rgba(255,255,255,0.3);
-    box-shadow: none;
-}
+/* hanzi-grid-header uses the default .back-btn pill style */
 
 .hanzi-search-bar {
     padding: 12px 20px;
@@ -1249,6 +1292,41 @@ body {
     z-index: 0;
 }
 
+/* Error state inside the tracing canvas */
+.hanzi-error {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 20px;
+    text-align: center;
+    z-index: 2;
+}
+.hanzi-error-icon {
+    font-size: 3rem;
+}
+.hanzi-error-text {
+    color: #888;
+    font-size: 0.95rem;
+}
+.hanzi-error-retry {
+    padding: 10px 22px;
+    background: linear-gradient(135deg, #ff8a95 0%, #ff6b9d 100%);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255, 107, 157, 0.35);
+}
+.hanzi-error-retry:active {
+    transform: scale(0.96);
+}
+
 .hanzi-trace-controls {
     display: flex;
     gap: 30px;
@@ -1256,6 +1334,1170 @@ body {
     padding: 25px 30px;
     background: rgba(255,255,255,0.9);
     box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+}
+
+/* Memory story shown below the trace canvas for pictograph characters */
+.hanzi-trace-story {
+    margin: 16px auto 24px;
+    max-width: 440px;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #fff7e6 0%, #fff0d1 100%);
+    border-radius: 18px;
+    color: #8a5a00;
+    font-size: 1rem;
+    line-height: 1.6;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(255, 180, 0, 0.12);
+    animation: fadeSlideUp 0.35s ease-out;
+}
+.hanzi-trace-story::before {
+    content: '💡 小故事：';
+    display: inline;
+    color: #b88000;
+    font-weight: 600;
+    margin-right: 4px;
+}
+@keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =====================================================
+   Hanzi home hub (sub-home for 萌学汉字)
+   ===================================================== */
+#hanzi-home-screen {
+    background: linear-gradient(180deg, #fff5f7 0%, #e0f0ff 100%);
+    overflow-y: auto;
+}
+.hanzi-home-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 12px;
+}
+.hanzi-home-header .page-title {
+    font-size: 1.6rem;
+    color: #5c6bc0;
+    margin: 0;
+}
+.hanzi-home-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 20px;
+    margin: 0 auto 20px;
+    max-width: 340px;
+    background: rgba(255,255,255,0.92);
+    border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(92,107,192,0.12);
+    color: #5c6bc0;
+    font-weight: 600;
+}
+.hanzi-home-progress-icon { font-size: 1.3rem; }
+.hanzi-home-progress-count {
+    font-size: 1.6rem;
+    color: #ff6b9d;
+    font-weight: 700;
+}
+.hanzi-home-progress-total { color: #9aa0b5; font-weight: 500; }
+
+.hanzi-home-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    padding: 0 20px 40px;
+    max-width: 520px;
+    margin: 0 auto;
+}
+.hanzi-home-card {
+    background: white;
+    border-radius: 24px;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+.hanzi-home-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.12;
+    pointer-events: none;
+}
+.hanzi-home-card-a::before { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); }
+.hanzi-home-card-b::before { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
+.hanzi-home-card-c::before { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
+.hanzi-home-card-d::before { background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%); }
+.hanzi-home-card-e::before { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); grid-column: 1 / -1; }
+.hanzi-home-card-e { grid-column: 1 / -1; }
+.hanzi-home-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.12);
+}
+.hanzi-home-card:active { transform: scale(0.97); }
+.hanzi-home-emoji {
+    font-size: 3rem;
+    line-height: 1;
+    margin-bottom: 10px;
+    position: relative;
+}
+.hanzi-home-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #333;
+    position: relative;
+}
+.hanzi-home-sub {
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 4px;
+    position: relative;
+}
+
+/* =====================================================
+   象形字 gallery
+   ===================================================== */
+#hanzi-picto-screen {
+    background: linear-gradient(180deg, #fff7e6 0%, #ffe5d9 100%);
+    overflow-y: auto;
+}
+.hanzi-picto-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 8px;
+}
+.hanzi-picto-header .page-title {
+    font-size: 1.6rem;
+    color: #d97706;
+    margin: 0;
+}
+.hanzi-picto-subtitle {
+    text-align: center;
+    color: #9a6020;
+    font-size: 0.95rem;
+    margin: 0 20px 20px;
+}
+.hanzi-picto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 14px;
+    padding: 0 20px 40px;
+    max-width: 620px;
+    margin: 0 auto;
+}
+.hanzi-picto-card {
+    background: white;
+    border-radius: 20px;
+    padding: 14px 8px 12px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(217,119,6,0.12);
+    transition: transform 0.2s;
+    position: relative;
+}
+.hanzi-picto-card:hover { transform: translateY(-3px); }
+.hanzi-picto-card:active { transform: scale(0.96); }
+.hanzi-picto-card-char {
+    font-size: 3.2rem;
+    line-height: 1;
+    color: #1a1a1a;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+.hanzi-picto-card-emoji {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+.hanzi-picto-card-pinyin {
+    color: #d97706;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* 象形字 detail view */
+#hanzi-picto-detail-screen {
+    background: linear-gradient(180deg, #fff7e6 0%, #ffe0b6 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.hanzi-picto-detail-header {
+    width: 100%;
+    display: flex;
+    padding: 20px 24px;
+    box-sizing: border-box;
+}
+.hanzi-picto-stage {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+    width: 260px;
+    height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.hanzi-picto-pinyin {
+    position: absolute;
+    top: -30px;
+    left: 0; right: 0;
+    font-size: 1.3rem;
+    color: #d97706;
+    font-weight: 500;
+}
+.hanzi-picto-char,
+.hanzi-picto-emoji {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12rem;
+    line-height: 1;
+    transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.hanzi-picto-char {
+    color: #1a1a1a;
+    font-weight: 600;
+}
+.hanzi-picto-stage.show-emoji .hanzi-picto-char {
+    opacity: 0;
+    transform: scale(0.8) rotate(-8deg);
+}
+.hanzi-picto-stage.show-emoji .hanzi-picto-emoji {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+}
+.hanzi-picto-stage:not(.show-emoji) .hanzi-picto-emoji {
+    opacity: 0;
+    transform: scale(0.8) rotate(8deg);
+}
+.hanzi-picto-toggle-btn {
+    margin-top: 10px;
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+    transition: transform 0.15s;
+}
+.hanzi-picto-toggle-btn:active { transform: scale(0.95); }
+.hanzi-picto-story {
+    margin: 20px 30px;
+    padding: 16px 44px 16px 22px;
+    background: rgba(255,255,255,0.85);
+    border-radius: 18px;
+    color: #6b4423;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    text-align: center;
+    max-width: 420px;
+    box-shadow: 0 2px 12px rgba(217,119,6,0.14);
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative;
+    user-select: none;
+}
+.hanzi-picto-story::after {
+    content: '🔊';
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    opacity: 0.6;
+}
+.hanzi-picto-story:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(217,119,6,0.22);
+}
+.hanzi-picto-story:active { transform: scale(0.98); }
+.hanzi-picto-audio-btn {
+    margin-top: 8px;
+    padding: 10px 24px;
+    background: rgba(255,255,255,0.95);
+    color: #d97706;
+    border: 2px solid #fbbf24;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.hanzi-picto-audio-btn:active { transform: scale(0.95); }
+
+/* =====================================================
+   听音找字
+   ===================================================== */
+#hanzi-listen-screen {
+    background: linear-gradient(180deg, #e0f2ff 0%, #c7e3ff 100%);
+    display: flex;
+    flex-direction: column;
+}
+.hanzi-listen-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 10px;
+}
+.hanzi-listen-score {
+    background: white;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-weight: 700;
+    color: #f59e0b;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.hanzi-listen-prompt {
+    text-align: center;
+    padding: 10px 20px 20px;
+}
+.hanzi-listen-play-btn {
+    padding: 16px 32px;
+    background: linear-gradient(135deg, #4facfe 0%, #00c2fe 100%);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 22px rgba(79,172,254,0.4);
+    animation: pulseBtn 2s ease-in-out infinite;
+}
+@keyframes pulseBtn {
+    0%, 100% { transform: scale(1); box-shadow: 0 6px 22px rgba(79,172,254,0.4); }
+    50%      { transform: scale(1.04); box-shadow: 0 10px 32px rgba(79,172,254,0.55); }
+}
+.hanzi-listen-play-btn:active {
+    transform: scale(0.97);
+    animation: none;
+}
+.hanzi-listen-hint {
+    color: #0369a1;
+    font-size: 0.9rem;
+    margin-top: 8px;
+}
+.hanzi-listen-stage {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 16px;
+    padding: 0 24px 40px;
+    max-width: 560px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+.hanzi-listen-tile {
+    background: white;
+    border-radius: 22px;
+    padding: 30px 10px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 4rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.hanzi-listen-tile:hover { transform: translateY(-3px); }
+.hanzi-listen-tile:active { transform: scale(0.96); }
+.hanzi-listen-tile.correct {
+    background: #d1fae5;
+    color: #065f46;
+    animation: bounceIn 0.4s ease;
+}
+.hanzi-listen-tile.wrong {
+    background: #fee2e2;
+    animation: shake 0.35s ease;
+}
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+}
+
+/* =====================================================
+   影子配对
+   ===================================================== */
+#hanzi-shadow-screen {
+    background: linear-gradient(180deg, #e6fbe6 0%, #c6f3ce 100%);
+    display: flex;
+    flex-direction: column;
+}
+.hanzi-shadow-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 10px;
+}
+.hanzi-shadow-subtitle {
+    text-align: center;
+    color: #047857;
+    font-size: 0.95rem;
+    margin: 10px 20px 20px;
+}
+.hanzi-shadow-stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 0 24px 40px;
+}
+.hanzi-shadow-target {
+    width: 180px;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9rem;
+    color: transparent;
+    text-shadow: 0 0 0 rgba(0,0,0,0.7);
+    -webkit-text-stroke: 2px rgba(0,0,0,0.75);
+    font-weight: 700;
+    background: white;
+    border-radius: 28px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    filter: blur(2px);
+}
+.hanzi-shadow-choices {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    width: 100%;
+    max-width: 360px;
+}
+.hanzi-shadow-choice {
+    background: white;
+    border-radius: 20px;
+    padding: 22px 10px;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    transition: transform 0.15s;
+}
+.hanzi-shadow-choice:hover { transform: translateY(-3px); }
+.hanzi-shadow-choice:active { transform: scale(0.96); }
+.hanzi-shadow-choice.correct { background: #d1fae5; animation: bounceIn 0.4s ease; }
+.hanzi-shadow-choice.wrong { background: #fee2e2; animation: shake 0.35s ease; }
+
+/* =====================================================
+   字宝宝乐园 (collection)
+   ===================================================== */
+#hanzi-collection-screen {
+    background: linear-gradient(180deg, #fff0f5 0%, #ffe4ec 100%);
+    overflow-y: auto;
+}
+.hanzi-collection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 8px;
+}
+.hanzi-collection-header .page-title {
+    font-size: 1.6rem;
+    color: #be185d;
+    margin: 0;
+}
+.hanzi-collection-stats {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 8px 20px 20px;
+}
+.hanzi-collection-stat {
+    background: white;
+    padding: 14px 22px;
+    border-radius: 18px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(190,24,93,0.12);
+    min-width: 88px;
+}
+.hanzi-collection-stat-num {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #ff6b9d;
+}
+.hanzi-collection-stat-label {
+    font-size: 0.8rem;
+    color: #9a5a6f;
+    margin-top: 2px;
+}
+.hanzi-collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+    gap: 10px;
+    padding: 0 20px 40px;
+    max-width: 640px;
+    margin: 0 auto;
+}
+.hanzi-collection-item {
+    background: white;
+    border-radius: 14px;
+    padding: 12px 6px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(255,107,157,0.12);
+    transition: transform 0.15s;
+}
+.hanzi-collection-item:active { transform: scale(0.94); }
+.hanzi-collection-item-char {
+    font-size: 2.2rem;
+    line-height: 1;
+    color: #1a1a1a;
+}
+.hanzi-collection-item-pinyin {
+    font-size: 0.7rem;
+    color: #be185d;
+    margin-top: 3px;
+}
+.hanzi-collection-empty {
+    text-align: center;
+    color: #9a5a6f;
+    padding: 40px 20px;
+    line-height: 1.8;
+}
+.hanzi-collection-empty span { font-size: 0.85rem; color: #b87a8c; }
+
+/* Hanzi grid card — show a star for collected chars */
+.hanzi-card {
+    position: relative;
+}
+.hanzi-card-star {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    font-size: 0.9rem;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+}
+
+/* =====================================================
+   Alphabet home hub (sub-home for 萌学字母)
+   ===================================================== */
+#alphabet-home-screen {
+    background: linear-gradient(180deg, #ffe5f2 0%, #e1f0ff 100%);
+    overflow-y: auto;
+}
+.alphabet-home-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 12px;
+}
+.alphabet-home-header .page-title {
+    font-size: 1.6rem;
+    color: #c2185b;
+    margin: 0;
+}
+.alphabet-home-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 20px;
+    margin: 0 auto 20px;
+    max-width: 340px;
+    background: rgba(255,255,255,0.94);
+    border-radius: 999px;
+    box-shadow: 0 4px 14px rgba(194,24,91,0.12);
+    color: #c2185b;
+    font-weight: 600;
+}
+.alphabet-home-progress-icon { font-size: 1.3rem; }
+.alphabet-home-progress-count {
+    font-size: 1.6rem;
+    color: #ff6b9d;
+    font-weight: 700;
+}
+.alphabet-home-progress-total { color: #9aa0b5; font-weight: 500; }
+.alphabet-home-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    padding: 0 20px 40px;
+    max-width: 520px;
+    margin: 0 auto;
+}
+.alphabet-home-card {
+    background: white;
+    border-radius: 24px;
+    padding: 28px 16px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+.alphabet-home-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.12;
+    pointer-events: none;
+}
+.alphabet-home-card-a::before { background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); }
+.alphabet-home-card-b::before { background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); }
+.alphabet-home-card-c::before { background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%); }
+.alphabet-home-card-d::before { background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%); }
+.alphabet-home-card-e::before { background: linear-gradient(135deg, #f6d365 0%, #fda085 100%); }
+.alphabet-home-card-f::before { background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%); }
+.alphabet-home-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.12);
+}
+.alphabet-home-card:active { transform: scale(0.97); }
+.alphabet-home-emoji {
+    font-size: 3rem;
+    line-height: 1;
+    margin-bottom: 10px;
+    position: relative;
+}
+.alphabet-home-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #333;
+    position: relative;
+}
+.alphabet-home-sub {
+    font-size: 0.85rem;
+    color: #888;
+    margin-top: 4px;
+    position: relative;
+}
+
+/* Shape metaphor strip shown above the tracing canvas */
+.trace-shape-strip {
+    margin: 8px auto 10px;
+    padding: 10px 18px;
+    max-width: 440px;
+    background: linear-gradient(135deg, #fff7e6 0%, #ffeadb 100%);
+    border-radius: 16px;
+    color: #9a5a20;
+    font-size: 0.95rem;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(255,180,0,0.12);
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+.trace-shape-strip:active { transform: scale(0.98); }
+.trace-shape-strip-emoji {
+    font-size: 1.3rem;
+    margin: 0 6px;
+}
+
+/* =====================================================
+   字母动物园
+   ===================================================== */
+#alphabet-zoo-screen {
+    background: linear-gradient(180deg, #fff4e0 0%, #ffe0cc 100%);
+    overflow-y: auto;
+}
+.alphabet-zoo-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 8px;
+}
+.alphabet-zoo-header .page-title {
+    font-size: 1.6rem;
+    color: #d97706;
+    margin: 0;
+}
+.alphabet-zoo-subtitle {
+    text-align: center;
+    color: #9a6020;
+    font-size: 0.95rem;
+    margin: 0 20px 16px;
+}
+.alphabet-zoo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 12px;
+    padding: 0 20px 40px;
+    max-width: 620px;
+    margin: 0 auto;
+}
+.alphabet-zoo-card {
+    background: white;
+    border-radius: 20px;
+    padding: 14px 8px 12px;
+    text-align: center;
+    box-shadow: 0 3px 12px rgba(217,119,6,0.12);
+    transition: transform 0.15s;
+    position: relative;
+    cursor: pointer;
+}
+.alphabet-zoo-card:hover { transform: translateY(-3px); }
+.alphabet-zoo-card:active { transform: scale(0.96); }
+.alphabet-zoo-card.locked {
+    opacity: 0.55;
+    filter: grayscale(0.7);
+    cursor: default;
+}
+.alphabet-zoo-card.locked:hover { transform: none; }
+.alphabet-zoo-card-emoji {
+    font-size: 2.6rem;
+    line-height: 1;
+    margin-bottom: 6px;
+}
+.alphabet-zoo-card-letter {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #d97706;
+    line-height: 1;
+}
+.alphabet-zoo-card-animal {
+    font-size: 0.78rem;
+    color: #6b4423;
+    margin-top: 4px;
+}
+.alphabet-zoo-card-lock {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    font-size: 0.9rem;
+}
+
+/* =====================================================
+   听音找字母
+   ===================================================== */
+#alphabet-listen-screen {
+    background: linear-gradient(180deg, #e0f2ff 0%, #c7e3ff 100%);
+    display: flex;
+    flex-direction: column;
+}
+.alphabet-listen-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 10px;
+}
+.alphabet-listen-score {
+    background: white;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-weight: 700;
+    color: #f59e0b;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.alphabet-listen-prompt {
+    text-align: center;
+    padding: 10px 20px 20px;
+}
+.alphabet-listen-play-btn {
+    padding: 16px 28px;
+    background: linear-gradient(135deg, #4facfe 0%, #00c2fe 100%);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 22px rgba(79,172,254,0.4);
+    animation: pulseBtn 2s ease-in-out infinite;
+}
+.alphabet-listen-play-btn:active { transform: scale(0.97); animation: none; }
+.alphabet-listen-hint {
+    color: #0369a1;
+    font-size: 0.9rem;
+    margin-top: 8px;
+}
+.alphabet-listen-stage {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 16px;
+    padding: 0 24px 40px;
+    max-width: 560px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+.alphabet-listen-tile {
+    background: white;
+    border-radius: 22px;
+    padding: 30px 10px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 4rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transition: transform 0.15s, box-shadow 0.15s;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+}
+.alphabet-listen-tile:hover { transform: translateY(-3px); }
+.alphabet-listen-tile:active { transform: scale(0.96); }
+.alphabet-listen-tile.correct {
+    background: #d1fae5;
+    color: #065f46;
+    animation: bounceIn 0.4s ease;
+}
+.alphabet-listen-tile.wrong {
+    background: #fee2e2;
+    animation: shake 0.35s ease;
+}
+
+/* =====================================================
+   大小写配对
+   ===================================================== */
+#alphabet-case-screen {
+    background: linear-gradient(180deg, #e6fbe6 0%, #c6f3ce 100%);
+    display: flex;
+    flex-direction: column;
+}
+.alphabet-case-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 10px;
+}
+.alphabet-case-subtitle {
+    text-align: center;
+    color: #047857;
+    font-size: 0.95rem;
+    margin: 10px 20px;
+}
+.alphabet-case-stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    padding: 0 24px 40px;
+}
+.alphabet-case-target {
+    width: 180px;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9rem;
+    color: #065f46;
+    font-weight: 700;
+    background: white;
+    border-radius: 28px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+}
+.alphabet-case-arrow {
+    font-size: 2rem;
+    color: #047857;
+    animation: bounceArrow 1.6s ease-in-out infinite;
+}
+@keyframes bounceArrow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+}
+.alphabet-case-choices {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    width: 100%;
+    max-width: 360px;
+}
+.alphabet-case-choice {
+    background: white;
+    border-radius: 20px;
+    padding: 22px 10px;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    transition: transform 0.15s;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+}
+.alphabet-case-choice:hover { transform: translateY(-3px); }
+.alphabet-case-choice:active { transform: scale(0.96); }
+.alphabet-case-choice.correct { background: #d1fae5; animation: bounceIn 0.4s ease; }
+.alphabet-case-choice.wrong { background: #fee2e2; animation: shake 0.35s ease; }
+
+/* =====================================================
+   字母拼单词
+   ===================================================== */
+#alphabet-spell-screen {
+    background: linear-gradient(180deg, #fff3e0 0%, #ffe0b3 100%);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+.alphabet-spell-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 10px;
+}
+.alphabet-spell-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    padding: 10px 24px 40px;
+}
+.alphabet-spell-emoji {
+    font-size: 7rem;
+    line-height: 1;
+    animation: bounce 2s ease-in-out infinite;
+    filter: drop-shadow(0 6px 16px rgba(0,0,0,0.15));
+}
+.alphabet-spell-chinese {
+    font-size: 1.1rem;
+    color: #9a5a20;
+    font-weight: 600;
+}
+.alphabet-spell-slots {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+}
+.alphabet-spell-slot {
+    width: 72px;
+    height: 88px;
+    background: white;
+    border: 3px dashed #e0a060;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #333;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(217,119,6,0.1);
+    transition: all 0.15s;
+}
+.alphabet-spell-slot.filled {
+    background: #fff7e6;
+    border-style: solid;
+    border-color: #f59e0b;
+}
+.alphabet-spell-slot.correct {
+    background: #d1fae5;
+    border-color: #10b981;
+    animation: bounceIn 0.4s ease;
+}
+.alphabet-spell-slot.wrong {
+    background: #fee2e2;
+    border-color: #ef4444;
+    animation: shake 0.35s ease;
+}
+.alphabet-spell-play-btn {
+    padding: 10px 22px;
+    background: rgba(255,255,255,0.95);
+    color: #d97706;
+    border: 2px solid #fbbf24;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+.alphabet-spell-play-btn:active { transform: scale(0.96); }
+.alphabet-spell-pool {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    max-width: 420px;
+    margin-top: 8px;
+}
+.alphabet-spell-tile {
+    width: 58px;
+    height: 72px;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: white;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.2rem;
+    font-weight: 700;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(245,158,11,0.35);
+    transition: transform 0.15s, opacity 0.15s;
+}
+.alphabet-spell-tile:hover { transform: translateY(-3px); }
+.alphabet-spell-tile:active { transform: scale(0.94); }
+.alphabet-spell-tile.used {
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+/* =====================================================
+   字母钓鱼
+   ===================================================== */
+#alphabet-fish-screen {
+    background: linear-gradient(180deg, #b3e5fc 0%, #4fc3f7 60%, #0288d1 100%);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+.alphabet-fish-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px 10px;
+    z-index: 2;
+}
+.alphabet-fish-header .alphabet-listen-score {
+    color: #0369a1;
+}
+.alphabet-fish-prompt {
+    text-align: center;
+    padding: 4px 20px 14px;
+    z-index: 2;
+}
+.alphabet-fish-play-btn {
+    padding: 14px 28px;
+    background: rgba(255,255,255,0.96);
+    color: #0288d1;
+    border: none;
+    border-radius: 999px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(2,136,209,0.35);
+}
+.alphabet-fish-play-btn #alphabet-fish-target {
+    display: inline-block;
+    margin: 0 4px;
+    padding: 0 8px;
+    background: #0288d1;
+    color: white;
+    border-radius: 10px;
+    min-width: 28px;
+    text-align: center;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+}
+.alphabet-fish-pond {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    margin: 0 16px 16px;
+    border-radius: 28px;
+    background: linear-gradient(180deg, #81d4fa 0%, #29b6f6 40%, #0277bd 100%);
+    box-shadow:
+        inset 0 6px 16px rgba(255,255,255,0.3),
+        inset 0 -6px 16px rgba(0,0,0,0.2),
+        0 6px 20px rgba(0,0,0,0.2);
+}
+/* Subtle water shimmer */
+.alphabet-fish-pond::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.2), transparent 40%),
+                radial-gradient(circle at 70% 60%, rgba(255,255,255,0.15), transparent 35%);
+    pointer-events: none;
+}
+.alphabet-fish {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 54px;
+    background: linear-gradient(135deg, #ffb74d 0%, #ff9800 100%);
+    border-radius: 50% 20% 20% 50%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+    cursor: pointer;
+    font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+    color: white;
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    transform-origin: center;
+    animation: fishSwim 6s ease-in-out infinite;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+.alphabet-fish::before {
+    /* Tail */
+    content: '';
+    position: absolute;
+    right: -12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 14px solid transparent;
+    border-bottom: 14px solid transparent;
+    border-left: 16px solid #ff9800;
+}
+.alphabet-fish::after {
+    /* Eye */
+    content: '';
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    width: 6px;
+    height: 6px;
+    background: #333;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px white;
+}
+.alphabet-fish.variant-b {
+    background: linear-gradient(135deg, #f48fb1 0%, #ec407a 100%);
+}
+.alphabet-fish.variant-b::before { border-left-color: #ec407a; }
+.alphabet-fish.variant-c {
+    background: linear-gradient(135deg, #81c784 0%, #43a047 100%);
+}
+.alphabet-fish.variant-c::before { border-left-color: #43a047; }
+.alphabet-fish.variant-d {
+    background: linear-gradient(135deg, #ba68c8 0%, #8e24aa 100%);
+}
+.alphabet-fish.variant-d::before { border-left-color: #8e24aa; }
+.alphabet-fish.flipped { transform: scaleX(-1); }
+.alphabet-fish.flipped::after { left: auto; right: 14px; }
+.alphabet-fish.caught {
+    animation: fishCaught 0.7s ease-out forwards;
+    pointer-events: none;
+}
+.alphabet-fish.wrong {
+    animation: fishWrong 0.5s ease-out;
+}
+@keyframes fishSwim {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    25%      { transform: translateY(-6px) rotate(1deg); }
+    50%      { transform: translateY(0) rotate(-1deg); }
+    75%      { transform: translateY(6px) rotate(2deg); }
+}
+.alphabet-fish.flipped { animation-name: fishSwimFlipped; }
+@keyframes fishSwimFlipped {
+    0%, 100% { transform: scaleX(-1) translateY(0) rotate(-2deg); }
+    25%      { transform: scaleX(-1) translateY(-6px) rotate(1deg); }
+    50%      { transform: scaleX(-1) translateY(0) rotate(-1deg); }
+    75%      { transform: scaleX(-1) translateY(6px) rotate(2deg); }
+}
+@keyframes fishCaught {
+    0%   { transform: scale(1) translateY(0); }
+    40%  { transform: scale(1.4) translateY(-20px) rotate(10deg); }
+    100% { transform: scale(0) translateY(-200px); opacity: 0; }
+}
+@keyframes fishWrong {
+    0%, 100% { filter: none; }
+    50% { filter: hue-rotate(-40deg) brightness(1.2); }
 }
 
 /* 小红花庆祝动画 */

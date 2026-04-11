@@ -13,13 +13,17 @@ const MIME_TYPES = {
   '.jpg': 'image/jpg',
   '.gif': 'image/gif',
   '.svg': 'image/svg+xml',
-  '.ico': 'image/x-icon'
+  '.ico': 'image/x-icon',
+  '.mp3': 'audio/mpeg',
+  '.wav': 'audio/wav'
 };
 
 const server = http.createServer((req, res) => {
   console.log(`${req.method} ${req.url}`);
 
-  let filePath = '.' + decodeURIComponent(req.url);
+  // Strip query string (?v=xxx) before resolving file path
+  const urlPath = req.url.split('?')[0];
+  let filePath = '.' + decodeURIComponent(urlPath);
   if (filePath === './') {
     filePath = './index.html';
   }
