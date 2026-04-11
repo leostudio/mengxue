@@ -1,6 +1,7 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
+const zlib = require('zlib');
 
 const PORT = 8000;
 
@@ -17,6 +18,9 @@ const MIME_TYPES = {
   '.mp3': 'audio/mpeg',
   '.wav': 'audio/wav'
 };
+
+// Text types that benefit from compression
+const COMPRESSIBLE = new Set(['.html', '.css', '.js', '.json', '.svg']);
 
 const server = http.createServer((req, res) => {
   console.log(`${req.method} ${req.url}`);
@@ -41,8 +45,28 @@ const server = http.createServer((req, res) => {
         res.end('Server Error: ' + error.code, 'utf-8');
       }
     } else {
-      res.writeHead(200, { 'Content-Type': contentType, 'Cache-Control': 'no-cache, no-store, must-revalidate' });
-      res.end(content, 'utf-8');
+      // HTML: no cache; static assets: cache 1 day
+      const cacheControl = extname === '.html'
+        ? 'no-cache'
+        : 'public, max-age=86400';
+
+      const headers = {
+        'Content-Type': contentType,
+        'Cache-Control': cacheControl,
+      };
+
+      // Gzip compress text-based assets
+      const acceptEncoding = req.headers['accept-encoding'] || '';
+      if (COMPRESSIBLE.has(extname) && acceptEncoding.includes('gzip')) {
+        headers['Content-Encoding'] = 'gzip';
+        res.writeHead(200, headers);
+        zlib.gzip(content, (err, compressed) => {
+          res.end(err ? content : compressed);
+        });
+      } else {
+        res.writeHead(200, headers);
+        res.end(content, 'utf-8');
+      }
     }
   });
 });
