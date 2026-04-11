@@ -7,18 +7,16 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-html, body {
-    width: 100%;
-    min-width: 100vw;
+html {
+    height: 100%;
 }
 
 body {
     font-family: 'Comic Sans MS', 'Chalkboard', 'Verdana', sans-serif;
     background: linear-gradient(135deg, #fff9e6 0%, #ffe6f0 50%, #e6f7ff 100%);
-    min-height: 100vh;
+    min-height: 100%;
     margin: 0;
     padding: 0;
-    overflow-x: hidden;
     position: relative;
     overflow: hidden;
 }
@@ -27,14 +25,13 @@ body {
 .screen {
     display: none;
     padding: 20px;
-    min-height: 100vh;
-    height: 100vh;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
+    right: 0;
+    bottom: 0;
     box-sizing: border-box;
     transform: translateX(100%);
     transition: transform 300ms ease-out, opacity 300ms ease-out;
@@ -286,7 +283,6 @@ body {
     background: linear-gradient(180deg, #e8f4ff 0%, #fff0f5 100%);
     padding: 0;
     flex-direction: column;
-    height: 100vh;
     overflow: hidden;
     overscroll-behavior: none;
     touch-action: none;
@@ -466,7 +462,6 @@ body {
     background: linear-gradient(180deg, #fff9e6 0%, #ffe6f0 50%, #e6f7ff 100%);
     padding: 0;
     flex-direction: column;
-    height: 100vh;
     overflow: hidden;
 }
 
@@ -578,8 +573,6 @@ body {
     background: linear-gradient(180deg, #fff9e6 0%, #ffe6f0 50%, #e6f7ff 100%);
     padding: 0;
     flex-direction: column;
-    height: 100vh;
-    overflow-y: auto;
 }
 
 #vision-screen.active {
@@ -673,7 +666,6 @@ body {
     background: linear-gradient(180deg, #fff9e6 0%, #ffe6f0 50%, #e6f7ff 100%);
     padding: 0;
     flex-direction: column;
-    height: 100vh;
     overflow: hidden;
 }
 
@@ -904,7 +896,6 @@ body {
     background: linear-gradient(180deg, #fff5f5 0%, #fff 100%);
     padding: 0;
     flex-direction: column;
-    min-height: 100vh;
 }
 
 #hanzi-grid-screen.active {
@@ -1187,7 +1178,6 @@ body {
     background: linear-gradient(180deg, #e8f4ff 0%, #fff0f5 100%);
     padding: 0;
     flex-direction: column;
-    height: 100vh;
     overflow: hidden;
     touch-action: none;
 }
@@ -2551,7 +2541,6 @@ body {
     background: #111;
     padding: 0;
     flex-direction: column;
-    height: 100vh;
     overflow: hidden;
 }
 
@@ -2985,8 +2974,8 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
     pointer-events: none;
     z-index: 999;
     display: none;

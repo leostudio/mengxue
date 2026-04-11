@@ -2159,8 +2159,8 @@ function showParticleCelebration() {
   const canvas = celebrationCanvas;
   if (!canvas) return;
   canvas.style.display = 'block';
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width = document.documentElement.clientWidth;
+  canvas.height = document.documentElement.clientHeight;
   const ctx = canvas.getContext('2d');
 
   const particles = [];

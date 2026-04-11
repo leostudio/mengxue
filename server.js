@@ -45,7 +45,7 @@ const server = http.createServer((req, res) => {
         res.end('Server Error: ' + error.code, 'utf-8');
       }
     } else {
-      // HTML: no cache; static assets: cache 1 day
+      // HTML: always revalidate; static assets: cache 1 day
       const cacheControl = extname === '.html'
         ? 'no-cache'
         : 'public, max-age=86400';
